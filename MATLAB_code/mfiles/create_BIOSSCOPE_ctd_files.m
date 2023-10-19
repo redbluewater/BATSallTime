@@ -22,10 +22,14 @@ function Xout = create_BIOSSCOPE_ctd_files(infile, MAXZ, trans_dates, do_plots)
 
 % NOTE:  Vertical zones are computed using ML_dens125
 %%  Read file into rectangular array, and store each column as a field in structure CTD
+showOutput = 0; %set to 1 to see the output
+
 fid = fopen(infile,'r');
 
-disp(['Reading ',infile]);
-disp('   be patient..... ');
+if showOutput    
+    disp(['Reading ',infile]);
+    disp('   be patient..... ');
+end
 fmt = '%f%f%f%f%f%f%f%f%f%f%f%f%f%[^\n\r]';
 
 TTin=textscan(fid,fmt,'Delimiter', '', 'WhiteSpace', '', 'EmptyValue' ,NaN, 'ReturnOnError', false);
@@ -397,7 +401,9 @@ clear din parin
 % Output the cast
    fmt = '%8d_%1d%04d_%03d_ctd.csv';
    outfile = sprintf(fmt,XX.yyyymmdd(1),Xout.type(ii),XX.Cruise(1),XX.Cast(1));
-   disp(['Writing ',outfile]);
+   if showOutput
+       disp(['Writing ',outfile]);
+   end
    TTcast = struct2table(XX);
    writetable(TTcast,outfile);
   
@@ -407,7 +413,9 @@ end % for ii
 
    fmt = 'CRU_%1d%04d_ctd.csv';
    outfile = sprintf(fmt,Xout.type(1),CTD.Cruise(1));
-   disp(['Writing ',outfile]);
+   if showOutput
+       disp(['Writing ',outfile]);
+   end
    
    % replace any NaNs in CTD struct with -999.
    flist = fieldnames(CTD);
@@ -424,7 +432,9 @@ end % for ii
         close all
     end
 %
-disp('Done!');
+if showOutput
+    disp('Done!');
+end
 end %function
 
 

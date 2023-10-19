@@ -16,7 +16,7 @@ rootdir_scripts = 'C:\Users\klongnecker\Documents\GitHub\data_pipeline\MATLAB_co
 
 batsdir = fullfile(rootdir_data,'00_CTD/FromBATS_2016-2020');
 workdir = fullfile(rootdir_data,'00_CTD');
-Bfile = fullfile(rootdir_data,'00_BTL/BATS_BS_COMBINED_MASTER_2020.5.30.xlsx');
+Bfile = fullfile(rootdir_data,'00_BTL/BATS_BS_COMBINED_MASTER_2022.5.10.xlsx');
 %Bfile = fullfile(rootdir,'00_BTL/Workbook1.xlsx');  %had to rename the
 %sheet to get readtable to work (for future reference)
 sheetName = 'BATS_BS Bottle File';
@@ -26,6 +26,7 @@ addpath(path,genpath(fullfile(rootdir_scripts,'mfiles')))
   
 newfile = fullfile(rootdir_data,'ADD_to_MASTER_2023.10.19.csv');
 
+showOutput = 0; %set to 1 if you want to see the output as the processing occurs
 
 
 %%  start by loading and labeling CTD data
@@ -60,16 +61,23 @@ trans_dates = [];  % initially set to empty; then fill in dates below
        cd(workdir)
        fmt = '%4d%02d%02d_%1d%04d_CTD.mat';
        outfile = sprintf(fmt,CTD.year(1),CTD.month(1),CTD.day(1),CTD.type(1),CTD.cruise(1));
-       disp(['Writing ',outfile]);
+       if showOutput
+           disp(['Writing ',outfile]); 
+       end
        save(outfile,'CTD');
     end
     
 %%  Do some editing of bad fluorometer and T-S profiles
 
-run('/Users/rcurry/GliderData/BIOSSCOPE/CTD_BOTTLE/edit_BATS_profiles_2016-2020');
+%KL comment this out for now (this script is in the data area, will want to
+%move to m-files folder, but this is will break)
+% run('edit_BATS_profiles_2016-2020');
+%run('/Users/rcurry/GliderData/BIOSSCOPE/CTD_BOTTLE/edit_BATS_profiles_2016-2020');
 
 %%  Load the bottle file and create an output structure to store new info 
-disp(['Loading ',Bfile]);
+if showOutput
+    disp(['Loading ',Bfile]);
+end
 
 BB = readtable(Bfile,'sheet',sheetName,'ReadVariableNames',true);
 varNames = BB.Properties.VariableNames';
@@ -134,7 +142,9 @@ for icru = 1:ncru
         continue
     end
     fname = dirlist.name;
-    disp(['Loading ',fname])
+    if showOutput
+        disp(['Loading ',fname])
+    end
     load(fname);
 
     % use logical indexing to find cruise/cast match
