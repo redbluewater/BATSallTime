@@ -45,6 +45,9 @@ This will create a single text file for each cruise containing the concatenated 
 
 ### Step 2: Create BIOSSCOPE CTD and MasterBtl files
 Calls functions in mfiles folder and subfolders, so be sure they are in MATLAB Path.\
+
+Krista has updated ```create_biosscope_files_2016_2020.m ``` so that it works from beginning to end for someone who gets this repository. All that you have to do is tell the code where to find the datafiles since they are too big for GitHub.
+
 Three scripts for now (one for each batch of data from BATS)\
 ```create_biosscope_files_2016_2020.m ```\
 ```create_biosscope_files_2021.m ```\
