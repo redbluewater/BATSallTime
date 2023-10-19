@@ -12,12 +12,33 @@ Overview of what we will be putting here is covered nicely in this figure:\
 * in Dropbox - and BATS team processes the data and posts it on Dropbox. Right now Craig and Rachel have access to the processed data on BIOS-SCOPE
 * 
 ## Ruth pipeline
-### first, get the data from Dropbox and do stuff, one cast/cruise at a time
-see Word document for details: HowTo_Download CTD.docx
-(includes details on concatenate the CTD data --> 
- Download data from BATS/Dropbox in batches, once a batch is done, don't need to redo it
-in FromBATS_2016-2020 folder and run do_concat_ctd (now in C Shell)
-Makes a single *txt file for each cruise
+### Step 1: Download CTD files from BIOS-SCOPE Google drive
+First, you need to download data from BATS/Dropbox in batches. Usually each 'batch' is CTD data from multiple cruises, possibly over multiple years. Once a set of CTD data has been processed, you don't need to redo the MATLAB steps unless the data gets reprocessed by BATS.
+ 
+Data are currently sitting here in the BIOS-SCOPE Google Drive:\
+./1.0 DATA/1.0 ORIG CTD FROM BATS\
+./CTDrelease_20230626  (these begin with “1” or “2”)\
+./BIOS-SCOPE Cruises  (these begin with “9”)\
+
+These folders contain subfolders for each cruise. Each subfolder contains various ascii files (one per each CTD cast, plus the physf_QC and MLD.dat files). Go into the CTDrelease_20230626 and highlight the cruise folders that are new --> download them to a zip file. Do the same for BIOS-SCOPE cruises.\
+Make a processing folder (e.g. FromBATS_2022-2023) and move the downloaded zip archives there. Unzip them and move the cruise folders up to the processing directory. Save the *.zip files into a subfolder ./ZIPfiles.
+
+Copy the file ```do_concat_ctd``` from a previous processing folder into the processing folder.
+
+```set curdir = `pwd` ```\
+```set dirlist = (10367 10368 10369 10370 10371 10373 10374 10376 10376 10377 10378 10379 10381 10382 10383 10384 10385 10386 10387 10388 10389 20379 20380 92114 92123)```\
+```for each dir ($dirlist)```\
+```cd $dir```\
+```echo $dir```\
+```set list = `ls *c*_QC.dat` ```\
+```cat $list > ../${dir}_ctd.txt```\
+```cd $curdir```\
+```end```
+
+Edit dirlist to reflect the list of cruises. 
+    ```set list = `ls -d 1* 9*` ```
+Run the commands in a terminal window using a csh (shell interpreter).  
+This will create a single text file for each cruise containing the concatenated casts; naming convention is $cruise_ctd.txt
 
 ### Create BIOSSCOPE CTD and MasterBtl files
 (see Word document for details) (for one set..will call create_BIOSCOPE_ctd_files.m)\
