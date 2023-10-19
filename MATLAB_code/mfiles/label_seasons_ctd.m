@@ -17,6 +17,10 @@ function [ theCode] = label_seasons_ctd(CTD,DCM,mld, trans_dates )
 %   3 :  Strat  begins when MLD is consistently above top of CM
 %   4 :  Fall   begins when MLD first goes below top of CM 
 %
+% Ruth Curry, BIOS / ASU
+% Uploaded for BIOS-SCOPE project 19 October 2023
+%
+
 
 mtime = decyear2dnum(CTD.decy(1));
 

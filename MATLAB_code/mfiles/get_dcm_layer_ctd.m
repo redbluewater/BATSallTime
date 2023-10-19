@@ -20,6 +20,11 @@ function [DCM] = get_dcm_layer_ctd(CHL, DE, MLD, percent, izmax)
 %       .de_top :  depth at top == NaN if DCM is within the ML
 %       .de_bot : depth at bottom == MLD if DCM is within the ML
 %
+%
+% Ruth Curry, BIOS / ASU
+% Uploaded for BIOS-SCOPE project 19 October 2023
+%
+
 [~,nprof] = size(CHL);
 DCM = struct();
 XX = ones(1,nprof) .* NaN;

@@ -14,6 +14,10 @@ function [ Xout ] = get_BATS_par_vars(PAR_in, de_in, zrange, zmax )
 %    .z_tenthpcnt : 0.1%
 %
 %  NOTE:  Missing values returned in Xout are set to NaN.
+%
+% Ruth Curry, BIOS / ASU
+% Uploaded for BIOS-SCOPE project 19 October 2023
+%
 
 %% Initialize output struct
 

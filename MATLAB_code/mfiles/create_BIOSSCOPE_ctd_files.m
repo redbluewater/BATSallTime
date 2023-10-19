@@ -21,6 +21,10 @@ function Xout = create_BIOSSCOPE_ctd_files(infile, MAXZ, trans_dates, do_plots)
 %           cruise in row vectors and rectangular matrices.
 
 % NOTE:  Vertical zones are computed using ML_dens125
+%
+% Ruth Curry, BIOS / ASU
+% Uploaded for BIOS-SCOPE project 19 October 2023
+%
 %%  Read file into rectangular array, and store each column as a field in structure CTD
 showOutput = 0; %set to 1 to see the output
 

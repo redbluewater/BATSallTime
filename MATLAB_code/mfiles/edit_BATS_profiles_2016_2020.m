@@ -1,4 +1,7 @@
-
+%
+% Ruth Curry, BIOS / ASU
+% Uploaded for BIOS-SCOPE project 19 October 2023
+%
 %  edit bad segments of fluorometer profiles and overwrite individual *.csv
 %  files and CRU*.csv files; save corrected *.mat files
 

@@ -8,6 +8,10 @@ function [ ML ] = get_mld_ctd( CTD )
 %     .bvfrq =  depth where bvfrq >  stddev(bvfrq) & de > 5m  Mojica and Gaube(2020 formulation)
 %     .densT2 =  depth where density > sig10 + 0.2 * alpha
 %                 (thermal expansion coefficient)
+%
+% Ruth Curry, BIOS / ASU
+% Uploaded for BIOS-SCOPE project 19 October 2023
+%
 
 ML = struct();
 ML.bvfrq = -999;

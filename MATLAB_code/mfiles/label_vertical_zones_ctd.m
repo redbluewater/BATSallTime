@@ -24,6 +24,10 @@ function [Zout] = label_vertical_zones_ctd(CTD,DCM,mld)
 %      mld : scalar value of mixed layer depth
 %  OUTPUT
 %      Zout : vector of vertical zones
+%
+% Ruth Curry, BIOS / ASU
+% Uploaded for BIOS-SCOPE project 19 October 2023
+%
 %%
   Zout = ones(size(CTD.Depth)) .* -999;
   nz = length(Zout);
