@@ -14,15 +14,28 @@ Overview of what we will be putting here is covered nicely in this figure:\
 ## Ruth pipeline
 ### first, get the data from Dropbox and do stuff, one cast/cruise at a time
 see Word document for details: HowTo_Download CTD.docx
-(includes details on concatenate the CTD data --> runs 
+(includes details on concatenate the CTD data --> 
+ Download data from BATS/Dropbox in batches, once a batch is done, don't need to redo it
 in FromBATS_2016-2020 folder and run do_concat_ctd (now in C Shell)
 Makes a single *txt file for each cruise
 
 ### Create BIOSSCOPE CTD and MasterBtl files
-(see Word document for details) \
-create_biosscope_files_2022_2023.m (for one set..will call create_BIOSCOPE_ctd_files.m). Download data from BATS/Dropbox in batches, once a batch is done, don't need to redo it
-(series of functions and scripts from Ruth; have to include the m-files from Ruth in the path, multiple custom functions, the seawater library, and a sunrise library)
-(will also create a series of files...then create CSV files that get uploaded to Google Drive)
+(see Word document for details) (for one set..will call create_BIOSCOPE_ctd_files.m)\
+Three scripts for now (one for each batch of data from BATS) 
+create_biosscope_files_2016_2020.m 
+create_biosscope_files_2021.m 
+create_biosscope_files_2022_2023.m 
+
+#### First: process the single cast/cruise
+Right now: series of functions and scripts from Ruth; have to include the m-files from Ruth in the path, multiple custom functions, the seawater library, and a sunrise library)
+(will create a series of files...then create CSV files that get uploaded to Google Drive)
+
+#### Then need to combine the information into one file
+(seasons - using glider data to determine seasons and/or set dates and/or use information from Hydrostation S) --> makes Season_dates_all.mat
+(make a CSV file that is 'add to master')
+
+#### Then cut and paste from CSV file into the on-going master file (which is in Excel, xlsx file)
+
 
 ## Shuting pipeline
 
@@ -34,5 +47,8 @@ create_biosscope_files_2022_2023.m (for one set..will call create_BIOSCOPE_ctd_f
 ** How to create BIOSSCOPE CTD and MasterBtl files
 * Update pipeline to inclue timeline
 * Get revised pipeline/steps from Ellie
+* Gather Ruth's scripts into a single notebook for GitHub
+* Setup Ruth scripts so they allow a person to point to a local data directory (will allow scripts to be updated on GitHub, but then leave data locally)
+* Setup flag to note how the season is defined (glider, pre-set, Hydrostation S)
 
 
