@@ -77,5 +77,6 @@ Upload the new files to the Google Drive Data folders.
 * Gather Ruth's scripts into a single notebook for GitHub
 * Setup Ruth scripts so they allow a person to point to a local data directory (will allow scripts to be updated on GitHub, but then leave data locally)
 * Setup flag to note how the season is defined (glider, pre-set, Hydrostation S)
+* fit.m -  called by get_BATS_par_vars.m (seems to be not in set of mfiles)
 
 
