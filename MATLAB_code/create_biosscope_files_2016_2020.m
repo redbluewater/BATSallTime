@@ -4,18 +4,27 @@
 %
 % Ruth Curry, BIOS / ASU
 % Uploaded for BIOS-SCOPE project 19 October 2023
+% This will require the following toolboxes in MATLAB:
+% Signal Processing Toolbox
+% Curve Fitting Toolbox
 %
 %%   ADDPATH_biosscope  % add mfiles into matlab path
-% KL note 10/19/2023: update these paths for your computer
-rootdir = '/Users/rcurry/GliderData/BIOSSCOPE/CTD_BOTTLE';
-batsdir = fullfile(rootdir,'00_CTD/FromBATS_2016-2020');
-workdir = fullfile(rootdir,'00_CTD');
-Bfile = fullfile(rootdir,'00_BTL/BATS_BS_COMBINED_MASTER_2020.5.30.xlsx');
+% KL note 10/19/2023: update these folders as needed for your computer
+% rootdir = '/Users/rcurry/GliderData/BIOSSCOPE/CTD_BOTTLE';
+rootdir_data = 'C:\Users\klongnecker\Documents\Dropbox\CTD_BOTTLE_kit\CTD_BOTTLE'; %KL working
+rootdir_scripts = 'C:\Users\klongnecker\Documents\GitHub\data_pipeline\MATLAB_code';
+
+batsdir = fullfile(rootdir_data,'00_CTD/FromBATS_2016-2020');
+workdir = fullfile(rootdir_data,'00_CTD');
+Bfile = fullfile(rootdir_data,'00_BTL/BATS_BS_COMBINED_MASTER_2020.5.30.xlsx');
 %Bfile = fullfile(rootdir,'00_BTL/Workbook1.xlsx');  %had to rename the
 %sheet to get readtable to work (for future reference)
 sheetName = 'BATS_BS Bottle File';
 
-newfile = fullfile(rootdir,'ADD_to_MASTER_2020.5.30.csv');
+%Ruth's scripts are in the mfiles folder
+addpath(path,genpath(fullfile(rootdir_scripts,'mfiles')))
+  
+newfile = fullfile(rootdir_data,'ADD_to_MASTER_2023.10.19.csv');
 
 
 
@@ -26,12 +35,13 @@ cd(workdir);
 
 MAXZ = 2500;  % row dimension for CTD profiles
 
-load('season_dates_all.mat');
-%trans_dates = [];  % initially set to empty; then fill in dates below
-%   trans_dates.mixed = [datenum('01-Jan-2019'), datenum('27-Mar-2019')];
-%   trans_dates.spring = [datenum('27-Mar-2019'), datenum('07-Apr-2019')];
-%   trans_dates.strat = [datenum('07-Apr-2019'), datenum('06-Nov-2019')];
-%   trans_dates.fall = [datenum('06-Nov-2019'), datenum('06-Dec-2019')];
+load('season_dates_all.mat'); %KL note: had to move this file
+%KL note - uncommented out the following
+trans_dates = [];  % initially set to empty; then fill in dates below
+  trans_dates.mixed = [datenum('01-Jan-2019'), datenum('27-Mar-2019')];
+  trans_dates.spring = [datenum('27-Mar-2019'), datenum('07-Apr-2019')];
+  trans_dates.strat = [datenum('07-Apr-2019'), datenum('06-Nov-2019')];
+  trans_dates.fall = [datenum('06-Nov-2019'), datenum('06-Dec-2019')];
  nfiles = length(dirlist);
  
 
