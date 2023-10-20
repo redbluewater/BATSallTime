@@ -53,9 +53,15 @@ end
 %
 % exponential fit 
  de_good = de_in(igood);
- PAR_good = PAR_in(igood);
- [f, ~] = fit(de_good,PAR_good,'exp1','robust','bisquare');
- Coef=coeffvalues(f);
+ PAR_good = PAR_in(igood); 
+ try
+     [f, gof,options] = fit(de_good,PAR_good,'exp1','robust','bisquare');   
+ catch
+     warning('WARNING: fit() for par profile returned an error. Par variables set to NaN'); 
+     return
+ end
+ 
+Coef=coeffvalues(f);
 %
 Xout.par_est(indx)= Coef(1)*exp(Coef(2)* de_in(indx)); 
 Xout.kpar = -Coef(2);
