@@ -1,3 +1,6 @@
+#Code from Shuting Liu
+#University of California, Santa Barbara and Kean University
+#uploaded to BIOS-SCOPE GitHub site 20 October 2023
 
 library(dplyr)
 setwd("~/Desktop")
