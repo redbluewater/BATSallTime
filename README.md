@@ -82,9 +82,16 @@ Shuting's R code...she walked us through this:
 * change newID to characters
 * find duplicates
 * left_join in R
+* (do some tidying up)
+* Copy and paste the CSV file into the master bottle file
 
-## Different path for data for making 'one cast' for cruise
-Craig's path for making a single cast for each cruise so we can pull in data from pumps etc.
+
+## Craig's path to make 'one cast' for cruise
+Craig currently working in R to make one single cast for each cruise so we can pull in data from pumps etc.
+(need Craig's R code to see how he is making one cast)
+For the data portal, using these synpotic casts, the idea is to use cast and nominal depth as the key for merging.
+
+If you want to XYZ go the data-portal
 
 
 
@@ -98,6 +105,7 @@ Craig's path for making a single cast for each cruise so we can pull in data fro
 * Get revised pipeline/steps from Ellie
 * Gather Ruth's scripts into a single notebook for GitHub
 * Setup flag to note how the season is defined (glider, pre-set, Hydrostation S)
+* MetaboLights identification for KujLab metabolomics data is here:https://www.ebi.ac.uk/metabolights/editor/MTBLS2356
+* (get Shuting's wish list of things to change for her code...Rachel has these requests)
+* get on the rotation for meetings...in the maybe time slot...set up use cases for how the data portal would be used
 
-
-h
