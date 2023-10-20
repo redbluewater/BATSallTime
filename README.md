@@ -98,7 +98,8 @@ If you want to XYZ go the data-portal
 
 # tasks to-do list
 * Get revised pipeline/steps from Ellie (with timeline)
-* Setup flag to note how the season is defined (glider, pre-set, Hydrostation S)
+* Ruth: come up with readme file about how the season transition dates were determined (glider, pre-set, Hydrostation S)
+* Ruth: will generate one m-file that will run through all CTD data from 2016 until 2023 (replacing the three scripts that exist now with different time chunks)
 * (get Shuting's wish list of things to change for her code...Rachel has these requests)
 * Some things entered manually into the master data file:
 * **'program' into the Excel file
