@@ -108,7 +108,7 @@ Krista
 - [ ] How to move the code forward
 - [ ] Get Craig's code to make one cast and coordinate so end up with cruise and nominal depths (setting up to integrate with data-portal)
 
-From Rachel
+Rachel
 - [ ]  Discuss pipeline with Rod and finalize the CTD processing.
 - [ ]  Does Dom needs to reprocess BIOS-SCOPE cruises?
 
