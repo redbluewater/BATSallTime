@@ -68,6 +68,25 @@ Upload the new files to the Google Drive Data folders.
 
 ## Shuting pipeline
 (these files will be in the R folder)
+Shuting's steps:
+* Shuting takes BATS CTD data and then uses Excel to add columns to the BATS data so that the columns match what is already in the BIOS-SCOPE master file
+**  Right now, columns A to AD in the master file come from BATS
+* Then Shuting copy/paste from the batch of BATS CTD data file into the BIOS-SCOPE master file
+* Discrete data comes in later, and that is where the R code comes in
+* **Shuting was using the bottle ID as the key to merge the discrete data in. Right now the problem is the R code makes a new column in the merging step, so Shuting manually merges the two columns (e.g., N_Nx or N_Ny)
+* BATS has duplicate bottle IDs at times, and Shuting has corrected these issues in the existing master file
+* 
+
+Shuting's R code...she walked us through this:
+* read in new CSV file and existing master file
+* change newID to characters
+* find duplicates
+* left_join in R
+
+## Different path for data for making 'one cast' for cruise
+Craig's path for making a single cast for each cruise so we can pull in data from pumps etc.
+
+
 
 
 # tasks to-do list
@@ -81,3 +100,4 @@ Upload the new files to the Google Drive Data folders.
 * Setup flag to note how the season is defined (glider, pre-set, Hydrostation S)
 
 
+h
