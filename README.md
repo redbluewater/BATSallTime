@@ -1,5 +1,5 @@
 # data_pipeline 
-# tasks to-do list
+## tasks to-do list
 Ellie:
 - [ ] Set up revised pipeline/steps (will go onto GitHub site)
 - [ ] Get this file up on GitHub
@@ -28,7 +28,7 @@ Craig
 - [ ] Send Krista your code to make one cast from each cruise
 
 Done:
-- [ ] get on the rotation for meetings: we signed up for November 15, 2023
+- [x] get on the rotation for meetings: we signed up for November 15, 2023
 
 
 
