@@ -112,6 +112,7 @@ Rachel
 - [ ]  Discuss pipeline with Rod and finalize the CTD processing.
 - [ ]  Does Dom needs to reprocess BIOS-SCOPE cruises?
 - [ ]  Figure out why we have two folders for BIOS-SCOPE 91916 cruise on Google Drive ('91916' and '91916_QC'). Sort out which is right and move the other folder
+- [ ]  difference between wet oxygen 1, 2, 3 and salts 1, 2 in the CTD files
 
 Shuting
 - [ ] Update R code and share on GitHub with group
