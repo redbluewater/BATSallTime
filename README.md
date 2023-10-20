@@ -116,4 +116,8 @@ For the data portal, using these synpotic casts, the idea is to use cast and nom
 * Krista : update GitHub README.md
 * *If you want to XYZ data stream ... go the data-portal (make link to that site at GitHub)
 * How to move the code forward
+* Discuss pipeline with Rod and finalize the CTD processing.
+Does Dom needs to reprocess BIOS-SCOPE cruises?
+![image](https://github.com/BIOS-SCOPE/data_pipeline/assets/143524821/2990a19a-3772-4909-b839-5a43d60f2835)
+
 
