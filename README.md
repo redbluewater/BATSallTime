@@ -85,27 +85,35 @@ Shuting's R code...she walked us through this:
 * (do some tidying up)
 * Copy and paste the CSV file into the master bottle file
 
+* Some notes: some details are entered manually into the master data file:
+* **'program' into the Excel file
+* ** AE cruise ID (e.g., BATS uses 5 digit code, but ignores ship detail AE vs. EN), so this entered manually
+* **nominal depth ...this is done manually either by Shuting after the BIOS-SCOPE cruises and Rachel does the BATS cruises
+
 
 ## Craig's path to make 'one cast' for cruise
 Craig currently working in R to make one single cast for each cruise so we can pull in data from pumps etc.
 (need Craig's R code to see how he is making one cast)
 For the data portal, using these synpotic casts, the idea is to use cast and nominal depth as the key for merging.
 
-If you want to XYZ go the data-portal
-
-
 
 
 # tasks to-do list
-* Get revised pipeline/steps from Ellie (with timeline)
+* Ellie: Set up revised pipeline/steps (will go onto GitHub site)
+* 
 * Ruth: come up with readme file about how the season transition dates were determined (glider, pre-set, Hydrostation S)
 * Ruth: will generate one m-file that will run through all CTD data from 2016 until 2023 (replacing the three scripts that exist now with different time chunks)
-* (get Shuting's wish list of things to change for her code...Rachel has these requests)
+* Ruth: put glider data and metadata into BCO-DMO format
+*
+
 * Some things entered manually into the master data file:
 * **'program' into the Excel file
 * **missing AE cruise ID (e.g., BATS uses 5 digit code, but ignores ship detail AE vs. EN)
 * **nominal depth ...this is done manually either (Shuting does this after the cruises...but Rachel does some)
- 
-* how to move the code forward
+
 * get on the rotation for meetings...in the maybe time slot...set up use cases for how the data portal would be used
+
+* Krista : update GitHub README.md
+* *If you want to XYZ data stream ... go the data-portal (make link to that site at GitHub)
+* How to move the code forward
 
