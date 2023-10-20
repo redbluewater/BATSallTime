@@ -113,6 +113,9 @@ Rachel
 - [ ]  Does Dom needs to reprocess BIOS-SCOPE cruises?
 - [ ]  Figure out why we have two folders for BIOS-SCOPE 91916 cruise on Google Drive ('91916' and '91916_QC'). Sort out which is right and move the other folder
 
+Shuting
+- [ ] Update R code and share on GitHub with group
+
 Someone:
 - [ ] get on the rotation for meetings...in the maybe time slot...set up use cases for how the data portal would be used
 
