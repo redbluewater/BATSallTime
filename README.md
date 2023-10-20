@@ -97,15 +97,14 @@ If you want to XYZ go the data-portal
 
 
 # tasks to-do list
-* add to top of m-files from Ruth : Ruth Curry, BIOS, dates, keep track of who wrote the scripts and where they came from
-* pull details from Ruth's Word documents and put into GitHub so they are here in GitHub\
-** HowTo_Download CTD.docx\
-** How to create BIOSSCOPE CTD and MasterBtl files
-* Update pipeline to inclue timeline
-* Get revised pipeline/steps from Ellie
-* Gather Ruth's scripts into a single notebook for GitHub
+* Get revised pipeline/steps from Ellie (with timeline)
 * Setup flag to note how the season is defined (glider, pre-set, Hydrostation S)
-* MetaboLights identification for KujLab metabolomics data is here:https://www.ebi.ac.uk/metabolights/editor/MTBLS2356
 * (get Shuting's wish list of things to change for her code...Rachel has these requests)
+* Some things entered manually into the master data file:
+* **'program' into the Excel file
+* **missing AE cruise ID (e.g., BATS uses 5 digit code, but ignores ship detail AE vs. EN)
+* **nominal depth ...this is done manually either (Shuting does this after the cruises...but Rachel does some)
+ 
+* how to move the code forward
 * get on the rotation for meetings...in the maybe time slot...set up use cases for how the data portal would be used
 
