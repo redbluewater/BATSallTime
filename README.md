@@ -68,17 +68,14 @@ Cut and paste the new columns into the MASTER file.\
 Upload the new files to the Google Drive Data folders.
 
 ## Shuting pipeline
-(these files will be in the R folder)
-Shuting's steps:
-* Shuting takes BATS CTD data and then uses Excel to add columns to the BATS data so that the columns match what is already in the BIOS-SCOPE master file
-**  Right now, columns A to AD in the master file come from BATS
-* Then Shuting copy/paste from the batch of BATS CTD data file into the BIOS-SCOPE master file
-* Discrete data comes in later, and that is where the R code comes in
-* **Shuting was using the bottle ID as the key to merge the discrete data in. Right now the problem is the R code makes a new column in the merging step, so Shuting manually merges the two columns (e.g., N_Nx or N_Ny)
+Details on the pipeline used by Shuting to update the master file:
+* Shuting takes BATS CTD data and then uses Excel to add columns to the BATS data so that the columns match what is already in the BIOS-SCOPE master file. Right now, columns A to AD in the master file come from BATS
+* Then Shuting does a copy/paste from one batch of BATS CTD data to get the result into the BIOS-SCOPE master file
+* Discrete data comes in later, and that is where the R code comes in. 
+* Shuting uses bottle ID as the key to merge the discrete data in. Right now the problem is the R code makes a new column in the merging step, so Shuting manually merges the two columns (e.g., N_Nx or N_Ny)
 * BATS has duplicate bottle IDs at times, and Shuting has corrected these issues in the existing master file
-* 
 
-Shuting's R code...she walked us through this:
+Shuting's R [here](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_BATS_All_with_master.R). She walked us through the steps:
 * read in new CSV file and existing master file
 * change newID to characters
 * find duplicates
@@ -86,39 +83,38 @@ Shuting's R code...she walked us through this:
 * (do some tidying up)
 * Copy and paste the CSV file into the master bottle file
 
-* Some notes: some details are entered manually into the master data file:
-* **'program' into the Excel file
-* ** AE cruise ID (e.g., BATS uses 5 digit code, but ignores ship detail AE vs. EN), so this entered manually
-* **nominal depth ...this is done manually either by Shuting after the BIOS-SCOPE cruises and Rachel does the BATS cruises
-
+Some additional notes about the Rcode. First, some details are entered manually into the master data file:
+* 'program' (BATS or BIOSCOPE)
+* 'cruiseID' (BATS uses 5 digit code, but ignores ship detail AE vs. EN), so this is entered manually
+* nominal depth --> this is done manually either by Shuting after the BIOS-SCOPE cruises and Rachel does the BATS cruises
 
 ## Craig's path to make 'one cast' for cruise
 Craig currently working in R to make one single cast for each cruise so we can pull in data from pumps etc.
-(need Craig's R code to see how he is making one cast)
 For the data portal, using these synpotic casts, the idea is to use cast and nominal depth as the key for merging.
 
 
-
 # tasks to-do list
-* Ellie: Set up revised pipeline/steps (will go onto GitHub site)
-* 
-* Ruth: come up with readme file about how the season transition dates were determined (glider, pre-set, Hydrostation S)
-* Ruth: will generate one m-file that will run through all CTD data from 2016 until 2023 (replacing the three scripts that exist now with different time chunks)
-* Ruth: put glider data and metadata into BCO-DMO format
-*
+Ellie:
+- [ ] Set up revised pipeline/steps (will go onto GitHub site)
 
-* Some things entered manually into the master data file:
-* **'program' into the Excel file
-* **missing AE cruise ID (e.g., BATS uses 5 digit code, but ignores ship detail AE vs. EN)
-* **nominal depth ...this is done manually either (Shuting does this after the cruises...but Rachel does some)
+Ruth
+- [ ] come up with readme file about how the season transition dates were determined (glider, pre-set, Hydrostation S)
+- [ ] will generate one m-file that will run through all CTD data from 2016 until 2023 (replacing the three scripts that exist now with different time chunks)
+- [ ] put glider data and metadata into BCO-DMO format
 
-* get on the rotation for meetings...in the maybe time slot...set up use cases for how the data portal would be used
+Krista 
+- [ ] update GitHub README.md
+- [ ] Add to README.md: if you want to XYZ data stream ... go the data-portal (make link to that site at GitHub)
+- [ ] How to move the code forward
+- [ ] Get Craig's code to make one cast and coordinate so end up with cruise and nominal depths (setting up to integrate with data-portal)
 
-* Krista : update GitHub README.md
-* *If you want to XYZ data stream ... go the data-portal (make link to that site at GitHub)
-* How to move the code forward
-* Discuss pipeline with Rod and finalize the CTD processing.
-Does Dom needs to reprocess BIOS-SCOPE cruises?
-![image](https://github.com/BIOS-SCOPE/data_pipeline/assets/143524821/2990a19a-3772-4909-b839-5a43d60f2835)
+From Rachel
+- [ ]  Discuss pipeline with Rod and finalize the CTD processing.
+- [ ]  Does Dom needs to reprocess BIOS-SCOPE cruises?
+
+Someone:
+- [ ] get on the rotation for meetings...in the maybe time slot...set up use cases for how the data portal would be used
+
+
 
 
