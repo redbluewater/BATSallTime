@@ -1,8 +1,11 @@
 # data_pipeline 
 ## tasks to-do list
+Whole group:
+- [ ] Bring master bottle file up to 2023
+      
 Ellie:
 - [ ] Set up revised pipeline/steps (will go onto GitHub site)
-- [ ] Get this file up on GitHub
+- [ ] Get the pipeline file up on GitHub
 
 Ruth
 - [ ] come up with readme file about how the season transition dates were determined (glider, pre-set, Hydrostation S)
