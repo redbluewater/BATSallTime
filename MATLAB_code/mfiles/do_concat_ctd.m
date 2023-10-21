@@ -6,8 +6,7 @@
 
 % Ruth was doing this in the command line; moving to MATLAB
 % %Krista Longnecker, 19 October 2023
-%this is more complicated because each cruise data folder seems to be 
-%organized in a different way
+% this is incomplete
 
 
 % set curdir = `pwd` 
@@ -21,14 +20,26 @@
 % end
 
 curdir = 'C:\Users\klongnecker\Documents\Dropbox\1.0 ORIG from BATS\CTDrelease_20230626';
-D = dir(curdir);
-trim = [D.isdir]';
-temp = {D.name}';
-dirlist = temp(trim);
-dirlist = dirlist(3:end);
-clear D trim temp
+cd(curdir)
+D = dir();
+D(~[D.isdir]) = []; %syntax from MATLAB central, removes anything not a directory
+dirlist = D(3:end); %this skips over the directories . and ..
+clear D 
 
-for a = 1:length(dirlist)
-    
+subdirinfo = cell(length(dirlist));
+for a = 1 : length(dirlist)
+  thisdir = dirlist(a).name;
+  %argh, MATLAB on Windows is ignoring case, so this is trapping all the
+  %files names *BIOSSCOPE* which we dont not want
+  temp = dir(fullfile(thisdir, '*c*_QC.dat'));
+  for aa = 1:length(temp)
+      %take the *dat file (all EXCEPT the one marked BIOS-SCOPE) and make
+      %it a text file. Will put that text file (somewhere)
+      
+  end
+  clear aa
+  
+  subdirinfo{a} = dir(fullfile(thisdir, '*c*_QC.dat'));
 end
-clear a
+
+
