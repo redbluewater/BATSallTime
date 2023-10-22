@@ -3,6 +3,7 @@ Updated 21 October 2023
 ## tasks to-do list
 Whole group:
 - [ ] Bring master bottle file up to 2023
+- [ ] 10/22/23 Shuting updated AE2213 and 2315 cruise CTD data on bottl file
       
 Ellie:
 - [ ] Set up revised pipeline/steps (will go onto GitHub site)
@@ -27,6 +28,7 @@ Rachel
 
 Shuting
 - [ ] Update R code and share on GitHub with group
+- [ ] 10/22/2023 Shuting uploaded an updated R code to automate everything and reduce manual input steps in the pipeline
 
 Craig
 - [ ] Send Krista your code to make one cast from each cruise
