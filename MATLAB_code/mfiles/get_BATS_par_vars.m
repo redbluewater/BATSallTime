@@ -14,10 +14,7 @@ function [ Xout ] = get_BATS_par_vars(PAR_in, de_in, zrange, zmax )
 %    .z_tenthpcnt : 0.1%
 %
 %  NOTE:  Missing values returned in Xout are set to NaN.
-%
-% Ruth Curry, BIOS / ASU
-% Uploaded for BIOS-SCOPE project 19 October 2023
-%
+%% 19-Oct-2023 rcurry Updated to catch error in fit() of par profiles
 
 %% Initialize output struct
 
@@ -53,38 +50,40 @@ end
 %
 % exponential fit 
  de_good = de_in(igood);
- PAR_good = PAR_in(igood); 
+ PAR_good = PAR_in(igood);
  try
-     [f, gof,options] = fit(de_good,PAR_good,'exp1','robust','bisquare');   
+     [f, gof,options] = fit(de_good,PAR_good,'exp1','robust','bisquare');
+    
  catch
      warning('WARNING: fit() for par profile returned an error. Par variables set to NaN'); 
      return
  end
  
-Coef=coeffvalues(f);
+ % Compute par values
+ Coef=coeffvalues(f);
 %
-Xout.par_est(indx)= Coef(1)*exp(Coef(2)* de_in(indx)); 
-Xout.kpar = -Coef(2);
-Xout.par0= Coef(1); % 
+ Xout.par_est(indx)= Coef(1)*exp(Coef(2)* de_in(indx)); 
+ Xout.kpar = -Coef(2);
+ Xout.par0= Coef(1); % 
 %
-xx = 0.01 * Xout.par0;   % 1% light level
-iz = find(Xout.par_est < xx, 1);  
-if ~isempty(iz)
-  Xout.z_par_1pcnt = de_in(iz);
-end
+ xx = 0.01 * Xout.par0;   % 1% light level
+ iz = find(Xout.par_est < xx, 1);  
+ if ~isempty(iz)
+    Xout.z_par_1pcnt = de_in(iz);
+ end
 %
-xx = 0.005 * Xout.par0;   % 0.5% light level
-iz = find(Xout.par_est < xx, 1); 
-if ~isempty(iz)
-  Xout.z_par_halfpcnt = de_in(iz);
-end
-%
-xx = 0.001 * Xout.par0;   % 0.1% light level
-iz = find(Xout.par_est < xx, 1);  
-if ~isempty(iz)
-   Xout.z_par_tenthpcnt = de_in(iz);
-end
-%
+ xx = 0.005 * Xout.par0;   % 0.5% light level
+ iz = find(Xout.par_est < xx, 1); 
+ if ~isempty(iz)
+    Xout.z_par_halfpcnt = de_in(iz);
+ end
+    %
+ xx = 0.001 * Xout.par0;   % 0.1% light level
+ iz = find(Xout.par_est < xx, 1);  
+ if ~isempty(iz)
+    Xout.z_par_tenthpcnt = de_in(iz);
+ end
+
 end
 
 
