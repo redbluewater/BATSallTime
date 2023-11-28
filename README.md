@@ -10,8 +10,9 @@ Ellie:
 - [ ] Get the pipeline file up on GitHub
 
 Ruth
-- [ ] come up with readme file about how the season transition dates were determined (glider, pre-set, Hydrostation S)
-- [ ] will generate one m-file that will run through all CTD data from 2016 until 2023 (replacing the three scripts that exist now with different time chunks)
+- [x] come up with readme file about how the season transition dates were determined (glider, pre-set, Hydrostation S)
+- [x] will generate one m-file that will run through all CTD data from 2016 until 2023 (replacing the three scripts that exist now with different time chunks)
+- [ ] share new m-file for GitHub
 - [ ] put glider data and metadata into BCO-DMO format
 
 Krista 
