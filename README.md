@@ -12,7 +12,7 @@ Ellie:
 Ruth
 - [x] come up with readme file about how the season transition dates were determined (glider, pre-set, Hydrostation S)
 - [x] will generate one m-file that will run through all CTD data from 2016 until 2023 (replacing the three scripts that exist now with different time chunks)
-- [ ] share new m-file for GitHub
+- [x] share new m-file for GitHub
 - [ ] put glider data and metadata into BCO-DMO format
 
 Krista 
@@ -35,7 +35,7 @@ Craig
 - [ ] Send Krista your code to make one cast from each cruise
 
 Done:
-- [x] get on the rotation for meetings: we signed up for November 15, 2023
+- [x] get on the rotation for meetings: we signed up for December 20, 2023 (is that too close to the holidays?)
 
 
 
