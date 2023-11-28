@@ -21,19 +21,11 @@ function Xout = create_BIOSSCOPE_ctd_files(infile, MAXZ, trans_dates, do_plots)
 %           cruise in row vectors and rectangular matrices.
 
 % NOTE:  Vertical zones are computed using ML_dens125
-%
-% Ruth Curry, BIOS / ASU
-% Uploaded for BIOS-SCOPE project 19 October 2023
-%
 %%  Read file into rectangular array, and store each column as a field in structure CTD
-showOutput = 0; %set to 1 to see the output
-
 fid = fopen(infile,'r');
 
-if showOutput    
-    disp(['Reading ',infile]);
-    disp('   be patient..... ');
-end
+disp(['Reading ',infile]);
+disp('   be patient..... ');
 fmt = '%f%f%f%f%f%f%f%f%f%f%f%f%f%[^\n\r]';
 
 TTin=textscan(fid,fmt,'Delimiter', '', 'WhiteSpace', '', 'EmptyValue' ,NaN, 'ReturnOnError', false);
@@ -90,6 +82,10 @@ end
 indx = find(CTD.O2 < 0);
 if ~isempty(indx)
     CTD.O2(indx) = NaN;
+end
+indx = find(CTD.Fluor < -990);
+if ~isempty(indx)
+    CTD.Fluor(indx) = NaN;
 end
 
 % Add derived variables
@@ -405,9 +401,7 @@ clear din parin
 % Output the cast
    fmt = '%8d_%1d%04d_%03d_ctd.csv';
    outfile = sprintf(fmt,XX.yyyymmdd(1),Xout.type(ii),XX.Cruise(1),XX.Cast(1));
-   if showOutput
-       disp(['Writing ',outfile]);
-   end
+   disp(['Writing ',outfile]);
    TTcast = struct2table(XX);
    writetable(TTcast,outfile);
   
@@ -417,9 +411,7 @@ end % for ii
 
    fmt = 'CRU_%1d%04d_ctd.csv';
    outfile = sprintf(fmt,Xout.type(1),CTD.Cruise(1));
-   if showOutput
-       disp(['Writing ',outfile]);
-   end
+   disp(['Writing ',outfile]);
    
    % replace any NaNs in CTD struct with -999.
    flist = fieldnames(CTD);
@@ -436,9 +428,7 @@ end % for ii
         close all
     end
 %
-if showOutput
-    disp('Done!');
-end
+disp('Done!');
 end %function
 
 
