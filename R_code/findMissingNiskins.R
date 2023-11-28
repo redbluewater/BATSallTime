@@ -1,6 +1,7 @@
 #Some Niskins are skipped in the discrete data list
 #Some of these Niskins were sampled for HR-DOM samples...so the skip is an issue
 #Krista Longnecker, 21 November 2023
+#Krista Longnecker, 28 November 2023 checking that I inserted all the missing Niskins correctly
 
 library(readxl)
 library(dplyr)
@@ -11,7 +12,7 @@ library(pracma)
 #casts where there are gaps in the Niskins fired. There may be cases where we did not #fire all the bottles, but there should be no cases where a Niskin was skipped
 #(though given how BATS fires bottles, there truly could be)
 
-fName <- "BATS_BS_COMBINED_MASTER_2023.11.08.xlsx"
+fName <- "BATS_BS_COMBINED_MASTER_2023.11.28.xlsx"
 sheetName <- 'BATS_BS bottle file'
 #definitely want suppressWarnings here to prevent one error message for each row
 discrete <- suppressWarnings(read_excel(fName,sheet = sheetName))
@@ -70,6 +71,6 @@ for (i in 1:dim(cc_unique)[1]){
 #end by exporting missingNiskins as a CSV file...I am not sure of the easiest way 
 #to add these to the discrete data file
 write.csv(missingNiskins,
-          file = "BIOSSCOPE_missingNiskins.2023.11.21.csv",
+          file = "BIOSSCOPE_missingNiskins.2023.11.28.csv",
           row.names = FALSE)
 
