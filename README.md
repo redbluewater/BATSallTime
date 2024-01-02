@@ -35,11 +35,11 @@ Craig
 - [ ] Send Krista your code to make one cast from each cruise
 
 Done:
-- [x] get on the rotation for meetings: we signed up for December 20, 2023 (is that too close to the holidays?)
+- [ ] organize brainstorming session for February BIOS-SCOPE meeting
 
 
 
-# Started repository 17 October 2023
+# Started repository 17 October 2023; updated README 2 January 2024
 The repository was started during a small group meeting for the BIOS-SCOPE project. This project conducts multiple cruises and also relies ond samples and data collected during BATS cruises. The data streams include CTD data and discrete samples. The CTD data are used to calculate derived variables. The data from the discrete samples is pulled together with the CTD data to create 'master_bottle_files' that are shared with the whole project. This GtiHub repository only discusses the CTD data and discrete data files. If you are interested in the data-portal being developed to link in the sequence data, that is available [here](https://github.com/BIOS-SCOPE/data-portal).
 
 The remainder of this repository describes how this is done, provides details and code from different people, and ends with a to-do list for each member of this small group.
@@ -66,34 +66,13 @@ Data are currently sitting here in the BIOS-SCOPE Google Drive:\
 These folders contain subfolders for each cruise. Each subfolder contains various ascii files (one per each CTD cast, plus the physf_QC and MLD.dat files). Go into the CTDrelease_20230626 and highlight the cruise folders that are new --> download them to a zip file. Do the same for BIOS-SCOPE cruises.\
 Make a processing folder (e.g. FromBATS_2022-2023) and move the downloaded zip archives there. Unzip them and move the cruise folders up to the processing directory. Save the *.zip files into a subfolder ./ZIPfiles.
 
-Copy the file ```do_concat_ctd``` from a previous processing folder into the processing folder. Right now this is done in a terminal window using csh (shell interpreter).\
-```set curdir = `pwd` ```\
-```set dirlist = (10367 10368 10369 10370 10371 10373 10374 10376 10376 10377 10378 10379 10381 10382 10383 10384 10385 10386 10387 10388 10389 20379 20380 92114 92123)```\
-```for each dir ($dirlist)```\
-```cd $dir```\
-```echo $dir```\
-```set list = `ls *c*_QC.dat` ```\
-```cat $list > ../${dir}_ctd.txt```\
-```cd $curdir```\
-```end```
-
-Edit dirlist to reflect the list of cruises. 
-    ```set list = `ls -d 1* 9*` ```
-Run the commands in a terminal window using a csh (shell interpreter).  
-This will create a single text file for each cruise containing the concatenated casts; naming convention is $cruise_ctd.txt
+Use the script ```do_concat_ctd.m``` (which is in ```data_pipeline\MATLAB_code\mfiles\``` to create a single text file for each cruise containing the concatenated casts; naming convention is $cruise_ctd.txt
 
 ### Step 2: Create BIOSSCOPE CTD and MasterBtl files
 Calls functions in mfiles folder and subfolders, so be sure they are in MATLAB path.\
 
-Krista has updated ```create_biosscope_files_2016_2020.m ``` so that it works from beginning to end for someone who gets this repository. All that you have to do is tell the code where to find the datafiles since they are too big for GitHub. (Note: Ruth will be updating this to make one file that will process all CTD data from 2016 through 2023).
+Krista has updated ```create_biosscope_files_2022_2023_Krista.m ``` to pick up where the previous processing script ended. This file will start with 10390 (March 2022) and then go to 10404 (May 2023). The path information is set for Krista's desktop. 
 
-Three scripts for now (one for each batch of data from BATS)\
-```create_biosscope_files_2016_2020.m ```\
-```create_biosscope_files_2021.m ```\
-```create_biosscope_files_2022_2023.m ```
-
-Modify and use the script ```create_biosscope_files_*.m```\
-Set filenames and path details as appropriate for the computer doing the work.\
 One special note about season transition dates. This information could be from (a) glider data, or (b) from Hydrostation S data, or (c) pre-set dates. Ruth will make a readme file to detail what year relies on which option. The output from this will make this file: ```Season_dates_all.mat```
 
 Generally the rest of the code does the following:\
