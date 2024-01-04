@@ -1,9 +1,8 @@
 # data_pipeline 
-Updated 21 October 2023
+Updated 4 January 2024
 ## tasks to-do list
 Whole group:
-- [ ] Bring master bottle file up to 2023
-- [x] 10/22/23 Shuting updated AE2213 and 2315 cruise CTD data on bottle file
+- [x] Bring master bottle file up to 2023 (BIOS-SCOPE and BATS cruises now done through summer 2023)
       
 Ellie:
 - [ ] Set up revised pipeline/steps (will go onto GitHub site)
@@ -17,9 +16,9 @@ Ruth
 
 Krista 
 - [x] Add to README.md: if you want to XYZ data stream ... go the data-portal (make link to that site at GitHub)
-- [ ] Consider how to move the code forward in a way that combines the work that has been done into one pipeline
+- [x] update GitHub README.md again once all the pieces are ready
 - [ ] Work on Craig's code to make one cast and coordinate so end up with cruise and nominal depths (setting up to integrate with data-portal)
-- [ ] update GitHub README.md again once all the pieces are ready
+- [ ] organize brainstorming session for February BIOS-SCOPE meeting
 
 Rachel
 - [ ]  Discuss pipeline with Rod and finalize the CTD processing.
@@ -27,19 +26,12 @@ Rachel
 - [ ]  Figure out why we have two folders for BIOS-SCOPE 91916 cruise on Google Drive ('91916' and '91916_QC'). Sort out which is right and move the other folder
 - [ ]  difference between wet oxygen 1, 2, 3 and salts 1, 2 in the CTD files
 
-Shuting
-- [x] Update R code and share on GitHub with group
-- [x] 10/22/2023 Shuting uploaded an updated R code to automate everything and reduce manual input steps in the pipeline
+Shuting (all done!)
 
 Craig
 - [ ] Send Krista your code to make one cast from each cruise
 
-Done:
-- [ ] organize brainstorming session for February BIOS-SCOPE meeting
-
-
-
-# Updated README 2 January 2024
+# Updated README 4 January 2024
 The repository was started during a small group meeting for the BIOS-SCOPE project. This project conducts multiple cruises and also relies ond samples and data collected during BATS cruises. The data streams include CTD data and discrete samples. The CTD data are used to calculate derived variables. The data from the discrete samples is pulled together with the CTD data to create 'master_bottle_files' that are shared with the whole project. This GtiHub repository only discusses the CTD data and discrete data files. If you are interested in the data-portal being developed to link in the sequence data, that is available [here](https://github.com/BIOS-SCOPE/data-portal).
 
 The remainder of this repository describes how this is done, provides details and code from different people, and ends with a to-do list for each member of this small group.
