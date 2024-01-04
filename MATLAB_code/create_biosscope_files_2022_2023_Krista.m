@@ -11,10 +11,10 @@ rootdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE
 batsdir = fullfile(rootdir,'CTDdata\BSworking\');
 workdir = fullfile(rootdir,'CTDdata\BSworking\');
 ctdmatdir = fullfile(rootdir,'CTDdata\BSworking\');
-Bfile = fullfile(rootdir,'DataFiles_CTDandDiscreteSamples/BATS_BS_COMBINED_MASTER_2023.11.28.xlsx');
+Bfile = fullfile(rootdir,'DataFiles_CTDandDiscreteSamples/BATS_BS_COMBINED_MASTER_2024.01.04.xlsx');
 sheetName = 'BATS_BS Bottle File';
 
-newfile = fullfile(rootdir,'ADD_to_MASTER_2024.01.02.csv');   % output file
+newfile = fullfile(workdir,'ADD_to_MASTER_2024.01.04.csv');   % output file
 
 
 % 
@@ -64,6 +64,7 @@ load('C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\MATLAB_code\Se
 %%  start by loading and labeling CTD data
 cd(batsdir);
 dirlist = dir('*_ctd.txt');
+new_cruises = cat(1,dirlist.name); %KL adding 1/4/2024
 cd(workdir);
 
 MAXZ = 2500;  % row dimension for CTD profiles
@@ -225,6 +226,27 @@ cd(workdir);
 
 disp(['writing table to ', newfile])
 BBtab = struct2table(BBadd);
-writetable(BBtab,newfile);
+
+if 1
+    %add option to trim down BBtab to only include new additions
+    %Krista, January 2024
+    keep = double.empty;
+    %get the five digit BATS cruise numbers from new_cruises
+    for a = 1:size(new_cruises,1)
+        one = new_cruises(a,1:5);
+        s = contains(string(BBtab.New_ID),one);
+        ks = find(s==1);
+        keep = cat(1,keep,ks);
+        clear one s ks
+    end
+    clear a
+    
+    forExport = BBtab(keep,:);
+    writetable(forExport,newfile);
+else
+    %export everything - will match the number of rows in the discrete file
+    writetable(BBtab,newfile);
+end
+
 
 
