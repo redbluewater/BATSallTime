@@ -179,10 +179,16 @@ for (a in 1:length(D)) {
   }
   
   #add Nominal_Depth, depend on each cruise, this range may need to change, check cast sheets
+  #set up a column of -990 first (have some depths that are not in Shuting's preset list below)
+  Nominal_Depth <- rep(-999,1,nrow(new))
+  new <- cbind(new,Nominal_Depth)
+
   for (j in 1:nrow(new)){
     if (new$Depth[j]<7){
       new$Nominal_Depth[j]=1
     } else if (new$Depth[j]<23 & new$Depth[j]>18){
+      # if (j <- 3)
+      #   browser()
       new$Nominal_Depth[j]=20
     } else if (new$Depth[j]<43 & new$Depth[j]>38){
       new$Nominal_Depth[j]=40
