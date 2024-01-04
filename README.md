@@ -64,28 +64,26 @@ Data are currently sitting here in the BIOS-SCOPE Google Drive:\
 These folders contain subfolders for each cruise. Each subfolder contains various ascii files (one per each CTD cast, plus the physf_QC and MLD.dat files). Go into the CTDrelease_20230626 and highlight the cruise folders that are new --> download them to a zip file.\
 Make a processing folder (e.g. BIOSSCOPE_working) and move the downloaded zip archives there. Unzip the files. 
 
-## Shuting's pipeline
-Shuting uses the CTD data as a framework to pull in the details from the discrete samples. Here are the details on her process to update the master file:
-* Shuting takes BATS CTD data and then uses Excel to add columns to the BATS data so that the columns match what is already in the BIOS-SCOPE master file. Right now, columns A to AD in the master file come from BATS
-* Then Shuting does a copy/paste from one batch of BATS CTD data to get the result into the BIOS-SCOPE master file
-* Discrete data comes in later, which is where the R code comes in (see below)
-* Shuting uses bottle ID as the key to merge the discrete data in. Right now the problem is the R code makes a new column in the merging step, so Shuting manually merges the two columns (e.g., N_Nx or N_Ny are two columns, but these should be combined together)
-* BATS has duplicate bottle IDs at times, and Shuting has corrected these issues in the existing master file
+## Shuting's pipeline (in R)
+Latest: Krista modified Shuting's code to go through a series of folders to find new BATS CTD data (code will need to be slightly modified the next time there is a new BIOS-SCOPE cruise). The updated R files is [here](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_BATS_All_with_master_updated_Krista.R). 
 
-Shuting's R [here](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_BATS_All_with_master.R). She walked us through the steps:
-* read in new CSV file and existing master file
-* change newID to characters
-* find duplicates
-* left_join in R
-* (do some tidying up)
-* Copy and paste the CSV file into the master bottle file
+The code now does the following (after data files have been downloaded from Google Drive as described above:\
+* read in the current master file ("BATS_BS_COMBINED_MASTER_2023.11.28.csv") and then use that to set the headers for the data incoming data
+* get the headers that are used on the BATS CTD data files
+* get "BIOS-SCOPE Time-series Master Log_2023.10.15.xlsx" which enable a BATS cruise number to be converted to a cruise ID (e.g., BATS10321 --> AE1602)
+* Go through one cruise at a time and
+    * read in the "*BIOSSCOPE_physf*" file
+    * delete the columns we do not want and rename columns as needed
+    * get the cast and Niskin information from the New_ID
+    * add in the nominal depths
+    * resize everything so it can be pasted into the existing bottle file
+* Repeat for all cruises and export the result as a CSV file
+* Copy/paste to put the new cruise/cast/Niskin into the BIOS-SCOPE master file
 
-Some additional notes about the R script. First, some details are entered manually into the master data file:
-* 'program' (BATS or BIOSCOPE)
-* 'cruiseID' (BATS uses 5 digit code, but ignores ship detail AE vs. EN), so this is entered manually
-* nominal depth --> this is done manually either by Shuting after the BIOS-SCOPE cruises and Rachel does the BATS cruises
+Some notes on steps that will be needed to use this code for a BIOS-SCOPE cruise:
+* change cruiseType to 'BIOSSCOPE' (line 42)
 
-## Ruth Curry pipeline
+## Ruth Curry pipeline (in MATLAB)
 Once Shuting's code has been used to add the necessary samples to the master bottle file, then you can run Ruth's code to calculate the derived variables. Ruth pulls in the CTD data and calculates a few derived variables.
 
 Use the script ```do_concat_ctd.m``` (which is in ```data_pipeline\MATLAB_code\mfiles\``` to create a single text file for each cruise containing the concatenated casts; naming convention is $cruise_ctd.txt
@@ -107,6 +105,11 @@ Generally the rest of the code does the following:\
 
 Once a set of CTD data has been processed, you don't need to redo the MATLAB steps unless the data gets reprocessed by BATS.
 
+## Back to Shuting's R code: merging in the discrete dataset as they become available
+(section not yet updated, but copy and pasted from earlier version of the readme file on 1/4/2024)\
+* Discrete data comes in later, which is where the R code comes in (see below)
+* Shuting uses bottle ID as the key to merge the discrete data in. Right now the problem is the R code makes a new column in the merging step, so Shuting manually merges the two columns (e.g., N_Nx or N_Ny are two columns, but these should be combined together)
+* BATS has duplicate bottle IDs at times, and Shuting has corrected these issues in the existing master file
 
 
 ## Craig's path to make 'one cast' for cruise
