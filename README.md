@@ -57,7 +57,7 @@ These folders contain subfolders for each cruise. Each subfolder contains variou
 Make a processing folder (e.g. BIOSSCOPE_working) and move the downloaded zip archives there. Unzip the files. 
 
 ## Shuting's pipeline (in R)
-Latest: Krista modified Shuting's code to go through a series of folders to find new BATS CTD data (code will need to be slightly modified the next time there is a new BIOS-SCOPE cruise). The updated R files is [here](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_BATS_All_with_master_updated_Krista.R). 
+Latest: Krista modified Shuting's code to go through a series of folders to find new BATS CTD data (code will need to be slightly modified the next time there is a new BIOS-SCOPE cruise). The updated R file is [here](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_BATS_All_with_master_updated_Krista.R). 
 
 The code now does the following (after data files have been downloaded from Google Drive as described above:\
 * read in the current master file ("BATS_BS_COMBINED_MASTER_2023.11.28.csv") and then use that to set the headers for the data incoming data
