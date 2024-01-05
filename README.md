@@ -1,5 +1,5 @@
 # data_pipeline 
-Updated 4 January 2024
+Updated 5 January 2024
 ## tasks to-do list
 Whole group:
 - [x] Bring master bottle file up to 2023 (BIOS-SCOPE and BATS cruises now done through summer 2023)
@@ -9,13 +9,9 @@ Ellie:
 - [ ] Get the pipeline file up on GitHub
 
 Ruth
-- [x] come up with readme file about how the season transition dates were determined (glider, pre-set, Hydrostation S)
-- [x] will generate one m-file that will run through all CTD data from 2016 until 2023 (replacing the three scripts that exist now with different time chunks)
-- [x] share new m-file for GitHub
 - [ ] put glider data and metadata into BCO-DMO format
 
 Krista 
-- [x] Add to README.md: if you want to XYZ data stream ... go the data-portal (make link to that site at GitHub)
 - [x] update GitHub README.md again once all the pieces are ready
 - [ ] Work on Craig's code to make one cast and coordinate so end up with cruise and nominal depths (setting up to integrate with data-portal)
 - [ ] organize brainstorming session for February BIOS-SCOPE meeting
@@ -31,7 +27,7 @@ Shuting (all done!)
 Craig
 - [ ] Send Krista your code to make one cast from each cruise
 
-# Updated README 4 January 2024
+# Updated README 5 January 2024
 The repository was started during a small group meeting for the BIOS-SCOPE project. This project conducts multiple cruises and also relies ond samples and data collected during BATS cruises. The data streams include CTD data and discrete samples. The CTD data are used to calculate derived variables. The data from the discrete samples is pulled together with the CTD data to create 'master_bottle_files' that are shared with the whole project. This GtiHub repository only discusses the CTD data and discrete data files. If you are interested in the data-portal being developed to link in the sequence data, that is available [here](https://github.com/BIOS-SCOPE/data-portal).
 
 The remainder of this repository describes how this is done, provides details and code from different people, and ends with a to-do list for each member of this small group.
