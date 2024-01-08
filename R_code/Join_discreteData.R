@@ -1,28 +1,56 @@
-#from Shuting - pull into new file
+# put discrete data into the BIOS-SCOPE master file. These data will arrive in small pieces, so 
+# need a script that will iteratively add data. 
+# original code from Shuting Liu - adapt to make its own script
+# Krista Longnecker, 8 January 2024
+library(dplyr)
 
-# ####next step is to add discrete data once they are in
-# 
-# #left_join will keep the rows of master file, and add new columns from joining data frame
-# #nutrient for example
-# merge<-read.csv("AE2213_nut.csv", header=T)
-# #make sure you include ID for merging, and matching header name with master header
-# colnames(merge)<-c("ID","NO3.NO2.umol.kg.","PO4.umol.kg.")
-# #calculate NO3 from N+N and NO2 if it is BATS cruise, we don't measure NO2 for BIOSSCOPE cruise
-# merge$NO3.umol.kg.<-ifelse(merge$NO3.NO2.umol.kg.!=-999 & new$NO2.umol.kg.!=-999, new$NO3.NO2.umol.kg.-new$NO2.umol.kg., -999)
-# merge$NO3.umol.kg.<-ifelse(merge$NO3.umol.kg.<0 & merge$NO3.umol.kg.!=-999,0,merge$NO3.umol.kg.)
-# 
-# #make sure ID class are the same as master, if not, change to character
-# class(new_master$ID)
-# class(merge$ID)
-# merge$ID<-as.character(merge$ID)
-# 
-# new_master_merge<-left_join(new_master,merge,by="ID") #left join keep same rows as new_master rows, if there are new rows, you may want to use full_join()
-# #this will create two new columns with same header as .x and .y, new data in .y and old data in .x
-# #merge these two
-# new_master_merge[which(new_master_merge$ID %in% merge$ID),]$NO3.NO2.umol.kg..x<-new_master_merge[which(new_master_merge$ID %in% merge$ID),]$NO3.NO2.umol.kg..y
-# new_master_merge[which(new_master_merge$ID %in% merge$ID),]$PO4.umol.kg..x<-new_master_merge[which(new_master_merge$ID %in% merge$ID),]$PO4.umol.kg..y
-# new_master_merge<-new_master_merge[,-c(138:139)] #delete .y columns
-# colnames(new_master_merge)[c(31,37)]<-c("NO3.NO2.umol.kg.","PO4.umol.kg.") #change back column name without x or y
-# 
-# 
-# write.csv(new_master_merge,"new_master_merge.csv",row.names=F) #replace old with this new data sheet 
+#there are multiple options for reading/writing Excel files, and because of the formatting, I need two choices
+library(readxl) #use this to read in the master file
+
+##first, read in the existing discrete file (file is *not* on GitHub, update to your own path)
+dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/"
+#read in the master file - which is currently an Excel file
+fName <- "BATS_BS_COMBINED_MASTER_2024.01.04.KLtestingxlsx.xlsx"
+sheetName <- "BATS_BS bottle file"
+#definitely want suppressWarnings here to prevent one error message for each row
+discrete <- suppressWarnings(read_excel(paste0(dPath,fName),sheet = sheetName))
+discrete_updated <-as.data.frame(discrete)
+
+#before moving on, tidy up and remove this package
+detach("package:readxl",unload=TRUE)
+
+
+### read in the file with openxlsx2 because that will be the easiest way to pull in the existing style
+
+
+library(openxlsx2)
+fs <- wb_load(file = paste0(dPath,fName))
+
+#I can get the number of rows from discrete to set dims (seems like that would be an obvious function in openxlsx2 but I cannot find it)
+setDim <- paste0("A1:EG",nrow(discrete))
+stylesE <- wb_get_cell_style(wb = fs,sheet=sheetName,dims = setDim)
+
+#will put the updated version of discrete here:
+fs$add_worksheet("updatedData")
+
+##here - go get the new discrete data (e.g., nutrients? DOC?), find the matching rows in forExport, and add in the result
+
+
+
+
+
+
+
+#now that I have updated the discrete data, stick it back into the temporary file in the *new* sheet
+fs$add_data("updatedData",discrete_updated)
+
+##set the styles on the updatedData sheet to match the existing sytle
+fs$set_cell_style(sheet = "updatedData",dims = setDim,stylesE)
+
+
+#for the moment - have a new worksheet labeled "updatedData"...could probably delete that in R
+#however, I will still require someone to go look at the new file and add their name
+#to the log, so might not be bad to leave it (though I can imagine someone reading in the wrong sheet)
+wb_save(fs,paste0(dPath,"nextSteps_checkData_UpdateLog.xlsx"))
+
+
