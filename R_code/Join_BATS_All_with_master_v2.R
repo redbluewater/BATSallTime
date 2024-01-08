@@ -3,6 +3,7 @@
 #updated by Shuting on Oct 20, 2023 to add more automatic functional and reduce the manual editing 
 #Krista Longnecker, updating to add in BATS cruises 10390 to 10404; 2 January 2024
 #Krista Longnecker, updating to use with BIOS-SCOPE cruise (92114)
+#Krista Longnecker, update to pull BATS cast details from the updated discrete file...
 rm(list =ls.str())
 
 library(dplyr)
@@ -17,6 +18,10 @@ fName <- "BATS_BS_COMBINED_MASTER_2024.01.04.xlsx"
 sheetName <- "BATS_BS bottle file"
 #definitely want suppressWarnings here to prevent one error message for each row
 discrete <- suppressWarnings(read_excel(paste0(dPath,fName),sheet = sheetName))
+
+#also need the BATS cruise information from here
+convertBATS2 <- suppressWarnings(read_excel(paste0(dPath,fName),sheet = 'CruisesAndStations'))
+convertBATS2$Cruise <- suppressWarnings(as.integer(convertBATS2$Cruise))
 rm(dPath,fName,sheetName)
 
 #cheat and use the existing matrix as a template for the new data to be added 
@@ -29,17 +34,20 @@ discrete_match <- discrete_match[-1,]
 gDir <- "C:/Users/klongnecker/Documents/Dropbox/GitHub/data_pipeline/"
 headers <- read.csv(paste0(gDir,"CTD_headerInformation.csv"),sep=",", fileEncoding="UTF-8-BOM", header=F)
 
-#need the sheet to translate a BATS cruise number into a cruise id...this is in the file here (from the Google Drive)
-fName = "BIOS-SCOPE Time-series Master Log_2023.10.15.xlsx"
-convertBATS <- read_excel(paste0(gDir,fName),sheet = "Sample Log",skip=1)
-convertBATS$`BATS ID` <- suppressWarnings(as.integer(convertBATS$`BATS ID`))
-rm(gDir,fName)
+#need the sheet to translate a BATS cruise number into a cruise id...this is in the file here 
+#(from the Google Drive)
+##change this (see above) - I updated the discrete file so we can use the information from there rather
+#than tracking yet another file
+# fName = "BIOS-SCOPE Time-series Master Log_2023.10.15.xlsx"
+# convertBATS <- read_excel(paste0(gDir,fName),sheet = "Sample Log",skip=1)
+# convertBATS$`BATS ID` <- suppressWarnings(as.integer(convertBATS$`BATS ID`))
+# rm(gDir,fName)
 
-exFilename <- "newData_forDiscrete.2024.01.05.csv"
-cruiseType <- 'BIOSSCOPE' #or BIOSSCOPE #change as needed
+exFilename <- "newData_forDiscrete.2024.01.08.csv"
+cruiseType <- 'BATS' #or BIOSSCOPE #change as needed
 
 #OK, now I am ready to go find the new data to be added, where is the working directory?
-setwd("C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/CTDdata/BSworking_92114")
+setwd("C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/CTDdata/testing")
 
 if (cruiseType=='BATS'){
   ##BATS makes a physf file for the BIOSSCOPE project
@@ -155,10 +163,10 @@ for (a in 1:length(D)) {
     
     
   } else if (cruiseType=='BATS') {
-    #first, use convertBATS to find the matching cruise_ID; first 5 chars in this:
+    #first, use convertBATS2 to find the matching cruise_ID; first 5 chars in this:
     bi <- substr(D[[a]],1,5)
-    m <- which(convertBATS$`BATS ID` %in% bi)
-    new$Cruise_ID <- rep(convertBATS$`Cruise ID`[m],nrow(new))
+    m <- which(convertBATS2$Cruise %in% bi)
+    new$Cruise_ID <- rep(convertBATS2$Cruise_ID[m],nrow(new))
     rm(bi,m)
   
     
