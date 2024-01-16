@@ -1,41 +1,12 @@
 # data_pipeline 
-Updated 5 January 2024
-## tasks to-do list
-Whole group:
-- [x] Bring master bottle file up to 2023 (BIOS-SCOPE and BATS cruises now done through summer 2023)
-      
-Ellie:
-- [ ] Set up revised pipeline/steps (will go onto GitHub site)
-- [ ] Get the pipeline file up on GitHub
+Updated 16 January 2024
 
-Ruth
-- [ ] put glider data and metadata into BCO-DMO format
-
-Krista 
-- [x] update GitHub README.md again once all the pieces are ready
-- [ ] Work on Craig's code to make one cast and coordinate so end up with cruise and nominal depths (setting up to integrate with data-portal)
-- [ ] organize brainstorming session for February BIOS-SCOPE meeting
-
-Rachel
-- [ ]  Discuss pipeline with Rod and finalize the CTD processing.
-- [ ]  Does Dom needs to reprocess BIOS-SCOPE cruises?
-- [ ]  Figure out why we have two folders for BIOS-SCOPE 91916 cruise on Google Drive ('91916' and '91916_QC'). Sort out which is right and move the other folder
-- [ ]  difference between wet oxygen 1, 2, 3 and salts 1, 2 in the CTD files
-
-Shuting (all done!)
-
-Craig
-- [ ] Send Krista your code to make one cast from each cruise
-
-# Updated README 5 January 2024
 The repository was started during a small group meeting for the BIOS-SCOPE project. This project conducts multiple cruises and also relies ond samples and data collected during BATS cruises. The data streams include CTD data and discrete samples. The CTD data are used to calculate derived variables. The data from the discrete samples is pulled together with the CTD data to create 'master_bottle_files' that are shared with the whole project. This GtiHub repository only discusses the CTD data and discrete data files. If you are interested in the data-portal being developed to link in the sequence data, that is available [here](https://github.com/BIOS-SCOPE/data-portal).
 
 The remainder of this repository describes how this is done, provides details and code from different people, and ends with a to-do list for each member of this small group.
 
-The big picture overview of this process is covered nicely in this figure:\
-<img src="https://github.com/BIOS-SCOPE/data_pipeline/blob/main/BS_Data%20Pipeline_Diagram.jpg"  width="50%" height="50%">
-
-Ellie also has a nice figure that is the more detailed steps, and a revised version of that figure should be forthcoming.
+Details on the scripts are covered in this figure:
+<img src="https://github.com/BIOS-SCOPE/data_pipeline/blob/main/data_pipeline.2024.01.17.jpg"  width="70%" height="70%">
 
 ## After a cruise 
 * The CTD data goes to Craig Carlson to serve as an archive; no work is done on these files.
@@ -103,3 +74,30 @@ Once a set of CTD data has been processed, you don't need to redo the MATLAB ste
 ## Craig's path to make 'one cast' for cruise
 Craig currently working in R to make one single cast for each cruise so we can pull in data from pumps etc.
 For the data portal, using these synpotic casts, the idea is to use cast and nominal depth as the key for merging.
+
+
+## tasks to-do list
+Whole group:
+- [x] Bring master bottle file up to 2023 (BIOS-SCOPE and BATS cruises now done through summer 2023)
+      
+Ellie:
+- [ ] Get the pipeline file up on GitHub (not sure this is still needed, see image from Krista)
+
+Ruth
+- [ ] put glider data and metadata into BCO-DMO format
+
+Krista 
+- [x] update GitHub README.md again once all the pieces are ready
+- [ ] Work on Craig's code to make one cast and coordinate so end up with cruise and nominal depths (setting up to integrate with data-portal)
+- [ ] organize brainstorming session for February BIOS-SCOPE meeting
+
+Rachel
+- [ ]  Discuss pipeline with Rod and finalize the CTD processing.
+- [ ]  Does Dom needs to reprocess BIOS-SCOPE cruises?
+- [ ]  Figure out why we have two folders for BIOS-SCOPE 91916 cruise on Google Drive ('91916' and '91916_QC'). Sort out which is right and move the other folder
+- [ ]  difference between wet oxygen 1, 2, 3 and salts 1, 2 in the CTD files
+
+Shuting (all done!)
+
+Craig
+- [ ] Send Krista your code to make one cast from each cruise
