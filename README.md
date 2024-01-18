@@ -6,7 +6,7 @@ The repository was started during a small group meeting for the BIOS-SCOPE proje
 The remainder of this repository describes how this is done, provides details and code from different people, and ends with a to-do list for each member of this small group.
 
 Details on the scripts are covered in this figure:
-<img src="https://github.com/BIOS-SCOPE/data_pipeline/blob/main/data_pipeline.2024.01.17.jpg"  width="70%" height="70%">
+<img src="https://github.com/BIOS-SCOPE/data_pipeline/blob/main/data_pipeline.2024.01.17.jpg"  width="105%" height="105%">
 
 ## After a cruise 
 * The CTD data goes to Craig Carlson to serve as an archive; no work is done on these files.
