@@ -1,10 +1,8 @@
-# put discrete data into the BIOS-SCOPE master file. These data will arrive in small pieces, so 
-# need a script that will iteratively add data. 
-# original code from Shuting Liu - adapt to make its own script
+# use this script to correct the error in the Lomas/FCM data, mostly based on
+#Join_discreteData.R
+# note this will make a temporary file with a new sheet called 'UpdatedData' - this
+# was done to encourage people to double-check that everything ended up in the right place
 # Krista Longnecker, 17 January 2024
-%%% code is not ready to run yet%%%%
-
-
 library(dplyr)
 
 #there are multiple options for reading/writing Excel files, and because of the formatting, I need two choices
@@ -16,12 +14,15 @@ dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/
 fName <- "BATS_BS_COMBINED_MASTER_2024.01.04.xlsx"
 sheetName <- "BATS_BS bottle file"
 #definitely want suppressWarnings here to prevent one error message for each row
+#have to set guess_max to Inf so that it does not try and guess based on 
+#first rows (and then fail when it gets to the BIOS-SCOPE cruises)
 discrete <- suppressWarnings(read_excel(paste0(dPath,fName),
                                         sheet = sheetName,
                                         guess_max=Inf))
+
 discrete_updated <-as.data.frame(discrete)
 
-#read in the new data file :
+#read in the new data from Lomas, file is available here
 nPath <- "C:/Users/klongnecker/Documents/Dropbox/__wasDROPBOX_nowCurrent/ZZ_BIOSSCOPE_dataProcessingCode/"
 nDatafile <- "10334_20346fcm_phys_final_annotatedKL.2024.01.16.xlsx"
 newFCMdata <- suppressWarnings(read_excel(paste0(nPath,nDatafile),
@@ -36,16 +37,13 @@ existingColumns <- c("Pro(cells/ml)","Syn(cells/ml)","Piceu(cells/ml)","Naneu(ce
 
 colIdxDiscrete <- which(colnames(discrete_updated) %in% existingColumns)
 colIdxLomas <- which(colnames(newFCMdata) %in% tempColumns)
-
-
+  
 
 #before moving on, tidy up and remove this package
 detach("package:readxl",unload=TRUE)
 
-
-### read in the file with openxlsx2 because that will be the easiest way to pull in the existing style
-
-
+### now read in the file with openxlsx2 because that will be the easiest way to pull in the existing style
+#but it is much harder to manipulate the files with openxlsx2
 library(openxlsx2)
 fs <- wb_load(file = paste0(dPath,fName))
 
@@ -56,7 +54,7 @@ stylesE <- wb_get_cell_style(wb = fs,sheet=sheetName,dims = setDim)
 #will put the updated version of discrete here:
 fs$add_worksheet("updatedData")
 
-##here - go get the new discrete data (e.g., nutrients? DOC?), find the matching rows in forExport, and add in the result
+
 ##now - find the rows that match between newFCMdata and discrete
 #do this as a loop because that's how my brain operates today
 
@@ -74,12 +72,6 @@ for (idx in 1:nrow(newFCMdata)) {
 }
 
 
-
-
-
-
-
-
 #now that I have updated the discrete data, stick it back into the temporary file in the *new* sheet
 fs$add_data("updatedData",discrete_updated)
 
@@ -87,9 +79,10 @@ fs$add_data("updatedData",discrete_updated)
 fs$set_cell_style(sheet = "updatedData",dims = setDim,stylesE)
 
 
-#for the moment - have a new worksheet labeled "updatedData"...could probably delete that in R
+#for the moment - have a new worksheet labeled "updatedData".
 #however, I will still require someone to go look at the new file and add their name
-#to the log, so might not be bad to leave it (though I can imagine someone reading in the wrong sheet)
+#to the log, so I think it's wise to leave it this way and require that one 
+#manual update to change the name of the new sheet
 wb_save(fs,paste0(dPath,"nextSteps_checkData_UpdateLog.xlsx"))
 
 

@@ -17,7 +17,9 @@ dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/
 fName <- "BATS_BS_COMBINED_MASTER_2024.01.04.xlsx"
 sheetName <- "BATS_BS bottle file"
 #definitely want suppressWarnings here to prevent one error message for each row
-discrete <- suppressWarnings(read_excel(paste0(dPath,fName),sheet = sheetName))
+discrete <- suppressWarnings(read_excel(paste0(dPath,fName),
+                                        sheet = sheetName,
+                                        guess_max = Inf))
 
 #also need the BATS cruise information from here
 convertBATS2 <- suppressWarnings(read_excel(paste0(dPath,fName),sheet = 'CruisesAndStations'))
