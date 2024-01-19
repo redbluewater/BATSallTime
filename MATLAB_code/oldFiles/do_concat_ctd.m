@@ -3,7 +3,7 @@
 %modified from Ruth Curry's version
 %Krista Longnecker, 19 October 2023; 2 January 2024
 
-curdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\CTDdata\BSworking';
+curdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\CTDdata\BSworkingCurrent';
 cd(curdir)
 D = dir();
 D(~[D.isdir]) = []; %syntax from MATLAB central, removes anything not a directory

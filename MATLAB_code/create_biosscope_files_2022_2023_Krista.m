@@ -1,81 +1,121 @@
 % Compile BATS/BIOSSCOPE CTD files in .csv and .mat formats
 % Add fields to Master Bottle file 
 % Original code from Ruth Curry, BIOS / ASU
-% Krista Longnecker; use with BATS cruises from 10390 (March 2022) to 10404 (May 2023)
-% 2 January 2024
+% Krista Longnecker; 2 January 2024; updated 19 January 2024
+%
+% Some notes from Krista (19 January 2024)
+% (1) you will need to update the path information and file names
+% up through row ~72 in this code. There should be no need to change
+% anything past that point.
+% (2) The output from this code will be a CSV file that will be saved in
+% the same folder where you have this script
+% (3) Next steps: I am working on the code to allow you to import
+% those calculated variables into the existing bottle file using R. 
+
 %% >>>>>   % add ./BIOSSCOPE/CTD_BOTTLE/mfiles into matlab path
 addpath(genpath('C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\MATLAB_code\mfiles'));
-%
-%% update (if necessary) and run the do_concat_ctd.m script to create *_ctd.txt files in batsdir
+
+%% update the folder information before getting started
 rootdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\';
-batsdir = fullfile(rootdir,'CTDdata\BSworking\');
-workdir = fullfile(rootdir,'CTDdata\BSworking\');
-ctdmatdir = fullfile(rootdir,'CTDdata\BSworking\');
-Bfile = fullfile(rootdir,'DataFiles_CTDandDiscreteSamples/BATS_BS_COMBINED_MASTER_2024.01.04.xlsx');
-sheetName = 'BATS_BS Bottle File';
+workdir = fullfile(rootdir,'CTDdata\BSworkingCurrent\');
+CSVoutdir = 'C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\data_holdingZone\';
+Bfile = fullfile(rootdir,'DataFiles_CTDandDiscreteSamples/BATS_BS_COMBINED_MASTER_2024.01.17.xlsx');
 
-newfile = fullfile(workdir,'ADD_to_MASTER_2024.01.04.csv');   % output file
+%what are you going to use for the season information?
+if 1
+    %load in an existing file
+    load('C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\MATLAB_code\Season_dates_all.mat');
+else
+    % define season transition dates from glider DAvg plots and save....
+    % If glider not available can use general dates:  15-Dec: 01-Apr : 20-Apr : 01-Nov
+    % and check against Hydrostation MLD and DCM 
+     season_dates = struct();
+        season_dates.mixed = [datenum('15-Dec-2015'), datenum('01-Apr-2016');...
+                              datenum('22-Nov-2016'), datenum('10-Apr-2017');...
+                              datenum('01-Jan-2018'), datenum('05-Apr-2018');...
+                              datenum('15-Dec-2018'), datenum('27-Mar-2019');...
+                              datenum('06-Dec-2019'), datenum('01-Apr-2020');...
+                              datenum('15-Dec-2020'), datenum('01-Apr-2021');...  
+                              datenum('26-Nov-2021'), datenum('05-Apr-2022');...
+                              datenum('15-Dec-2022'), datenum('01-Apr-2023')];
+        season_dates.spring = [datenum('01-Apr-2016'),datenum('20-Apr-2016');...
+                              datenum('10-Apr-2017'), datenum('26-Apr-2017');...
+                              datenum('05-Apr-2018'), datenum('26-Apr-2018');...
+                              datenum('27-Mar-2019'), datenum('18-Apr-2019');...
+                              datenum('01-Apr-2020'), datenum('15-Apr-2020');...
+                              datenum('01-Apr-2021'), datenum('25-Apr-2021');...
+                              datenum('05-Apr-2022'), datenum('01-May-2022');...
+                              datenum('01-Apr-2023'), datenum('25-Apr-2023')];
+        season_dates.strat = [datenum('20-Apr-2016'), datenum('01-Nov-2016');...
+                              datenum('26-Apr-2017'), datenum('01-Oct-2017');...
+                              datenum('26-Apr-2018'), datenum('01-Nov-2018');...
+                              datenum('18-Apr-2019'), datenum('06-Nov-2019');...
+                              datenum('15-Apr-2020'), datenum('01-Nov-2020');...
+                              datenum('25-Apr-2021'), datenum('20-Oct-2021');...
+                              datenum('01-May-2022'), datenum('01-Nov-2022');...
+                              datenum('25-Apr-2023'), datenum('01-Nov-2023')];
+        season_dates.fall = [datenum('01-Nov-2016'), datenum('22-Nov-2016');...
+                              datenum('01-Oct-2017'), datenum('01-Jan-2018');...
+                              datenum('01-Nov-2018'), datenum('15-Dec-2018');...
+                              datenum('06-Nov-2019'), datenum('06-Dec-2019');...
+                              datenum('01-Nov-2020'), datenum('15-Dec-2020');...
+                              datenum('20-Oct-2021'), datenum('26-Nov-2021');...
+                              datenum('01-Nov-2022'), datenum('15-Dec-2022');...
+                              datenum('01-Nov-2023'), datenum('15-Dec-2023')];
+    %     save('Season_dates_all.mat','season_dates'); 
+end
 
 
-% 
-% define season transition dates from glider DAvg plots and save....
-% If glider not available can use general dates:  15-Dec: 01-Apr : 20-Apr : 01-Nov
-%  and check against Hydrostation MLD and DCM 
-% 
-%      season_dates = struct();
-%         season_dates.mixed = [datenum('15-Dec-2015'), datenum('01-Apr-2016');...
-%                               datenum('22-Nov-2016'), datenum('10-Apr-2017');...
-%                               datenum('01-Jan-2018'), datenum('05-Apr-2018');...
-%                               datenum('15-Dec-2018'), datenum('27-Mar-2019');...
-%                               datenum('06-Dec-2019'), datenum('01-Apr-2020');...
-%                               datenum('15-Dec-2020'), datenum('01-Apr-2021');...  
-%                               datenum('26-Nov-2021'), datenum('05-Apr-2022');...
-%                               datenum('15-Dec-2022'), datenum('01-Apr-2023')];
-%         season_dates.spring = [datenum('01-Apr-2016'),datenum('20-Apr-2016');...
-%                               datenum('10-Apr-2017'), datenum('26-Apr-2017');...
-%                               datenum('05-Apr-2018'), datenum('26-Apr-2018');...
-%                               datenum('27-Mar-2019'), datenum('18-Apr-2019');...
-%                               datenum('01-Apr-2020'), datenum('15-Apr-2020');...
-%                               datenum('01-Apr-2021'), datenum('25-Apr-2021');...
-%                               datenum('05-Apr-2022'), datenum('01-May-2022');...
-%                               datenum('01-Apr-2023'), datenum('25-Apr-2023')];
-%         season_dates.strat = [datenum('20-Apr-2016'), datenum('01-Nov-2016');...
-%                               datenum('26-Apr-2017'), datenum('01-Oct-2017');...
-%                               datenum('26-Apr-2018'), datenum('01-Nov-2018');...
-%                               datenum('18-Apr-2019'), datenum('06-Nov-2019');...
-%                               datenum('15-Apr-2020'), datenum('01-Nov-2020');...
-%                               datenum('25-Apr-2021'), datenum('20-Oct-2021');...
-%                               datenum('01-May-2022'), datenum('01-Nov-2022');...
-%                               datenum('25-Apr-2023'), datenum('01-Nov-2023')];
-%         season_dates.fall = [datenum('01-Nov-2016'), datenum('22-Nov-2016');...
-%                               datenum('01-Oct-2017'), datenum('01-Jan-2018');...
-%                               datenum('01-Nov-2018'), datenum('15-Dec-2018');...
-%                               datenum('06-Nov-2019'), datenum('06-Dec-2019');...
-%                               datenum('01-Nov-2020'), datenum('15-Dec-2020');...
-%                               datenum('20-Oct-2021'), datenum('26-Nov-2021');...
-%                               datenum('01-Nov-2022'), datenum('15-Dec-2022');...
-%                               datenum('01-Nov-2023'), datenum('15-Dec-2023')];
-% 
-%     save('Season_dates_all.mat','season_dates');
-% 
 
-load('C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\MATLAB_code\Season_dates_all.mat');
+%%%%%%%%%%%%%%%% There should be no need to make changes below this point
+%%%%%%%%%%%%%%%% Krista Longnecker, updated 19 January 2024
+%%%%%%%%%%%%%%%%
+
+%start with the code to make one txt file for each cruise
+cd(workdir)
+D = dir();
+D(~[D.isdir]) = []; %syntax from MATLAB central, removes anything not a directory
+dirlist = D(3:end); %this skips over the directories . and ..
+clear D 
+
+subdirinfo = cell(length(dirlist));
+for a = 1 : length(dirlist)
+  thisdir = dirlist(a).name;
+  temp = dir(fullfile(thisdir, '*c*_QC.dat'));
+  %argh, MATLAB on Windows is ignoring case, so this is trapping all the
+  %files names *BIOSSCOPE* which we do not want
+  
+  for aa = 1:length(temp)
+      %take the *dat file (all EXCEPT the one marked BIOS-SCOPE) and make
+      %it a text file. Will put that text file (somewhere)
+      one = strcat(temp(aa).folder,filesep,temp(aa).name);
+      if ~contains(temp(aa).name,'BIOSSCOPE') %skip this file
+          fid = fopen(strcat(thisdir,'_ctd.txt'),'a');
+          riFile = fileread(one);
+          fprintf(fid,'%s',riFile);  
+          fclose(fid);
+          clear riFile
+      end
+      clear one
+  end
+  clear aa 
+end
+clear a
 
 %%  start by loading and labeling CTD data
-cd(batsdir);
+cd(workdir);
 dirlist = dir('*_ctd.txt');
 new_cruises = cat(1,dirlist.name); %KL adding 1/4/2024
-cd(workdir);
+%cd(workdir);
 
 MAXZ = 2500;  % row dimension for CTD profiles
 
- nfiles = length(dirlist);
- 
+nfiles = length(dirlist);
 
     for ii = 1:nfiles
 
        fname = dirlist(ii).name;
-       infile = fullfile(batsdir,fname);
+       infile = fullfile(workdir,fname);
        newdir = fullfile(workdir,fname(1:end-8));
        mkdir(newdir);
        cd(newdir);
@@ -111,6 +151,7 @@ MAXZ = 2500;  % row dimension for CTD profiles
 %%  Load the bottle file and create an output structure to store new info 
 disp(['Loading ',Bfile]);
 
+sheetName = 'BATS_BS Bottle File'; %put this down here, should not change
 BB = readtable(Bfile,'sheet',sheetName,'ReadVariableNames',true);
 varNames = BB.Properties.VariableNames';
 [nrows,ncols] = size(BB);
@@ -167,7 +208,7 @@ for icru = 1:ncru
     ii = find(isCru == 1,1);
     theID = floor(BBadd.New_ID(ii) * 1e-5);
 
-    cd(ctdmatdir)
+    cd(workdir)
     dirlist = dir(['*',num2str(theID),'_CTD.mat']);
     if isempty(dirlist)
         disp(['WARNING: No CTD cruise file for ',['CRU_',num2str(theID),'_CTD.mat']]);
@@ -226,6 +267,7 @@ cd(workdir);
 
 disp(['writing table to ', newfile])
 BBtab = struct2table(BBadd);
+newfile = fullfile(CSVoutdir,'ADD_to_MASTER_temporary.csv');   % output file
 
 if 1
     %add option to trim down BBtab to only include new additions
