@@ -1,19 +1,43 @@
 # put discrete data into the BIOS-SCOPE master file. These data will arrive in small pieces, so 
-# need a script that will iteratively add data. 
+# need a script that will iteratively add data. Use New_ID for the merging, will 
+# also need to specify colnames as data arrive with all sorts of names
 # original code from Shuting Liu - adapt to make its own script
-# Krista Longnecker, 17 January 2024
-%%% code is not ready to run yet%%%%
+# Krista Longnecker, 19 January 2024
 
+#use this section at the top to set path names and file names
 
-library(dplyr)
-
-#there are multiple options for reading/writing Excel files, and because of the formatting, I need two choices
-library(readxl) #use this to read in the master file
-
-##first, read in the existing discrete file (file is *not* on GitHub, update to your own path)
+##need the existing discrete file (file is *not* on GitHub, update to your own path)
 dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/"
 #read in the master file - which is currently an Excel file
 fName <- "BATS_BS_COMBINED_MASTER_2024.01.04.xlsx"
+
+#need the file information for the new data file :
+nPath <- "C:/Users/klongnecker/Documents/GitHub/data_pipeline/data_holdingZone/"
+nDatafile <- "ADD_to_MASTER_temporary.csv"
+fileType <- 'csv' #can also use fileType <- 'xlsx'
+
+#need to explicitly link colnames in the bottle file with those in the incoming data file
+#tempColumns is the values in the incoming discrete data file
+#existingColumns is the matching labels in the existing bottle file
+
+#will accumulate lots of these, so comment them out and add to the list as needed
+# #Lomas FCM data
+# existingColumns <- c("Pro(cells/ml)","Syn(cells/ml)","Piceu(cells/ml)","Naneu(cells/ml)")
+# tempColumns <- c("Pro","Syn","picoeuk","nanoeuk")
+
+#Ruth's calculated values (will be a direct match, so easy)
+existingColumns <- c("Sunrise","Sunset","MLD_dens125","MLD_bvfrq","MLD_densT2","DCM","VertZone","Season" )
+tempColumns <- existingColumns
+
+
+########## should not need to update anything below this point
+########## Krista Longnecker, 19 January 2024
+
+library(dplyr)
+#there are multiple options for reading/writing Excel files, and because of the formatting, I need two choices
+library(readxl) #use this to read in the master file
+
+#read in the existing bottle file (using values from above)
 sheetName <- "BATS_BS bottle file"
 #definitely want suppressWarnings here to prevent one error message for each row
 discrete <- suppressWarnings(read_excel(paste0(dPath,fName),
@@ -21,31 +45,37 @@ discrete <- suppressWarnings(read_excel(paste0(dPath,fName),
                                         guess_max=Inf))
 discrete_updated <-as.data.frame(discrete)
 
-#read in the new data file :
-nPath <- "C:/Users/klongnecker/Documents/Dropbox/__wasDROPBOX_nowCurrent/ZZ_BIOSSCOPE_dataProcessingCode/"
-nDatafile <- "10334_20346fcm_phys_final_annotatedKL.2024.01.16.xlsx"
-newFCMdata <- suppressWarnings(read_excel(paste0(nPath,nDatafile),
-                                          sheet = "Sheet1",
-                                          guess_max=Inf))
-newFCMdata <-as.data.frame(newFCMdata)
+#now read in the new discrete data file, could be xlsx or csv based on values from above
+if (match(fileType,'csv')) {
+  #use this version to read in data in a CSV format
+  newDiscreteData <- read.csv(paste0(nPath,nDatafile))
+  
+} else if (match(fileType,'xlsx')) {
+  #use this version when the data are in xlsx
+  #and read in the new discrete data file (again, values are as above)
+  newDiscreteData <- suppressWarnings(read_excel(paste0(nPath,nDatafile),
+                                                 sheet = "Sheet1",
+                                                 guess_max=Inf))
+  newDiscreteData <-as.data.frame(newDiscreteData)
+}
 
-#need to explicitely link colnames as people are using various options, which 
-#or may not match what is in the bottle file
-tempColumns <- c("Pro","Syn","picoeuk","nanoeuk")
-existingColumns <- c("Pro(cells/ml)","Syn(cells/ml)","Piceu(cells/ml)","Naneu(cells/ml)")
 
+
+
+
+
+
+
+#now, match up the columns (where the match between the existing bottle file 
+#new discrete data are given above)
 colIdxDiscrete <- which(colnames(discrete_updated) %in% existingColumns)
-colIdxLomas <- which(colnames(newFCMdata) %in% tempColumns)
-
-
+colIdxNew <- which(colnames(newDiscreteData) %in% tempColumns)
 
 #before moving on, tidy up and remove this package
 detach("package:readxl",unload=TRUE)
 
 
 ### read in the file with openxlsx2 because that will be the easiest way to pull in the existing style
-
-
 library(openxlsx2)
 fs <- wb_load(file = paste0(dPath,fName))
 
@@ -60,8 +90,8 @@ fs$add_worksheet("updatedData")
 ##now - find the rows that match between newFCMdata and discrete
 #do this as a loop because that's how my brain operates today
 
-for (idx in 1:nrow(newFCMdata)) { 
-  one <- newFCMdata$ID[idx]
+for (idx in 1:nrow(newDiscreteData)) { 
+  one <- newDiscreteData$ID[idx]
   
   #figure out which row matches in the discrete file
   m <- match(one,discrete_updated$New_ID)
@@ -70,7 +100,7 @@ for (idx in 1:nrow(newFCMdata)) {
   discrete_updated[m,colIdxDiscrete] <- -999
   
   #now, put in the right variables
-  discrete_updated[m,colIdxDiscrete] <- newFCMdata[idx,colIdxLomas]
+  discrete_updated[m,colIdxDiscrete] <- newDiscreteData[idx,colIdxNew]
 }
 
 
@@ -85,6 +115,9 @@ fs$add_data("updatedData",discrete_updated)
 
 ##set the styles on the updatedData sheet to match the existing sytle
 fs$set_cell_style(sheet = "updatedData",dims = setDim,stylesE)
+
+
+#changing my mind...shuffle the names so there is only the sheet: BATS_BS bottle file
 
 
 #for the moment - have a new worksheet labeled "updatedData"...could probably delete that in R

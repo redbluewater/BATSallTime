@@ -75,14 +75,36 @@ for (idx in 1:nrow(newFCMdata)) {
 #now that I have updated the discrete data, stick it back into the temporary file in the *new* sheet
 fs$add_data("updatedData",discrete_updated)
 
-##set the styles on the updatedData sheet to match the existing sytle
-fs$set_cell_style(sheet = "updatedData",dims = setDim,stylesE)
+# #try this (no, also corrupted):
+# fs$add_data_table("updatedData",discrete_updated)
+
+
+# #skip formatting for the moment
+# ##set the styles on the updatedData sheet to match the existing sytle
+# fs$set_cell_style(sheet = "updatedData",dims = setDim,stylesE)
+
+
+# this was suggested at GitHub, but then I immediately cannot open the file
+#fs$workbook.xml.rels <- fs$workbook.xml.rels[-1]
+# In wb$clone()$save(file = file, overwrite = overwrite, path = path) :
+#   [WR] file expected to be in output is missing: sharedStrings.xml
+# # create a workbook
+# wb <- wb_workbook()$add_worksheet()$add_data(x = mtcars)
+# # remove the shared string reference
+# wb$workbook.xml.rels <- wb$workbook.xml.rels[-1]
+# # save the workbook to a path
+# wb$save("mtcars.xlsx")
 
 
 #for the moment - have a new worksheet labeled "updatedData".
 #however, I will still require someone to go look at the new file and add their name
 #to the log, so I think it's wise to leave it this way and require that one 
 #manual update to change the name of the new sheet
-wb_save(fs,paste0(dPath,"nextSteps_checkData_UpdateLog.xlsx"))
+#wb_save(fs,paste0(dPath,"nextSteps_checkData_UpdateLog.xlsx"))
+
+
+wb_save(fs,file = paste0(dPath,"temp4.xlsx"),overwrite = TRUE)
+
+# wb_save(fs,file = temp_xlsx(), overwrite = TRUE)
 
 
