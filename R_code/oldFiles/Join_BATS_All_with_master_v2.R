@@ -4,6 +4,8 @@
 #Krista Longnecker, updating to add in BATS cruises 10390 to 10404; 2 January 2024
 #Krista Longnecker, updating to use with BIOS-SCOPE cruise (92114)
 #Krista Longnecker, update to pull BATS cast details from the updated discrete file...
+#Krista Longnecker,tidying up 21 January 2024
+
 rm(list =ls.str())
 
 library(dplyr)
@@ -30,27 +32,18 @@ rm(dPath,fName,sheetName)
 discrete_match <- discrete[1,]
 discrete_match <- discrete_match[-1,]
 
-##get the header information for the CTD data 
-#KL used CTD ID.docx in 91614 folder in "ORIG CTD FROM BATS", to make a text file that will get 
-#uploaded to GitHub
+##get the header information for the CTD data; KL used CTD ID.docx in 91614 folder in
+#"ORIG CTD FROM BATS", to make a text file that now sits at GitHub
 gDir <- "C:/Users/klongnecker/Documents/Dropbox/GitHub/data_pipeline/"
 headers <- read.csv(paste0(gDir,"CTD_headerInformation.csv"),sep=",", fileEncoding="UTF-8-BOM", header=F)
-
-#need the sheet to translate a BATS cruise number into a cruise id...this is in the file here 
-#(from the Google Drive)
-##change this (see above) - I updated the discrete file so we can use the information from there rather
-#than tracking yet another file
-# fName = "BIOS-SCOPE Time-series Master Log_2023.10.15.xlsx"
-# convertBATS <- read_excel(paste0(gDir,fName),sheet = "Sample Log",skip=1)
-# convertBATS$`BATS ID` <- suppressWarnings(as.integer(convertBATS$`BATS ID`))
-# rm(gDir,fName)
 
 exFilename <- "newData_forDiscrete.2024.01.08.csv"
 cruiseType <- 'BATS' #or BIOSSCOPE #change as needed
 
-#OK, now I am ready to go find the new data to be added, where is the working directory?
+# Now I am ready to go find the new data to be added, where is the working directory?
 setwd("C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/CTDdata/testing")
 
+#different code for BATS vs. BIOSSCOPE cruise
 if (cruiseType=='BATS'){
   ##BATS makes a physf file for the BIOSSCOPE project
   #get the list of folders - will go into each folder one at a time and concatenate the results
@@ -89,53 +82,74 @@ for (a in 1:length(D)) {
   #long...but makes my head spin less
   idx <- which(colnames(new) %in% "Niskin_ID")
   colnames(new)[idx] <- "New_ID"
+  
   idx <- which(colnames(new) %in% "YYYYMMDD_In")
   colnames(new)[idx] <- "yyyymmdd"
+  
   idx <- which(colnames(new) %in% "Dec_yr_in")
   colnames(new)[idx] <- "decy"
+  
   idx <- which(colnames(new) %in% "Time_in(GMT)")
   colnames(new)[idx] <- "time(UTC)"
+  
   idx <- which(colnames(new) %in% "Lat(N)_in")
   colnames(new)[idx] <- "latN"
+  
   idx <- which(colnames(new) %in% "Long(W)_in")
   colnames(new)[idx] <- "lonW"
+  
   idx <- which(colnames(new) %in% "P(dbar)")
   colnames(new)[idx] <- "Pressure(dbar)"
+  
   idx <- which(colnames(new) %in% "z(m)")
   colnames(new)[idx] <- "Depth"
+  
   idx <- which(colnames(new) %in% "CTD_temp(degC)")
   colnames(new)[idx] <- "Temp"
+  
   idx <- which(colnames(new) %in% "CTD_SBE35T(degC)")
   colnames(new)[idx] <- "CTD_SBE35T(degC)"
+  
   idx <- which(colnames(new) %in% "Cond(S_m)")
   colnames(new)[idx] <- "Conductivity(S/m)"
+  
   idx <- which(colnames(new) %in% "CTD_salt")
   colnames(new)[idx] <- "CTD_S"
+  
   idx <- which(colnames(new) %in% "DO(umol/kg)")
   colnames(new)[idx] <- "O2(umol/kg)"
+  
   idx <- which(colnames(new) %in% "BAC(m-1")
   colnames(new)[idx] <- "BAC(m-1)"
+  
   idx <- which(colnames(new) %in% "Fl(RFU)")
   colnames(new)[idx] <- "Fluo(RFU)"
+  
   idx <- which(colnames(new) %in% "PAR(uE/m^2)")
   colnames(new)[idx] <- "Par"
+  
   idx <- which(colnames(new) %in% "Pot_Temp(degC)")
   colnames(new)[idx] <- "Pot_Temp(degC)"
+  
   idx <- which(colnames(new) %in% "sig_theta(kg/m^3)")
   colnames(new)[idx] <- "sig_theta(kg/m^3)"
+  
   idx <- which(colnames(new) %in% "wet_salt1")
   colnames(new)[idx] <- "salt"
+  
   idx <- which(colnames(new) %in% "Nisken_temp(degC)")
   colnames(new)[idx] <- "Niskin_temp (degC)"
+  
   idx <- which(colnames(new) %in% "Oxy_anom1(umol/kg)")
   colnames(new)[idx] <- "Oxy_Anom1(umol/kg)"
+  
   rm(idx)
   
   #add new columns, will be the same variable multiple times
   new$Program<-rep(cruiseType, nrow(new))  #change to "BATS" if merging new BATS cruises
   
   ##this next bit makes New_ID which will be needed in the discrete data file...
-  
+  ## again, different code for BIOSSCOPE cruise vs. BATS cruise
   if (cruiseType=='BIOSSCOPE') { 
     #Shuting's syntax for a BIOS-SCOPE cruise
     new$Cruise_ID<-paste("AE",substr(new$New_ID,2,5),sep="")
@@ -258,7 +272,7 @@ for (a in 1:length(D)) {
   }
   rm(j)
   
-  #comment this out - may be useful later, but for now it's not needed
+  # comment this out - may be useful later, but for now it's not needed
   # #note some casts (AE2315 C1,C5,C8) annotate surface as 5m nominal_depths instead of 1m, check cast sheets
   # new$Nominal_Depth[which(new$Cruise_ID=="AE2315"& (new$Cast==1 |new$Cast==5|new$Cast==8))]=5
   # #add empty OxFix column
@@ -270,10 +284,6 @@ for (a in 1:length(D)) {
     warning("missing columns, this should be zero if everything is found")
   }
   rm(sd)
-  
-  # #cheat and use the existing matrix as a template
-  # discrete_match <- discrete[1,]
-  # discrete_match <- discrete_match[-1,]
   
   #then - put the unused colnames on the empty rows so that I can merge more easily
   uc <- setdiff(colnames(discrete),colnames(new))
@@ -298,34 +308,13 @@ for (a in 1:length(D)) {
 }
 rm(a)
 
-#This next section is not complete...
-# ##Have cases where I may have already added some of these, but if I added them there will be only
-# ##cruise/cast/Niskin and nothing more;go through each row in discrete_match and see if it should be kept
-# keep <- integer(length=nrow(discrete_match))
-# 
-# for (i in 1:nrow(discrete_match)) {
-#   #start with the easy case -keep because it's completely missing'
-#   if (length(match(discrete_match$New_ID[i],discrete$New_ID))==0) {
-#     keep[i] <- 0
-#     } else if (length(match(discrete_match$New_ID[i],discrete$New_ID))==1) {
-#       #do the next check - what is the decy? if it's -999, keep the data
-#       m <- match(discrete_match$New_ID[i],discrete$New_ID)
-#       
-#       if (discrete$decy[m]==-999){
-#         keep[i] <- 1
-#       }
-#       
-#     }
-# }
-
-  
 #finally, write the data out as a new CSV file to be put into the discrete data file
 write.csv(discrete_match,exFilename,row.names=F)
 
-# 
-# 
-# #if it is BATS or BATS bloom cruise, you need to reorder row order (new_master<-new_master[c(xx:xx,xx:xx,xx:xx),]) (xx use actual row number) to put it before BIOSSCOPE cruise, order: BATS (start with 1), BATS bloom (start with 2), BIOSSCOPE (start with 9) 
-# write.csv(new_master,"new_master.csv",row.names=F) #replace old with this new data sheet 
+
+
+
+
 
 # #####Below check duplicate is for some old data note, ignore this section if for new data now
 # #if you are merging old BATS data, there are some duplicate rows
