@@ -182,7 +182,10 @@ for ii = 1:ncast
    itop = indx(1);
    nz = length(indx);
    if nz > MAXZ
-       error(['Data arrays not long enough.  Increase MAXZ to at least ',num2str(nz)])
+       %KL updated error 1/21/2024 - this issue also occurs if you are
+       %running the script on data that has already been processed
+       error('foo:bar',['Note from Krista: You may have tried to run this script on data that has already been processed, \n', ...
+           'or data arrays not long enough. In the later case, increase MAXZ to at least ',num2str(nz)])
    end
    Xout.mtime(ii) = decyear2dnum(CTD.decy(itop));
       dvec = datevec(Xout.mtime(ii));

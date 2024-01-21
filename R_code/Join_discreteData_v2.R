@@ -2,9 +2,15 @@
 # need a script that will add data in small pieces. Use New_ID for the merging, will 
 # also need to specify colnames as data arrive with all sorts of names
 # original code from Shuting Liu - adapt to make its own script
+#
 # Krista Longnecker, 21 January 2024
-
-#use this section at the top to set path names and file names
+#
+#Some notes from Krista: 
+# (1) you will need to update the path information and file names up through row ~40 in this code. 
+# There should be no need to change anything past that point.
+# (2) This script will open a single worksheet in Excel - that worksheet needs to copied into the bottle
+# file, and then header gets copied from the prior version of the bottle file. I cannot use the 
+# that would (in theory) allow the formatting to be copied because it creates a corrupted Excel file
 
 ##need the existing discrete file (file is *not* on GitHub, update to your own path)
 dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/"
@@ -12,7 +18,7 @@ dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/
 fName <- "BATS_BS_COMBINED_MASTER_2024.01.21.xlsx"
 
 #need the file information for the new data file :
-nPath <- "C:/Users/klongnecker/Documents/GitHub/data_pipeline/data_holdingZone/"
+nPath <- "C:/Users/klongnecker/Documents/Dropbox/GitHub/data_pipeline/data_holdingZone/"
 nDatafile <- "ADD_to_MASTER_temporary.csv"
 fileType <- 'csv' #can also use fileType <- 'xlsx'
 
@@ -63,12 +69,6 @@ if (match(fileType,'csv')) {
 }
 
 
-
-
-
-
-
-
 #now, match up the columns (where the match between the existing bottle file 
 #new discrete data are given above)
 colIdxDiscrete <- which(colnames(discrete_updated) %in% existingColumns)
@@ -80,21 +80,19 @@ detach("package:readxl",unload=TRUE)
 
 ### read in the file with openxlsx2 because that will be the easiest way to pull in the existing style
 library(openxlsx2)
-fs <- wb_load(file = paste0(dPath,fName))
 
-#I can get the number of rows from discrete to set dims (seems like that would be an obvious function in openxlsx2 but I cannot find it)
-setDim <- paste0("A1:EG",nrow(discrete))
-stylesE <- wb_get_cell_style(wb = fs,sheet=sheetName,dims = setDim)
+# If I assemble my own workbook, I can save the file that results from Excel 
+# But will only be one sheet with new data...can paste that into new bottle file
+wb <- wb_workbook()
 
 #will put the updated version of discrete here:
-fs$add_worksheet("updatedData")
+wb$add_worksheet("updatedData")
 
-##here - go get the new discrete data (e.g., nutrients? DOC?), find the matching rows in forExport, and add in the result
 ##now - find the rows that match between newFCMdata and discrete
 #do this as a loop because that's how my brain operates today
 
-for (idx in 1:nrow(newDiscreteData)) { 
-  one <- newDiscreteData$ID[idx]
+for (idx in 1:nrow(newFCMdata)) {
+  one <- newFCMdata$ID[idx]
   
   #figure out which row matches in the discrete file
   m <- match(one,discrete_updated$New_ID)
@@ -103,29 +101,17 @@ for (idx in 1:nrow(newDiscreteData)) {
   discrete_updated[m,colIdxDiscrete] <- -999
   
   #now, put in the right variables
-  discrete_updated[m,colIdxDiscrete] <- newDiscreteData[idx,colIdxNew]
+  discrete_updated[m,colIdxDiscrete] <- newFCMdata[idx,colIdxLomas]
 }
 
+#now that I have updated the discrete data, stick it back into the workbook
+wb$add_data("updatedData",discrete_updated)
+
+#this next line will open up the file in Excel. Sadly you will still have to copy
+#and paste into a new sheet, but at least you can copy the whole sheet
+xl_open(wb)
 
 
 
-
-
-
-
-#now that I have updated the discrete data, stick it back into the temporary file in the *new* sheet
-fs$add_data("updatedData",discrete_updated)
-
-##set the styles on the updatedData sheet to match the existing sytle
-fs$set_cell_style(sheet = "updatedData",dims = setDim,stylesE)
-
-
-#changing my mind...shuffle the names so there is only the sheet: BATS_BS bottle file
-
-
-#for the moment - have a new worksheet labeled "updatedData"...could probably delete that in R
-#however, I will still require someone to go look at the new file and add their name
-#to the log, so might not be bad to leave it (though I can imagine someone reading in the wrong sheet)
-wb_save(fs,paste0(dPath,"nextSteps_checkData_UpdateLog.xlsx"))
 
 

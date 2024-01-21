@@ -5,12 +5,10 @@
 %
 % Some notes from Krista (19 January 2024)
 % (1) you will need to update the path information and file names
-% up through row ~72 in this code. There should be no need to change
+% up through row ~70 in this code. There should be no need to change
 % anything past that point.
 % (2) The output from this code will be a CSV file that will be saved in
-% the same folder where you have this script
-% (3) Next steps: I am working on the code to allow you to import
-% those calculated variables into the existing bottle file using R. 
+% the place defined at line 21
 
 %% >>>>>   % add ./BIOSSCOPE/CTD_BOTTLE/mfiles into matlab path
 addpath(genpath('C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\MATLAB_code\mfiles'));
@@ -19,7 +17,7 @@ addpath(genpath('C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\MAT
 rootdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\';
 workdir = fullfile(rootdir,'CTDdata\BSworkingCurrent\');
 CSVoutdir = 'C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\data_holdingZone\';
-Bfile = fullfile(rootdir,'DataFiles_CTDandDiscreteSamples/BATS_BS_COMBINED_MASTER_2024.01.17.xlsx');
+Bfile = fullfile(rootdir,'DataFiles_CTDandDiscreteSamples/BATS_BS_COMBINED_MASTER_2024.01.21.xlsx');
 
 %what are you going to use for the season information?
 if 1
@@ -62,7 +60,10 @@ else
                               datenum('20-Oct-2021'), datenum('26-Nov-2021');...
                               datenum('01-Nov-2022'), datenum('15-Dec-2022');...
                               datenum('01-Nov-2023'), datenum('15-Dec-2023')];
-    %     save('Season_dates_all.mat','season_dates'); 
+    if 0
+        %set to one if you need to save an updated version of the season information
+        save('Season_dates_all.mat','season_dates'); 
+    end
 end
 
 
@@ -265,9 +266,9 @@ end  %for icru
 
 cd(workdir);
 
+newfile = fullfile(CSVoutdir,'ADD_to_MASTER_temporary.csv');   % output file
 disp(['writing table to ', newfile])
 BBtab = struct2table(BBadd);
-newfile = fullfile(CSVoutdir,'ADD_to_MASTER_temporary.csv');   % output file
 
 if 1
     %add option to trim down BBtab to only include new additions
