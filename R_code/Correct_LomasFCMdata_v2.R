@@ -1,8 +1,9 @@
 # use this script to correct the error in the Lomas/FCM data, mostly based on
 #Join_discreteData.R
-# note this will make a temporary file with a new sheet called 'UpdatedData' - this
-# was done to encourage people to double-check that everything ended up in the right place
-# Krista Longnecker, 20 January 2024
+# note this will open a single worksheet in Excel - that worksheet needs to copied into the bottle
+# file, and then header gets copied from the prior version of the bottle file. I cannot use the 
+# that would (in theory) allow the formatting to be copied because it creates a corrupted Excel file
+# Krista Longnecker, 21 January 2024
 
 library(dplyr)
 
