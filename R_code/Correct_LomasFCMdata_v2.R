@@ -3,7 +3,6 @@
 # note this will make a temporary file with a new sheet called 'UpdatedData' - this
 # was done to encourage people to double-check that everything ended up in the right place
 # Krista Longnecker, 20 January 2024
-# but now I lose the formatting...which was the whole point of using openxlsx2...reconsider
 
 library(dplyr)
 
@@ -13,7 +12,7 @@ library(readxl) #use this to read in the master file
 ##first, read in the existing discrete file (file is *not* on GitHub, update to your own path)
 dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/"
 #read in the master file - which is currently an Excel file
-fName <- "fullCopy.xlsx"
+fName <- "BATS_BS_COMBINED_MASTER_2024.01.04.xlsx"
 sheetName <- "BATS_BS bottle file"
 #definitely want suppressWarnings here to prevent one error message for each row
 #have to set guess_max to Inf so that it does not try and guess based on
