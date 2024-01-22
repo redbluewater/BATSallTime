@@ -63,6 +63,10 @@ Once a set of CTD data has been processed, you don't need to redo the MATLAB ste
 You will always have the calculated variables from Ruth's code, and there will be other datases as they become available (e.g., nutrients, Shimadzu data, cell counts, and more). Krista updated Shuting's code (new available [Join_discreteData_v2.R](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_discreteData_v2.R)). Generally the new script does the following:
 * reads in the current bottle file
 * reads in the discrete data file to be added to the existing bottle file
+    * checks to see if there are duplicate samples in the incoming discrete data file
+    * asks the user if this is expected
+         * if it is expected, the code will average the samples to provide one value for each sample
+         * if it is not expected, the code will cancel with an error message so the user can see what happened
 * matches the column names between the existing file and the temporary columns in the new file
 * opens up the full set of discrete data as an Excel worksheet
 
