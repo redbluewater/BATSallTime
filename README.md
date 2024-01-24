@@ -22,7 +22,7 @@ To work on the CTD data, get the data from the BIOS-SCOPE Google Drive. This is 
 On Google Drive you will find subfolders for each cruise. Each subfolder contains various ascii files (one per each CTD cast, plus the physf_QC and MLD.dat files). Go into the CTDrelease_20230626 and highlight the cruise folders that are new --> download them to a zip file.\
 Make a processing folder (e.g., BIOSSCOPE_working) and move the downloaded zip archives there. Unzip the files. 
 
-## Shuting's pipeline (in R)
+## Step 2: Shuting's pipeline (in R)
 This file was updated by Krista (January 2024), the update modified Shuting's code to go through a series of folders to find new CTD data. The code will require you to indicate if you are working on 'BATS' data or 'BIOSSCOPE' data (at line 30). The updated R file is [Join_BATS_All_with_master_v3.R](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_BATS_All_with_master_v3.R), and you can click the link to see the file on GitHub. 
 
 The code now does the following (after data files have been downloaded from Google Drive as described above:
@@ -41,7 +41,7 @@ Now you have to do some manual copy/paste:
 * Update the log in the master file
 * Save the file with a new date
 
-## Ruth Curry's pipeline (in MATLAB)
+## Step 3: Ruth Curry's pipeline (in MATLAB)
 Once Shuting's code has been used to add the necessary samples to the master bottle file, then you can run Ruth's code to calculate the derived variables. 
 
 Krista has updated [create_biosscope_files_2022_2023_Krista.m ](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/MATLAB_code/create_biosscope_files_2022_2023_Krista.m ) to pick up where the previous processing script ended. This file will start with 10390 (March 2022) and then go to 10404 (May 2023). The path information is set for Krista's desktop, this would need to be updated for other computers.
@@ -59,7 +59,7 @@ The next step is to use ```Join_discreteData_v2.R``` to add the calculated varia
 
 Once a set of CTD data has been processed, you don't need to redo the MATLAB steps unless the data gets reprocessed by BATS.
 
-## Back to Shuting's R code: merging in any discrete dataset as it becomes available
+## Step 4: Merge in discrete dataset as it becomes available (in R)
 You will always have the calculated variables from Ruth's code, and there will be other datases as they become available (e.g., nutrients, Shimadzu data, cell counts, and more). Krista updated Shuting's code (new available [Join_discreteData_v2.R](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_discreteData_v2.R)). Generally the new script does the following:
 * reads in the current bottle file
 * reads in the discrete data file to be added to the existing bottle file
@@ -82,7 +82,7 @@ At this point, you do have to do some manual copy/pasting:
 ## Craig's path to make 'one cast' for cruise
 Craig currently working in R to make one single cast for each cruise so we can pull in data from pumps etc.
 For the data portal, using these synpotic casts, the idea is to use cast and nominal depth as the key for merging.
-
+Krista has Craig's code and will work on this next (1/24/2024)
 
 ## tasks to-do list
 Ruth
@@ -98,6 +98,3 @@ Rachel
 - [ ]  Does Dom needs to reprocess BIOS-SCOPE cruises?
 - [ ]  Figure out why we have two folders for BIOS-SCOPE 91916 cruise on Google Drive ('91916' and '91916_QC'). Sort out which is right and move the other folder
 - [ ]  difference between wet oxygen 1, 2, 3 and salts 1, 2 in the CTD files
-
-Craig
-- [ ] Send Krista your code to make one cast from each cruise
