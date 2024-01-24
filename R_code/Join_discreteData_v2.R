@@ -5,7 +5,7 @@
 # Note that this version will also automate the averaging across duplicate 
 # samples (e.g., two injections on the Shimadzu)
 #
-# Krista Longnecker, 22 January 2024
+# Krista Longnecker, 24 January 2024
 #
 #Some notes from Krista: 
 # (1) you will need to update the path information and file names up through row ~50 in this code. 
@@ -17,12 +17,12 @@
 ##need the existing discrete file (file is *not* on GitHub, update to your own path)
 dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/"
 #read in the master file - this is an Excel file
-#fName <- "testingCopy.xlsx" #keep for testing later
 fName <- "BATS_BS_COMBINED_MASTER_2024.01.21.xlsx"
 
-#need the file information for the new data file :
+#need the file information for the new data file. Note, you must have a variable "New_ID"
 nPath <- "C:/Users/klongnecker/Documents/Dropbox/GitHub/data_pipeline/data_holdingZone/"
-nDatafile <- "dummyData_needAveraging.xlsx"
+nDatafile <- "AE2213_DOC data_for BS merge.1.24.24.xlsx"
+nSheetName <- "AE2213"
 fileType <- 'xlsx' #one of two choices: 'csv' or 'xlsx'
 
 #need to explicitly link the column names in the bottle file with those in the incoming data file
@@ -30,9 +30,9 @@ fileType <- 'xlsx' #one of two choices: 'csv' or 'xlsx'
 #existingColumns is the matching labels in the existing bottle file
 
 #will accumulate lots of these, so comment them out and add to the list as needed
-#Shimadzu data...will get soon
-existingColumns <- c("DOC (umol/kg)","TDN (umol/kg)")
-tempColumns <- c("dummy","dummy2")
+#Shimadzu data from Ellie 1/24/2024
+existingColumns <- c("DOC (umol/kg)")
+tempColumns <- c("DOC [UMOL/KG]")
 
 # #Lomas FCM data
 # existingColumns <- c("Pro(cells/ml)","Syn(cells/ml)","Piceu(cells/ml)","Naneu(cells/ml)")
@@ -71,7 +71,7 @@ if (!is.na(match(fileType,'csv'))) {
   #use this version when the data are in xlsx
   #and read in the new discrete data file (again, values are as above)
   newDiscreteData <- suppressWarnings(read_excel(paste0(nPath,nDatafile),
-                                                 sheet = "Sheet1",
+                                                 sheet = nSheetName,
                                                  guess_max=Inf))
   newDiscreteData <-as.data.frame(newDiscreteData)
 }
