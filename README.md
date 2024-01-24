@@ -60,7 +60,9 @@ The next step is to use ```Join_discreteData_v2.R``` to add the calculated varia
 Once a set of CTD data has been processed, you don't need to redo the MATLAB steps unless the data gets reprocessed by BATS.
 
 ## Step 4: Merge in discrete dataset as it becomes available (in R)
-You will always have the calculated variables from Ruth's code, and there will be other datases as they become available (e.g., nutrients, Shimadzu data, cell counts, and more). Krista updated Shuting's code (new available [Join_discreteData_v2.R](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_discreteData_v2.R)). Generally the new script does the following:
+You will always have the calculated variables from Ruth's code, and there will be other datases as they become available (e.g., nutrients, Shimadzu data, cell counts, and more). One important note: the merge is done based on **New_ID**, so the new discrete data must have a column with the new ID (begins in 1,2, or 9).
+
+Krista updated Shuting's code (new available [Join_discreteData_v2.R](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_discreteData_v2.R)). Generally the new script does the following:
 * reads in the current bottle file
 * reads in the discrete data file to be added to the existing bottle file
     * checks to see if there are duplicate samples in the incoming discrete data file
