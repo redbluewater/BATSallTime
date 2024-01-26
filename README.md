@@ -16,7 +16,7 @@ Details on the scripts are covered in this figure:
 ```./CTDrelease_20230626  (these begin with “1” or “2”)```\
 ```./BIOS-SCOPE Cruises  (these begin with “9”)```
 
-### Step 1: Download CTD files from BIOS-SCOPE Google drive
+## Step 1: Download CTD files from BIOS-SCOPE Google drive
 To work on the CTD data, get the data from the BIOS-SCOPE Google Drive. This is best done in batches, where each 'batch' is CTD data from multiple cruises, possibly over multiple years. You will need to process data from BATS cruises separately from BIOSSCOPE cruises.
  
 On Google Drive you will find subfolders for each cruise. Each subfolder contains various ascii files (one per each CTD cast, plus the physf_QC and MLD.dat files). Go into the CTDrelease_20230626 and highlight the cruise folders that are new --> download them to a zip file.\
@@ -91,7 +91,7 @@ Ruth
 - [ ] put glider data and metadata into BCO-DMO format
 
 Krista 
-- [ ] Work on code to pull in discrete data
+- [x] Work on code to pull in discrete data
 - [ ] Work on Craig's code to make one cast and coordinate so end up with cruise and nominal depths (setting up to integrate with data-portal)
 - [ ] organize brainstorming session for February BIOS-SCOPE meeting
 - [ ] Need to put output from Ruth's code onto Google Drive (all the CSV/MAT/TXT files)
