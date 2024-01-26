@@ -4,8 +4,8 @@
 # original code from Shuting Liu - adapt to make its own script
 # Note that this version will also automate the averaging across duplicate 
 # samples (e.g., two injections on the Shimadzu)
-#
 # Krista Longnecker, 24 January 2024
+# Krista Longnecker, 26 January 2024 change sheet name to 'DATA' (was 'BATS_BS bottle file')
 #
 #Some notes from Krista: 
 # (1) you will need to update the path information and file names up through row ~50 in this code. 
@@ -15,6 +15,8 @@
 # that would (in theory) allow the formatting to be copied because it creates a corrupted Excel file
 
 ##need the existing discrete file (file is *not* on GitHub, update to your own path)
+# if you are on a Mac, your path will be something like this --> /users/klongnecker
+# if you are on a PC, your path will be something like this --> c:/users/klongnecker
 dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/"
 #read in the master file - this is an Excel file
 fName <- "BATS_BS_COMBINED_MASTER_2024.01.21.xlsx"
@@ -55,7 +57,7 @@ library(dplyr)
 library(readxl) #use this to read in the master file
 
 #read in the existing bottle file (using values from above)
-sheetName <- "BATS_BS bottle file"
+sheetName <- "DATA" #(was "BATS_BS bottle file")
 #definitely want suppressWarnings here to prevent one error message for each row
 discrete <- suppressWarnings(read_excel(paste0(dPath,fName),
                                         sheet = sheetName,

@@ -2,6 +2,7 @@
 #Some of these Niskins were sampled for HR-DOM samples...so the skip is an issue
 #Krista Longnecker, 21 November 2023
 #Krista Longnecker, 28 November 2023 checking that I inserted all the missing Niskins correctly
+#Krista Longnecker, 26 January 2024 update discrete file sheet name to 'DATA' (was 'BATS_BS bottle file')
 
 library(readxl)
 library(dplyr)
@@ -13,7 +14,7 @@ library(pracma)
 #(though given how BATS fires bottles, there truly could be)
 
 fName <- "BATS_BS_COMBINED_MASTER_2023.11.28.xlsx"
-sheetName <- 'BATS_BS bottle file'
+sheetName <- 'DATA' #updating, Krista keeps typing this wrong! was: BATS_BS bottle file
 #definitely want suppressWarnings here to prevent one error message for each row
 discrete <- suppressWarnings(read_excel(fName,sheet = sheetName))
 
