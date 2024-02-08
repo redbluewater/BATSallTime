@@ -91,13 +91,9 @@ Ruth
 - [ ] put glider data and metadata into BCO-DMO format
 
 Krista 
-- [x] Work on code to pull in discrete data
 - [ ] Work on Craig's code to make one cast and coordinate so end up with cruise and nominal depths (setting up to integrate with data-portal)
-- [ ] organize brainstorming session for February BIOS-SCOPE meeting
-- [ ] Need to put output from Ruth's code onto Google Drive (all the CSV/MAT/TXT files)
 - [ ] want way to track what has and has not been done for a given cruise
-Specifics:
-- [ ] Check that I am not only leaving an empty file list in create_biosscope (line 79)
+- [ ] Need to put output from Ruth's code onto Google Drive (all the CSV/MAT/TXT files)
 
 Rachel
 - [ ]  Discuss pipeline with Rod and finalize the CTD processing.
