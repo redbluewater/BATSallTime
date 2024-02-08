@@ -14,7 +14,10 @@ function [Zout] = label_vertical_zones_ctd(CTD,DCM,mld)
 %  8 :  sigma_theta 27.10 - 27.30  aka the Deep Ox Minimum
 %  9 :  sigma_theta 27.30 - 27.50
 % 10 :  anything denser
-% -999 : no zone identified
+% -999 : no zone identified 
+% KL note: can have no zone identified in cases where there is no
+% fluorescence data because some zones depend on those data to give a zone
+% (e.g., zone 2)
 %
 %  Note that zones 1 & 2 will be absent if the top of DCM is within the Mixed Layer
 %

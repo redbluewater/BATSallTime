@@ -75,7 +75,10 @@ end
 %start with the code to make one txt file for each cruise
 cd(workdir)
 D = dir();
-D(~[D.isdir]) = []; %syntax from MATLAB central, removes anything not a directory
+
+%KL commenting out this next line...I think it will leave me an empty
+%directory 2/8/2024
+%D(~[D.isdir]) = []; %syntax from MATLAB central, removes anything not a directory
 dirlist = D(3:end); %this skips over the directories . and ..
 clear D 
 

@@ -96,6 +96,8 @@ Krista
 - [ ] organize brainstorming session for February BIOS-SCOPE meeting
 - [ ] Need to put output from Ruth's code onto Google Drive (all the CSV/MAT/TXT files)
 - [ ] want way to track what has and has not been done for a given cruise
+Specifics:
+- [ ] Check that I am not only leaving an empty file list in create_biosscope (line 79)
 
 Rachel
 - [ ]  Discuss pipeline with Rod and finalize the CTD processing.
