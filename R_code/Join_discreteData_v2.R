@@ -23,8 +23,8 @@ fName <- "BATS_BS_COMBINED_MASTER_2024.01.21.xlsx"
 
 #need the file information for the new data file. Note, you must have a variable "New_ID"
 nPath <- "C:/Users/klongnecker/Documents/Dropbox/GitHub/data_pipeline/data_holdingZone/"
-nDatafile <- "AE2213_DOC data_for BS merge.1.24.24.xlsx"
-nSheetName <- "AE2213"
+nDatafile <- "sampleDataFile_useAsExampleForYourData.xlsx"
+nSheetName <- "data"
 fileType <- 'xlsx' #one of two choices: 'csv' or 'xlsx'
 
 #need to explicitly link the column names in the bottle file with those in the incoming data file
