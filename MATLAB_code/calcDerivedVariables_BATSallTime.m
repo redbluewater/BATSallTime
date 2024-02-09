@@ -33,17 +33,56 @@ do_plots = 0;
 %their *mat files
 cd(workdir)
 dirlist = dir('*.mat');
+%delete some names...not the best way to do this, but will work
+s = contains({dirlist.name},'YR');
+ks = find(s==1);
+dirlist(ks) = []; clear s ks
+s = contains({dirlist.name},'bats_ctd.mat');
+ks = find(s==1);
+dirlist(ks) = []; clear s ks
+s = contains({dirlist.name},'bval_ctd.mat');
+ks = find(s==1);
+dirlist(ks) = []; clear s ks
 
 nfiles = length(dirlist);
 
-% for ii = 1 %use for testing
-for ii = 1:3;
-% for ii = 1:nfiles %this will work for all files
-
+% doFiles = 1; %use for testing
+% doFiles = 3; %use for testing
+doFiles = nfiles; %do everything
+for ii = 1:doFiles;
    fname = dirlist(ii).name;
    infile = fullfile(workdir,fname);
    
    %use modified function from KL, 2/8/2024
-   CTD = create_BIOSSCOPE_ctd_files_v2(infile,do_plots,outdir);
+   CTD = calculate_BATSderivedVariables(infile,do_plots,outdir);
 end
+clear ii
 
+%now that you have all the files you can concatenate them. Use the first
+%file as the start
+D = dir(outdir);
+D([D.isdir]) = [];
+
+%the full download from BATS will have files I don't want. Remove them from
+%this list.
+
+%use the first file to setup the framework
+fname = D(1).name;
+infile = fullfile(outdir,fname);
+allBATS = readtable(infile);
+%then start the loop with the next file in line (this will be slow as it is
+%sequentially making a matrix that will grow in size)
+  for aa = 2:doFiles
+      fprintf('on loop %d of %d\n',aa,nfiles);
+      %read in a CSV file
+      fname = D(aa).name;
+      infile = fullfile(outdir,fname);
+      allBATS = cat(1,allBATS,readtable(infile));
+      clear fname infile
+ end
+ clear aa 
+  
+%Now export allBATS as a file...this will be pretty big
+writetable(allBATS,fullfile(outdir,'BATSwithDerivedValues.2024.02.09.csv'))
+
+clear

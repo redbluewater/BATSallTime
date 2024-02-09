@@ -91,9 +91,9 @@ Ruth
 - [ ] put glider data and metadata into BCO-DMO format
 
 Krista 
-- [ ] Work on Craig's code to make one cast and coordinate so end up with cruise and nominal depths (setting up to integrate with data-portal)
-- [ ] want way to track what has and has not been done for a given cruise
-- [ ] Need to put output from Ruth's code onto Google Drive (all the CSV/MAT/TXT files)
+- [ ] Work on Craig's code (need to figure out how to handle CTD data)
+- [ ] Need way to track what has and has not been done for a given cruise
+- [ ] Put output from Ruth's code onto Google Drive (all the CSV/MAT/TXT files)
 
 Rachel
 - [ ]  Discuss pipeline with Rod and finalize the CTD processing.

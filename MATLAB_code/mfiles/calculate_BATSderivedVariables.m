@@ -1,5 +1,5 @@
-function Xout = create_BIOSSCOPE_ctd_files_v2(infile, do_plots, outdir)
-% function Xout = create_BIOSSCOPE_ctd_files_v2(infile, do_plots, outdir)
+function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir)
+% function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir)
 % Reads a space-separated *_ctd.txt (from BATS group),
 % creates a structure with added fields, and writes a .csv file 
 % for each individual cast. 
@@ -457,5 +457,5 @@ end % for ii
         close all
     end
 %
-disp('Done!');
+%disp('Done!');
 end %function
