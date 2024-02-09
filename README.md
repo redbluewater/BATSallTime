@@ -60,15 +60,15 @@ The next step is to use ```Join_discreteData_v2.R``` to add the calculated varia
 Once a set of CTD data has been processed, you don't need to redo the MATLAB steps unless the data gets reprocessed by BATS.
 
 ## Step 4: Merge in discrete dataset as it becomes available (in R)
-You will always have the calculated variables from Ruth's code, and there will be other datases as they become available (e.g., nutrients, Shimadzu data, cell counts, and more). One important note: the merge is done based on **New_ID**, so the new discrete data must have a column with the new ID (begins in 1,2, or 9).
+You will always have the calculated variables from Ruth's code, and there will be other datases as they become available (e.g., nutrients, Shimadzu data, cell counts, and more). One important note: the merge is done based on **New_ID**, so the new datafile must have a column with the new ID (begins in 1,2, or 9). There is an example file in the data_holdingZone folder (```sampleDataFile_useAsExampleForYourData.xlsx```) so you can see the format needed for an Excel file holding new data. New data can be in an Excel file or a CSV file. 
 
 Krista updated Shuting's code (new available [Join_discreteData_v2.R](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_discreteData_v2.R)). Generally the new script does the following:
 * reads in the current bottle file
 * reads in the discrete data file to be added to the existing bottle file
     * checks to see if there are duplicate samples in the incoming discrete data file
     * asks the user if this is expected
-         * if it is expected, the code will average the samples to provide one value for each sample
-         * if it is not expected, the code will cancel with an error message so the user can see what happened
+         * if it is expected, the script will average the samples to provide one value for each sample
+         * if it is not expected, the script will cancel with an error message so the user can see what happened
 * matches the column names between the existing file and the temporary columns in the new file
 * opens up the full set of discrete data as an Excel worksheet
 
@@ -78,13 +78,17 @@ At this point, you do have to do some manual copy/pasting:
 * Get the headers with the proper colors - this is the first row in the 'Bottle File Header' worksheet.
 * Update the log and save the discrete file with a new date.
 
- Finally, upload this new discrete file back to the BIOS-SCOPE Google Drive, put it in ```./1.0 DATA/1.0 CURRENT BOTTLE FILE```. Move the old bottle file into the 'Old Versions' folder.
+Finally, upload this new discrete file back to the BIOS-SCOPE Google Drive, put it in ```./1.0 DATA/1.0 CURRENT BOTTLE FILE```. Move the old bottle file into the 'Old Versions' folder.
 
 
 ## Craig's path to make 'one cast' for cruise
 Craig currently working in R to make one single cast for each cruise so we can pull in data from pumps etc.
 For the data portal, using these synpotic casts, the idea is to use cast and nominal depth as the key for merging.
 Krista has Craig's code and will work on this next (1/24/2024)
+
+## Calculating derived variables from BATS data
+update 9 February 2024\
+There is a general interest in BIOS-SCOPE to calculate Ruth's parameters for all BATS data, back to BATS cruise #001. There is now a MATLAB script to do this [calcDerivedVariables_BATSallTime.m ](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/MATLAB_code/calcDerivedVariables_BATSallTime.m ). The output is one file with everyone and a series of CSV files, one per cruise. The full file is quite large, so it is now sitting in the BIOS-SCOPE Google Drive.
 
 ## tasks to-do list
 Ruth
