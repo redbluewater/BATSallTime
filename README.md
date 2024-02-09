@@ -87,7 +87,7 @@ For the data portal, using these synpotic casts, the idea is to use cast and nom
 Krista has Craig's code and will work on this next (1/24/2024)
 
 ## Calculating derived variables from BATS data
-update 9 February 2024
+update 9 February 2024\
 There is a general interest in BIOS-SCOPE to calculate Ruth's parameters for all BATS data, back to BATS cruise #001. There is now a MATLAB script to do this [calcDerivedVariables_BATSallTime.m ](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/MATLAB_code/calcDerivedVariables_BATSallTime.m ). The output is one file with everyone and a series of CSV files, one per cruise. The full file is quite large, so it is now sitting in the BIOS-SCOPE Google Drive.
 
 ## tasks to-do list
