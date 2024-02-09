@@ -1,8 +1,7 @@
 function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir)
 % function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir)
-% Reads a space-separated *_ctd.txt (from BATS group),
-% creates a structure with added fields, and writes a .csv file 
-% for each individual cast. 
+% Reads a *mat file (from BATS group), creates a structure with added 
+% fields, and writes a .csv file for each individual cruise. 
 % INPUT:
 %  infile is the name of the file to read.
 %  do_plots is 1/0 depending if you do (1) or do not (0) want figures
@@ -13,7 +12,7 @@ function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir)
 % data to change the transition dates each year
 %
 % OUTPUT:
-%  Writes individual files for each cast in csv format
+%  Writes individual files for each cruise in csv format
 %  Xout  :  a matlab structure with fields storing info for entire
 %           cruise in row vectors and rectangular matrices (KL note this is
 %           not currently being exported)
@@ -38,7 +37,7 @@ v = fieldnames(riMAT);
 TTin = riMAT.(v{1}); %this will read in matrix, only do this to get the number of rows
 % # of rows is the same variable that Ruth was calling MAXZ
 % MAXZ is the deepest water sample in this cruise (Ruth was setting this to
-% 2500 m, but KL changed this to dynamically determine for each cast
+% 2500 m, but KL changed this to dynamically determine for each cast)
 MAXZ = size(TTin,1);
 %now use the number of rows to make an array matching Ruth's format
 TTin = mat2cell(riMAT.(v{1}),[MAXZ],[ones(12,1)]); %12 is fixed - number of variables
@@ -406,8 +405,8 @@ clear din parin
    
 % Label Seasons
 %KL change here - need year to calculate the season information that will
-%be needed here
-   trans_dates = get_season_dates(Xout.year);
+%be used here
+   trans_dates = get_season_dates(Xout.year); %new function from KL
 
    theCode = label_seasons_ctd(XX,DCM,ML_ToUse,trans_dates);
    disp([num2str(Xout.year(ii)),' ',num2str(Xout.month(ii)),' ',num2str(Xout.day(ii)),'  Season: ', num2str(theCode)]);
@@ -423,7 +422,7 @@ clear din parin
         XX.(fname) = BB;       
     end
 
-% % Output the cast %don't need individual casts 
+% % Output the cast %KL note: don't need individual casts 
 %KL note - these are square matrices, to whatever depth is set in MAXZ
 %    fmt = '%8d_%1d%04d_%03d_ctd.csv';
 %    outfile = sprintf(fmt,XX.yyyymmdd(1),Xout.type(ii),XX.Cruise(1),XX.Cast(1));
