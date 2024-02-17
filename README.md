@@ -5,7 +5,7 @@ The repository was started during a small group meeting for the BIOS-SCOPE proje
 
 The remainder of this repository describes how this is done, provides details and code from different people, and ends with a to-do list for each member of this small group.
 
-Details on the scripts are covered in this figure:
+Details on the scripts are covered either in the PDF presented [here]([https://github.com/BIOS-SCOPE/data-portal](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/BIOSSCOPE_dataPipeline_LongneckerEtAl.pdf)) or in this figure:
 <img src="https://github.com/BIOS-SCOPE/data_pipeline/blob/main/data_pipeline_figure.2024.01.21.jpg"  width="105%" height="105%">
 
 ## After a cruise 
