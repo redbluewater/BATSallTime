@@ -19,7 +19,7 @@
 # if you are on a PC, your path will be something like this --> c:/users/klongnecker
 dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/"
 #read in the master file - this is an Excel file
-fName <- "BATS_BS_COMBINED_MASTER_2024.01.21.xlsx"
+fName <- "BATS_BS_COMBINED_MASTER_latest.xlsx"
 
 #need the file information for the new data file. Note, you must have a variable "New_ID"
 nPath <- "C:/Users/klongnecker/Documents/Dropbox/GitHub/data_pipeline/data_holdingZone/"

@@ -13,7 +13,7 @@ library(pracma)
 #casts where there are gaps in the Niskins fired. There may be cases where we did not #fire all the bottles, but there should be no cases where a Niskin was skipped
 #(though given how BATS fires bottles, there truly could be)
 
-fName <- "BATS_BS_COMBINED_MASTER_2023.11.28.xlsx"
+fName <- "BATS_BS_COMBINED_MASTER_latest.xlsx"
 sheetName <- 'DATA' #updating, Krista keeps typing this wrong! was: BATS_BS bottle file
 #definitely want suppressWarnings here to prevent one error message for each row
 discrete <- suppressWarnings(read_excel(fName,sheet = sheetName))

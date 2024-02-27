@@ -22,7 +22,7 @@ library(readxl)
 # if you are on a PC, your path will be something like this --> c:/users/klongnecker
 dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/"
 #read in the master file - which is currently an Excel file
-fName <- "BATS_BS_COMBINED_MASTER_2024.01.21.xlsx"
+fName <- "BATS_BS_COMBINED_MASTER_latest.xlsx"
 sheetName <- 'DATA' #updating, Krista keeps typing this wrong! was: BATS_BS bottle file
 
 ##get the header information for the CTD data; KL used CTD ID.docx in 91614 folder in

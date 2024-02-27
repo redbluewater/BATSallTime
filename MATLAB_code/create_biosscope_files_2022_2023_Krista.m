@@ -1,23 +1,27 @@
 % Compile BATS/BIOSSCOPE CTD files in .csv and .mat formats
 % Add fields to Master Bottle file 
 % Original code from Ruth Curry, BIOS / ASU
-% Krista Longnecker; 2 January 2024; updated 19 January 2024
+% Krista Longnecker; 2 January 2024; updated 26 February 2024
 %
-% Some notes from Krista (19 January 2024)
+% Some notes from Krista (26 February 2024)
 % (1) you will need to update the path information and file names
-% up through row ~70 in this code. There should be no need to change
+% up through row ~74 in this code. There should be no need to change
 % anything past that point.
 % (2) The output from this code will be a CSV file that will be saved in
-% the place defined at line 21
+% the place defined at line 22
 
 %% >>>>>   % add ./BIOSSCOPE/CTD_BOTTLE/mfiles into matlab path
 addpath(genpath('C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\MATLAB_code\mfiles'));
 
 %% update the folder information before getting started
+%all path information will begin with the rootdir
 rootdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\';
+%use the workdir to temporarily hold your CTD data
 workdir = fullfile(rootdir,'CTDdata\BSworkingCurrent\');
+%use the CSVoutdir as a place to export your CSV file at the end
 CSVoutdir = 'C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\data_holdingZone\';
-Bfile = fullfile(rootdir,'DataFiles_CTDandDiscreteSamples/BATS_BS_COMBINED_MASTER_2024.01.21.xlsx');
+%Bfile is the name of the bottle file you downloaded from the Google Drive
+Bfile = fullfile(rootdir,'DataFiles_CTDandDiscreteSamples/BATS_BS_COMBINED_MASTER_latest.xlsx');
 
 %what are you going to use for the season information?
 if 1
@@ -155,7 +159,7 @@ nfiles = length(dirlist);
 %%  Load the bottle file and create an output structure to store new info 
 disp(['Loading ',Bfile]);
 
-sheetName = 'BATS_BS Bottle File'; %put this down here, should not change
+sheetName = 'DATA'; %put this down here, updated February 2024 
 BB = readtable(Bfile,'sheet',sheetName,'ReadVariableNames',true);
 varNames = BB.Properties.VariableNames';
 [nrows,ncols] = size(BB);
