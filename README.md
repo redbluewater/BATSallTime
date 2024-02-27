@@ -26,7 +26,7 @@ Make a processing folder (e.g., BIOSSCOPE_working) and move the downloaded zip a
 This file was updated by Krista (January 2024), the update modified Shuting's code to go through a series of folders to find new CTD data. The code will require you to indicate if you are working on 'BATS' data or 'BIOSSCOPE' data (at line 30). The updated R file is [Join_BATS_All_with_master_v3.R](https://github.com/BIOS-SCOPE/data_pipeline/blob/main/R_code/Join_BATS_All_with_master_v3.R), and you can click the link to see the file on GitHub. 
 
 The code now does the following (after data files have been downloaded from Google Drive as described above:
-* read in the current master file (```BATS_BS_COMBINED_MASTER_2024.01.21.xlsx```) and then use that to set the headers for the data incoming data
+* read in the current master file (```BATS_BS_COMBINED_MASTER_latest.xlsx```) and then use that to set the headers for the data incoming data
 * get the headers that are used on the BATS CTD data files
 * Go through one cruise at a time and
     * read in the ```BIOSSCOPE_physf``` file
