@@ -15,11 +15,23 @@
 # file, and then header gets copied from the prior version of the bottle file. I cannot use the 
 # that would (in theory) allow the formatting to be copied because it creates a corrupted Excel file
 
-##need the existing discrete file (file is *not* on GitHub, update to your own path)
+# figure out what your path to files will be....this varies for PCs and Macs
 # if you are on a Mac, your path will be something like this --> /users/klongnecker
 # if you are on a PC, your path will be something like this --> c:/users/klongnecker
-dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/"
+OS <- .Platform$OS.type
 
+if (OS == "unix"){
+  # MAC file path - change to what works on your computer
+  dPath <- "/users/klongnecker/" 
+} else if (OS == "windows"){
+  # windows file path - change to what works on your computer
+  dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/" 
+} else {
+  #something went wrong...could not determine the operating system
+  print("ERROR: OS could not be identified")
+}
+
+##need the existing discrete file (file is *not* on GitHub, update to your own path)
 #read in the master file - this is an Excel file
 fName <- "BATS_BS_COMBINED_MASTER_latest.xlsx"
 

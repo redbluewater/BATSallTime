@@ -4,6 +4,7 @@
 # Krista Longnecker, update to pull BATS cast details from the updated discrete file...
 # Krista Longnecker, tidying up 21 January 2024
 # Krista Longnecker, 26 January 2024 change sheet name to 'DATA' (was 'BATS_BS bottle file')
+# Krista, 17 May 2024, adding points to help set the path
 # 
 # Some notes from Krista: 
 # (1) you will need to update the path information and file names up through row ~40 in this code. 
@@ -17,10 +18,23 @@ rm(list =ls.str())
 library(dplyr)
 library(readxl)
 
-##first, read in the existing discrete file so that you know what you are matching the columns to...
+##first, set the path. 
 # if you are on a Mac, your path will be something like this --> /users/klongnecker
 # if you are on a PC, your path will be something like this --> c:/users/klongnecker
-dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/"
+OS <- .Platform$OS.type
+
+if (OS == "unix"){
+  # MAC file path
+  dPath <- "/users/klongnecker/" 
+} else if (OS == "windows"){
+  # windows file path
+  dPath <- "C:/Users/klongnecker/Documents/Dropbox/Current projects/Kuj_BIOSSCOPE/RawData/DataFiles_CTDandDiscreteSamples/" 
+} else {
+  #something went wrong...could not determine the operating system
+  print("ERROR: OS could not be identified")
+}
+
+#read in the existing discrete file so that you know what you are matching the columns to
 #read in the master file - which is currently an Excel file
 fName <- "BATS_BS_COMBINED_MASTER_latest.xlsx"
 sheetName <- 'DATA' #updating, Krista keeps typing this wrong! was: BATS_BS bottle file
