@@ -4,6 +4,10 @@
 # file, and then header gets copied from the prior version of the bottle file. I cannot use the 
 # that would (in theory) allow the formatting to be copied because it creates a corrupted Excel file
 # Krista Longnecker, 21 January 2024
+# Krista Longnecker, 11 January 2024
+
+// KL note: June 2024 use with caution, this script added the cell count data into two places in the discrete data file
+(one was the right place and one was wrong)
 
 library(dplyr)
 
