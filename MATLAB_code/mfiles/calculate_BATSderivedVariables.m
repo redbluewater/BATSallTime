@@ -1,5 +1,5 @@
-function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir)
-% function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir)
+function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir,giveNotice)
+% function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir,giveNotice)
 % Reads a *mat file (from BATS group), creates a structure with added 
 % fields, and writes a .csv file for each individual cruise. 
 % INPUT:
@@ -305,7 +305,7 @@ if do_plots
          plot(XX.Fluor,XX.Pressure,'-c','Linewidth',1.5);
          plot(Xfilt,XX.Pressure,'-k','Linewidth',1.5);
 end
-     if abs(bias) > 0.005
+     if abs(bias) > 0.005 & giveNotice
        disp('Applying bias to fluor profile')
        Xfilt = Xfilt - bias;
 if do_plots
@@ -452,7 +452,8 @@ end % for ii
    writetable(TTcruise,outfile);
    
     if do_plots
-        reply = input(' HIT any key to close figures....');
+        tilefigs
+        reply = input(' Press ENTER to close figures....');
         close all
     end
 %

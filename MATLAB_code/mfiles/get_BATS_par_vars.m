@@ -15,6 +15,7 @@ function [ Xout ] = get_BATS_par_vars(PAR_in, de_in, zrange, zmax )
 %
 %  NOTE:  Missing values returned in Xout are set to NaN.
 %% 19-Oct-2023 rcurry Updated to catch error in fit() of par profiles
+%% KL turned off some warnings 14 June 2024
 
 %% Initialize output struct
 
@@ -31,7 +32,7 @@ PAR_in(PAR_in < -990) = NaN;
 de_in(de_in < -990) = NaN;
 notNan = ~isnan(PAR_in) & ~isnan(de_in);
 if sum(notNan) < 30
-    disp('Not enough pts to fit PAR')
+    %disp('Not enough pts to fit PAR')
     return
 end
 %
@@ -44,7 +45,7 @@ end
 %
 igood = find(notNan & de_in >= zrange(1) & de_in <= zrange(2));
 if length(igood) < 30
-    disp('Not enough points to fit PAR')
+    %disp('Not enough points to fit PAR')
     return
 end
 %
@@ -55,7 +56,7 @@ end
      [f, gof,options] = fit(de_good,PAR_good,'exp1','robust','bisquare');
     
  catch
-     warning('WARNING: fit() for par profile returned an error. Par variables set to NaN'); 
+     %warning('WARNING: fit() for par profile returned an error. Par variables set to NaN'); 
      return
  end
  

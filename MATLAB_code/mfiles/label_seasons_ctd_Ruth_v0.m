@@ -25,12 +25,10 @@ function [ theCode] = label_seasons_ctd(CTD,DCM,mld, trans_dates )
 %10.5m); change the code to send out a NaN for season if this happens
 %%keep this m-file in case I need to go back - label_seasons_ctd_Ruth_v0.m
 %%work on the script without the added version information
-%KL 13 June 2024
+
 
 mtime = decyear2dnum(CTD.decy(1));
 
-%can use pre-defined dates to set the season (this comes from analysis of
-%the glider data so is only available for a limited amount of time)
 if isstruct(trans_dates)  % check the date of cast against the dates provided
     
     TD=trans_dates.mixed;
@@ -70,19 +68,10 @@ if isstruct(trans_dates)  % check the date of cast against the dates provided
 end %if (trans_dates)
 
 %  if reach here, use mld / DCM / month to assign a season
+
 [~,M,~] = datevec(mtime);
 
-%The DCM will not be defined if there is no fluorescence data. In this 
-%case CTD.Fluor will be all NaN. If that happens, set theCode (season) 
-%to NaN; KL 14 June 2024
-d = ~isnan(CTD.Fluor); %check - is this all NaN?
-if sum(double(d))==0 %will sum to 0 if all NaN in fluorescence data
-    theCode = NaN;
-    return
-elseif isnan(DCM.itop) && isequal(mld,-999) %no DCM and no MLD
-    theCode = NaN; %set season to NaN;  KL 14 June 2024
-    return
-elseif isnan(DCM.itop)  % DCM not defined (but data are available)
+if isnan(DCM.itop)  % DCM not defined 
     theCode = 1;  
     if M >= 12 && M < 4
         return        %mixed
@@ -90,12 +79,11 @@ elseif isnan(DCM.itop)  % DCM not defined (but data are available)
     if M >=4 && M <= 5 && mld > 30
         theCode = 2;  % spring
     end
-    if M >=10 && M <=12 && mld < 100 %KL note - I don't think you can get here in December (see line 88)
+    if M >=10 && M <=12 && mld < 100
         theCode = 4;  %fall
     end
 end
-
-%
+%    
 if ~isnan(DCM.itop)  %DCM is defined, not mixed
     
     theCode = 3;   %assume it is strat
@@ -104,20 +92,13 @@ if ~isnan(DCM.itop)  %DCM is defined, not mixed
     end
     
     if M >=3 && M < 6   %Mar - May
-        %add another step here - if there is no mld, set theCode to NaN
-        %(hence setting season to NaN); KL 6/13/2024
-       if isequal(mld,-999)
-           theCode = NaN;
-           return
-       elseif mld < 100 && mld > 30
+       if mld < 100 && mld > 30
           theCode = 2;    %spring
           return
        end  
     end
     
-    if isequal(mld,-999)
-       theCode = NaN;
-    elseif M >=10 && M < 12 && mld < 100
+    if M >=10 && M < 12 && mld < 100
         theCode = 4;  % fall
         return
     end
