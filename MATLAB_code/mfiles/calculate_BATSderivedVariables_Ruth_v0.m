@@ -18,9 +18,7 @@ function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir,giveNoti
 %           not currently being exported)
 
 % NOTE:  Vertical zones are computed using ML_dens125
-%
-% Original script from Ruth Curry BIOS/ASU (2023); Krista Longnecker
-% editing to add more MLD definitions 24 June 2024
+
 
 
 %%  Read file into rectangular array, and store each column as a field in structure CTD
@@ -117,11 +115,6 @@ CTD.VertZone = ZZ;
 CTD.MLD_dens125 = ZZ;
 CTD.MLD_bvfrq = ZZ;
 CTD.MLD_densT2 = ZZ;
-CTD.MLD_densT3 = ZZ; %KL adding MLD definitions, 6/24/2024
-CTD.MLD_densT1 = ZZ;
-CTD.MLD_dens2 = ZZ;
-CTD.MLD_densGR = ZZ;
-CTD.MLD_te2 = ZZ;
 CTD.DCM = ZZ;
 CTD.par_est = ZZ;
 CTD.par0 = ZZ;
@@ -156,11 +149,6 @@ Xout.lon = XX;
 Xout.MLD_dens125 = XX;
 Xout.MLD_bvfrq = XX;
 Xout.MLD_densT2 = XX;
-Xout.MLD_densT3 = XX; %KL adding MLD 6/24/2024
-Xout.MLD_densT1 = XX;
-Xout.MLD_dens2 = XX;
-Xout.MLD_densGR = XX;
-Xout.MLD_te2 = XX;
 Xout.DCM = XX;
 Xout.Season = XX;
 Xout.Sunrise = XX;
@@ -284,33 +272,15 @@ for ii = 1:ncast
 %    
     MLD = get_mld_ctd(XX);
     ML_ToUse = MLD.dens125;  % ensure same ML is used by various functions
-    %KL adding options to XX,CTD,Xout; 6/24/2024 
     XX.MLD_dens125(:) = MLD.dens125;
     XX.MLD_bvfrq(:) = MLD.bvfrq;
     XX.MLD_densT2(:) = MLD.densT2;    
-    XX.MLD_densT3(:) = MLD.densT3;    
-    XX.MLD_densT1(:) = MLD.densT1;
-    XX.MLD_dens2(:) = MLD.dens2;    
-    XX.MLD_densGR(:) = MLD.densGR;    
-    XX.MLD_te2(:) = MLD.te2;    
-    
     CTD.MLD_dens125(indx) = MLD.dens125;
     CTD.MLD_bvfrq(indx) = MLD.bvfrq;
     CTD.MLD_densT2(indx) = MLD.densT2;
-    CTD.MLD_densT3(indx) = MLD.densT3; 
-    CTD.MLD_densT1(indx) = MLD.densT1; 
-    CTD.MLD_dens2(:) = MLD.dens2;    
-    CTD.MLD_densGR(:) = MLD.densGR;    
-    CTD.MLD_te2(:) = MLD.te2;    
-    
     Xout.MLD_dens125(ii) = MLD.dens125;
     Xout.MLD_bvfrq(ii) = MLD.bvfrq;
     Xout.MLD_densT2(ii) = MLD.densT2;    
-    Xout.MLD_densT3(ii) = MLD.densT3;
-    Xout.MLD_densT1(ii) = MLD.densT1;
-    Xout.MLD_dens2(ii) = MLD.dens2;    
-    Xout.MLD_densGR(ii) = MLD.densGR;    
-    Xout.MLD_te2(ii) = MLD.te2;      
    
 %   Sunrise was computed for Xout above
     XX.Sunrise(:) = Xout.Sunrise(ii);
