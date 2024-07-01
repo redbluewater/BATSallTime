@@ -123,6 +123,7 @@ CTD.MLD_dens2 = ZZ;
 CTD.MLD_densGR = ZZ;
 CTD.MLD_te2 = ZZ;
 CTD.DCM = ZZ;
+CTD.DCMde_top = ZZ;
 CTD.par_est = ZZ;
 CTD.par0 = ZZ;
 CTD.kpar = ZZ;
@@ -162,6 +163,7 @@ Xout.MLD_dens2 = XX;
 Xout.MLD_densGR = XX;
 Xout.MLD_te2 = XX;
 Xout.DCM = XX;
+Xout.DCMde_top = XX;
 Xout.Season = XX;
 Xout.Sunrise = XX;
 Xout.Sunset = XX;
@@ -360,10 +362,24 @@ end
     XX.DCM(:) = DCM.depth;
     CTD.DCM(indx) = DCM.depth;
     Xout.DCM(ii) = DCM.depth;
+    %KL adding option to store DCM.itop because will need that to define
+    %season 7/1/2024
+    XX.DCMde_top(:) = DCM.de_top;
+    CTD.DCMde_top(indx) = DCM.de_top;
+    Xout.DCMde_top(ii) = DCM.de_top;
+    
+%     if DCM.de_top > DCM.depth
+%         keyboard
+%     end
+    
     if ML_ToUse < -990;   % no ML defined -- likely a surface cast
         XX.DCM(:) = -999;
         CTD.DCM(indx) = -999;
         Xout.DCM(ii) = NaN;
+        %KL adding these variables so they also end up not defined
+        XX.DCMde_top(:) = -999;
+        CTD.DCMde_top(indx) = -999;
+        Xout.DCMde_top(ii) = NaN;
     end
     
 if do_plots

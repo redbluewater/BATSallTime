@@ -13,25 +13,38 @@
 clear all 
 close all
 
-%% >>>>>   % add ./BIOSSCOPE/CTD_BOTTLE/mfiles into matlab path
-addpath(genpath('C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\MATLAB_code\mfiles'));
+%%add options depending on computer, KL is jumping between computers
+if isequal(getenv('COMPUTERNAME'),'ESPRESSO')
+    %% add ./BIOSSCOPE/CTD_BOTTLE/mfiles into matlab path
+    addpath(genpath('C:\Users\klongnecker\Documents\GitHub\data_pipeline\MATLAB_code\mfiles'));    
+    
+    %% update the folder information before getting started
+    rootdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\';
+    %Krista has put the next two folders outside the space accessible by GitHub
+    %These files are too large to put into GitHub
+    % workdir = fullfile(rootdir,'RCcalcBATS\data_temporary\');
+    workdir = fullfile(rootdir,'RCcalcBATS\data_copySmall_testing\');
+    outdir = fullfile(rootdir,'RCcalcBATS\data_holdingZone\');
+elseif isequal(getenv('COMPUTERNAME'),'LONGNECKER-1650')
+    %% add ./BIOSSCOPE/CTD_BOTTLE/mfiles into matlab path    
+    addpath(genpath('C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\MATLAB_code\mfiles'));
 
-%% update the folder information before getting started
-rootdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\';
-%Krista has put the next two folders outside the space accessible by GitHub
-%These files are too large to put into GitHub
-workdir = fullfile(rootdir,'RCcalcBATS\data_temporary\');
-% workdir = fullfile(rootdir,'RCcalcBATS\data_copySmall_testing\');
+    %% update the folder information before getting started
+    rootdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\';
+    %Krista has put the next two folders outside the space accessible by GitHub
+    %These files are too large to put into GitHub
+    % workdir = fullfile(rootdir,'RCcalcBATS\data_temporary\');
+    workdir = fullfile(rootdir,'RCcalcBATS\data_copySmall_testing\');
+    outdir = fullfile(rootdir,'RCcalcBATS\data_holdingZone\');
+end
 
-outdir = fullfile(rootdir,'RCcalcBATS\data_holdingZone\');
-gitdir = 'C:\Users\klongnecker\Documents\GitHub\data_pipeline\MATLAB_code';
-
+gitdir = pwd;
 %set this to one if you want to see a plot for each cast (that will clearly
 %be a ton of plots, so this is best used if you to look at a preset number
 %of casts within the full set of casts)
 do_plots = 0;
    
-NameOfFile = 'BATSdataForSeasonDefinitions.2024.06.27.mat';
+NameOfFile = 'BATSdataForSeasonDefinitions.2024.07.01.mat';
 
 %now do the calculations
 
