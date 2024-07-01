@@ -196,7 +196,7 @@ for ii = 1:ncast
    Xout.doy(ii) = datevec2doy(dvec)';
    Xout.lat(ii) = CTD.latN(itop);
    Xout.lon(ii) = CTD.lonW(itop) * -1;
-%  Sunrise() uses lon, W is positive
+%  Sunrise() uses lon, W is positive (KL note - result is in GMT)
      [rhr,rmin,shr,smin]=sunrise(dvec(2),dvec(3),dvec(1),Xout.lat(ii),-Xout.lon(ii));
    Xout.Sunrise(ii) = rhr * 100 + rmin;
    Xout.Sunset(ii) = shr * 100 + smin;
