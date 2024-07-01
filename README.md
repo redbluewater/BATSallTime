@@ -104,3 +104,11 @@ Rachel
 - [ ]  Does Dom needs to reprocess BIOS-SCOPE cruises?
 - [ ]  Figure out why we have two folders for BIOS-SCOPE 91916 cruise on Google Drive ('91916' and '91916_QC'). Sort out which is right and move the other folder
 - [ ]  difference between wet oxygen 1, 2, 3 and salts 1, 2 in the CTD files
+
+## Some git notes for Krista
+Edit file(s) on my local computer, then to get the files back to GitHub, use this set of commands to put onto GitHub:
+
+```git add -A``` *or* ```git add MATLAB_code/\ *``` (or whatever folder you want)\
+```git commit -am "Brief description goes here"``` (can use the bit in quotes to describe the update)\
+```git push```\
+(enter the passcode I use to get files to GitHub)
