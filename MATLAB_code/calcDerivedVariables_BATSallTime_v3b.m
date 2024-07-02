@@ -22,8 +22,8 @@ if isequal(getenv('COMPUTERNAME'),'ESPRESSO')
     rootdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\';
     %Krista has put the next two folders outside the space accessible by GitHub
     %These files are too large to put into GitHub
-    % workdir = fullfile(rootdir,'RCcalcBATS\data_temporary\');
-    workdir = fullfile(rootdir,'RCcalcBATS\data_copySmall_testing\');
+    workdir = fullfile(rootdir,'RCcalcBATS\data_temporary\');
+%     workdir = fullfile(rootdir,'RCcalcBATS\data_copySmall_testing\');
     outdir = fullfile(rootdir,'RCcalcBATS\data_holdingZone\');
 elseif isequal(getenv('COMPUTERNAME'),'LONGNECKER-1650')
     %% add ./BIOSSCOPE/CTD_BOTTLE/mfiles into matlab path    
@@ -73,7 +73,7 @@ stepOne = table();
 % doFiles = ; %use for testing, more files in case you need to test the loop
 doFiles = nfiles; %do everything
 for ii = 1:doFiles;
-   fname = dirlist(ii).name;
+   fname = dirlist(ii).name;      
    infile = fullfile(workdir,fname);
    
    %use modified function from KL, 2/8/2024
@@ -129,6 +129,7 @@ clear a
 
 %now that I have the BATS five digit cruises I can work on one cruise at a
 %time (this is a case where R is easier than MATLAB); setup a table
+%% This table is getting out of hand...KL needs to correct this
 uniqueCruises = array2table(unique(stepThree.cruise),'VariableNames',{'cruise'});
 uniqueCruises.year = nan(size(uniqueCruises,1),1);
 uniqueCruises.month = nan(size(uniqueCruises,1),1);
@@ -136,19 +137,26 @@ uniqueCruises.day = nan(size(uniqueCruises,1),1);
 uniqueCruises.datetime = NaT(size(uniqueCruises,1),1);
 uniqueCruises.nNightCasts = nan(size(uniqueCruises,1),1); %how many casts at night?
 uniqueCruises.maxDCMallTime = nan(size(uniqueCruises,1),1); %will be a number, max DCM, any time
+uniqueCruises.maxDCMallTime_depthTop = nan(size(uniqueCruises,1),1);
 uniqueCruises.maxDCMatNight = nan(size(uniqueCruises,1),1); %what is the max DCM of the night time casts
+uniqueCruises.maxDCMatNight_depthTop = nan(size(uniqueCruises,1),1);
 uniqueCruises.MLDmax = nan(size(uniqueCruises,1),1); %number, value
+uniqueCruises.season = nan(size(uniqueCruises,1),1); %number, value
+
 
 for a = 1:size(uniqueCruises,1)
     k = find(uniqueCruises.cruise(a) == stepThree.cruise); %find one cruise
     makeSmall = stepThree(k,:); %easier to work with small dataset
     clear k
     %find the max DCM for the cruise; 
-    maxDCM = max(makeSmall.DCM,[],'omitnan'); %need brackets or you get garbage (skipping dimension)
-    if ~isempty(maxDCM)
+    [maxDCM id] = max(makeSmall.DCM,[],'omitnan'); %need brackets or you get garbage (skipping dimension)
+    %have three cruises with issues (10155, 50056, 50058) with DCM > 500,
+    %ignore them for now
+    if ~isempty(maxDCM) && maxDCM < 250
         %actually have a value for DCM, some cruises have nothing here
         uniqueCruises.maxDCMallTime(a) = maxDCM;
-        clear maxDCM
+        uniqueCruises.maxDCMallTime_depthTop(a) =  makeSmall.DCMde_top(id);%depth of the top of the DCM for the DCM that is the max
+        clear maxDCM id
         
         %what about the DCM value at night (no photoquencing)
         %sunrise and sunset are given as hour of the day 
@@ -160,12 +168,15 @@ for a = 1:size(uniqueCruises,1)
         meanSunrise = str2double(meanSunrise(1:2));
            
         kd = find(makeSmall.hour > meanSunset & makeSmall.hour < meanSunrise);
+        makeSmaller = makeSmall(kd,:); %messy...and messier
         if ~isempty(kd)
             %plenty of cases with no casts at night, so put in a check
-            uniqueCruises.nNightCasts(a) = length(kd);
-            uniqueCruises.maxDCMatNight(a) = max(makeSmall.DCM(kd),[],'omitnan');
+            uniqueCruises.nNightCasts(a) = size(makeSmaller,1);
+            [md id] = max(makeSmaller.DCM,[],'omitnan');
+            uniqueCruises.maxDCMatNight(a) = md;
+            uniqueCruises.maxDCMatNight_depthTop(a) = makeSmaller.DCMde_top(id);
         end
-        clear kd meanSunset meanSunrise
+        clear kd meanSunset meanSunrise makeSmaller
     end %end if loop testing for an empty DCM
     
     %now get the maximum MLD for cruise; here no MLD = -999, but could have
@@ -186,6 +197,18 @@ for a = 1:size(uniqueCruises,1)
     clear makeSmall   
 end
 clear a
+
+% uniqueCruises.season = nan(size(uniqueCruises,1),1);
+% 
+% for a = 1:size(uniqueCruises,1)
+%     %function [theCode] = label_seasons_ctd(DCMdepthMax,DCMdepthTop,mld,month)
+%     theCode = label_seasons_ctd_KLtesting(uniqueCruises.maxDCMallTime(a),...
+%         uniqueCruises.maxDCMallTime_depthTop(a),uniqueCruises.MLDmax(a),...
+%         uniqueCruises.month(a));
+%     uniqueCruises.season(a) = theCode;
+%     clear theCode
+% end
+% clear a
 
 save(NameOfFile)
 

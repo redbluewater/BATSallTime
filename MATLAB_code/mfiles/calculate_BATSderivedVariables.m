@@ -358,7 +358,8 @@ end
     if isempty(izmax)
         izmax = length(XX.Depth);
     end
-    DCM = get_dcm_layer_ctd(Xfilt,XX.Depth, ML_ToUse,percent,izmax);
+    
+    DCM = get_dcm_layer_ctd(Xfilt,XX.Depth, ML_ToUse,percent,izmax);   
     XX.DCM(:) = DCM.depth;
     CTD.DCM(indx) = DCM.depth;
     Xout.DCM(ii) = DCM.depth;
