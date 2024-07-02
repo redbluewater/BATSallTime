@@ -139,8 +139,7 @@ unCru.datetime = NaT(size(unCru,1),1);
 unCru.nNightCasts = nan(size(unCru,1),1); %how many casts at night?
 unCru.maxDCMallTime = nan(size(unCru,1),1); %will be a number, max DCM, any time
 unCru.maxDCMallTime_depthTop = nan(size(unCru,1),1);
-unCru.maxDCMatNight = nan(size(unCru,1),1); %what is the max DCM of the night time casts
-unCru.maxDCMatNight_depthTop = nan(size(unCru,1),1);
+unCru.maxDCMallTime_depthBot = nan(size(unCru,1),1);
 unCru.DCMinML = nan(size(unCru,1),1); %new 7/2/2024, is the DCM in the ML?
 unCru.MLDmax = nan(size(unCru,1),1); %number, value
 unCru.season = nan(size(unCru,1),1); %number, value
@@ -158,30 +157,9 @@ for a = 1:size(unCru,1)
         %actually have a value for DCM, some cruises have nothing here
         unCru.maxDCMallTime(a) = maxDCM;
         unCru.maxDCMallTime_depthTop(a) =  makeSmall.DCMde_top(id);%depth of the top of the DCM for the DCM that is the max
+        unCru.maxDCMallTime_depthBot(a) =  makeSmall.DCMde_bot(id);%depth of the top of the DCM for the DCM that is the max
         unCru.DCMinML(a) = makeSmall.DCMinML(id);
         clear maxDCM id
-        
-        %what about the DCM value at night (no photoquencing)
-        %sunrise and sunset are given as hour of the day 
-        %1055.23 , sunrise, is hhmm.## (ignore the fraction)
-        %consider: should I round/floor/ceil the sunrise/sunset?
-        meanSunset = char(string(mean(makeSmall.Sunset,'omitnan')));
-        meanSunset = str2double(meanSunset(1:2));
-        meanSunrise = char(string(mean(makeSmall.Sunrise,'omitnan')));
-        meanSunrise = str2double(meanSunrise(1:2));
-           
-        kd = find(makeSmall.hour > meanSunset & makeSmall.hour < meanSunrise);
-        makeSmaller = makeSmall(kd,:); %messy...and messier
-        if ~isempty(kd)
-            %plenty of cases with no casts at night, so put in a check
-            unCru.nNightCasts(a) = size(makeSmaller,1);
-            [md id] = max(makeSmaller.DCM,[],'omitnan');
-            unCru.maxDCMatNight(a) = md;
-            unCru.maxDCMatNight_depthTop(a) = makeSmaller.DCMde_top(id);
-            unCru.DCMinML(a) = makeSmaller.DCMinML(id);
-            clear md id
-        end
-        clear kd meanSunset meanSunrise makeSmaller
     end %end if loop testing for an empty DCM
     
     %now get the maximum MLD for cruise; here no MLD = -999, but could have
@@ -202,18 +180,6 @@ for a = 1:size(unCru,1)
     clear makeSmall   
 end
 clear a
-
-% unCru.season = nan(size(unCru,1),1);
-% 
-% for a = 1:size(unCru,1)
-%     %function [theCode] = label_seasons_ctd(DCMdepthMax,DCMdepthTop,mld,month)
-%     theCode = label_seasons_ctd_KLtesting(unCru.maxDCMallTime(a),...
-%         unCru.maxDCMallTime_depthTop(a),unCru.MLDmax(a),...
-%         unCru.month(a));
-%     unCru.season(a) = theCode;
-%     clear theCode
-% end
-% clear a
 
 save(NameOfFile)
 

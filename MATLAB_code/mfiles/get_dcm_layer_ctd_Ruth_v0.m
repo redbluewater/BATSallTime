@@ -19,14 +19,11 @@ function [DCM] = get_dcm_layer_ctd(CHL, DE, MLD, percent, izmax)
 %       .ibot  :  index of bottom of layer   == NaN
 %       .de_top :  depth at top == NaN if DCM is within the ML
 %       .de_bot : depth at bottom == MLD if DCM is within the ML
-%       .DCMinML : 1 = yes; 0 = no (true/false, is the DCM in the ML)
 %
 %
 % Ruth Curry, BIOS / ASU
 % Uploaded for BIOS-SCOPE project 19 October 2023
-% Krista Longnecker 2 July 2024 (saved Ruth's version as get_dcm_layer_ctd_Ruth_v0.m)
-% adding a flag if the top or bottom of the DCM is in the ML, but change to 
-% keeping the actual DCM value
+%
 
 [~,nprof] = size(CHL);
 DCM = struct();
@@ -37,7 +34,6 @@ DCM.itop = XX;
 DCM.ibot = XX;
 DCM.de_top = XX;
 DCM.de_bot = XX;
-DCM.DCMinML = zeros(1,nprof); %KL adding 7/2/2024
 clear XX
 
 [dcm_indx, chl_pct] = chlor_percent(CHL, izmax);
@@ -55,14 +51,12 @@ for ii = 1:nprof
         
         DCM.depth(ii) = DE(idcm,ii);
         DCM.chlor_val(ii) = CHL(idcm,ii); 
- 
-        % DCM is within ML , layer is not defined
+ % DCM is within ML , layer is not defined
         if DCM.depth(ii) < MLD(ii)  
             DCM.ibot(ii) = NaN;   
             DCM.itop(ii) = NaN;  
             DCM.de_top(ii) = MLD(ii);  
             DCM.de_bot(ii) = MLD(ii);  
-            DCM.DCMinML(ii) = 1; %KL adding 7/2/2024
         else
             %get top of layer
             indx = find(Ipct(:,ii) > 0,1,'first');
@@ -73,7 +67,6 @@ for ii = 1:nprof
                 if DCM.de_top(ii) < MLD(ii)   
                     DCM.itop(ii) = NaN;
                     DCM.de_top(ii) = MLD(ii);
-                    DCM.DCMinML(ii) = 1; %KL adding 7/2/2024
                 end
             end
             %
@@ -86,7 +79,6 @@ for ii = 1:nprof
                 if DCM.de_bot(ii) <= MLD(ii) 
                     DCM.ibot(ii) = NaN;     
                     DCM.de_bot(ii) = MLD(ii);
-                    DCM.DCMinML(ii)= 1;
                 end
             end
         end

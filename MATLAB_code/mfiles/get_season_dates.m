@@ -11,5 +11,22 @@ season_dates.mixed = [datenum(year,12,15), datenum(year,4, 1)];
 season_dates.spring = [datenum(year,4,1), datenum(year,4, 20)];
 season_dates.strat = [datenum(year,4,20), datenum(year,11, 1)];
 season_dates.fall = [datenum(year,11,1), datenum(year,12, 15)];
+
+
+% %this might be useful later so I don't have to use datenum
+% for a = 1:size(season_dates.mixed,1)
+%     season_dates.year(a,1) = year(datetime(datestr(season_dates.mixed(a,1))));
+%     dt.mixed(a,1) = datetime(datestr(season_dates.mixed(a,1)));
+%     dt.mixed(a,2) = datetime(datestr(season_dates.mixed(a,2)));
+%     
+%     dt.spring(a,1) = datetime(datestr(season_dates.spring(a,1)));
+%     dt.spring(a,2) = datetime(datestr(season_dates.spring(a,2)));
+% 
+%     dt.strat(a,1) = datetime(datestr(season_dates.strat(a,1)));
+%     dt.strat(a,2) = datetime(datestr(season_dates.strat(a,2)));
+%     
+%     dt.fall(a,1) = datetime(datestr(season_dates.fall(a,1)));
+%     dt.fall(a,2) = datetime(datestr(season_dates.fall(a,2)));
+% end
     
 
