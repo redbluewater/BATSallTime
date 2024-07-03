@@ -26,7 +26,8 @@ function [DCM] = get_dcm_layer_ctd(CHL, DE, MLD, percent, izmax)
 % Uploaded for BIOS-SCOPE project 19 October 2023
 % Krista Longnecker 2 July 2024 (saved Ruth's version as get_dcm_layer_ctd_Ruth_v0.m)
 % adding a flag if the top or bottom of the DCM is in the ML, but change to 
-% keeping the actual DCM value
+% keeping the actual DCM value; also do not set DCM to MLD depth...use
+% logic later to track this
 
 [~,nprof] = size(CHL);
 DCM = struct();
@@ -69,10 +70,10 @@ for ii = 1:nprof
             if ~isempty(indx)
                 DCM.itop(ii) = indx;
                 DCM.de_top(ii) = DE(indx,ii);
-              % top of DCM within ML, set to MLD and index to Nan        
+              % top of DCM within ML, set to MLD and index to NaN %KL comment 7/2/2024 - testing
                 if DCM.de_top(ii) < MLD(ii)   
-                    DCM.itop(ii) = NaN;
-                    DCM.de_top(ii) = MLD(ii);
+                    %DCM.itop(ii) = NaN; %KL comment 7/2/2024 - testing
+                    %DCM.de_top(ii) = MLD(ii);%KL comment 7/2/2024 - testing
                     DCM.DCMinML(ii) = 1; %KL adding 7/2/2024
                 end
             end
@@ -82,10 +83,10 @@ for ii = 1:nprof
             if ~isempty(indx)
                 DCM.ibot(ii) = indx;
                 DCM.de_bot(ii) = DE(indx,ii);
-                % bottom of DCM within ML; set to MLD and index to NaN
+                % bottom of DCM within ML; set to MLD and index to NaN %KL comment 7/2/2024 - testing
                 if DCM.de_bot(ii) <= MLD(ii) 
-                    DCM.ibot(ii) = NaN;     
-                    DCM.de_bot(ii) = MLD(ii);
+                    %DCM.ibot(ii) = NaN;     %KL comment 7/2/2024 - testing
+                    %DCM.de_bot(ii) = MLD(ii);%KL comment 7/2/2024 - testing
                     DCM.DCMinML(ii)= 1;
                 end
             end

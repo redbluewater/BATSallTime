@@ -136,10 +136,9 @@ unCru.year = nan(size(unCru,1),1);
 unCru.month = nan(size(unCru,1),1);
 unCru.day = nan(size(unCru,1),1);
 unCru.datetime = NaT(size(unCru,1),1);
-unCru.nNightCasts = nan(size(unCru,1),1); %how many casts at night?
-unCru.maxDCMallTime = nan(size(unCru,1),1); %will be a number, max DCM, any time
-unCru.maxDCMallTime_depthTop = nan(size(unCru,1),1);
-unCru.maxDCMallTime_depthBot = nan(size(unCru,1),1);
+unCru.maxDCM = nan(size(unCru,1),1); %will be a number, max DCM, any time
+unCru.maxDCM_depthTop = nan(size(unCru,1),1);
+unCru.maxDCM_depthBot = nan(size(unCru,1),1);
 unCru.DCMinML = nan(size(unCru,1),1); %new 7/2/2024, is the DCM in the ML?
 unCru.MLDmax = nan(size(unCru,1),1); %number, value
 unCru.season = nan(size(unCru,1),1); %number, value
@@ -155,9 +154,9 @@ for a = 1:size(unCru,1)
     %ignore them for now
     if ~isempty(maxDCM) && maxDCM < 250
         %actually have a value for DCM, some cruises have nothing here
-        unCru.maxDCMallTime(a) = maxDCM;
-        unCru.maxDCMallTime_depthTop(a) =  makeSmall.DCMde_top(id);%depth of the top of the DCM for the DCM that is the max
-        unCru.maxDCMallTime_depthBot(a) =  makeSmall.DCMde_bot(id);%depth of the top of the DCM for the DCM that is the max
+        unCru.maxDCM(a) = maxDCM;
+        unCru.maxDCM_depthTop(a) =  makeSmall.DCMde_top(id);%depth of the top of the DCM for the DCM that is the max
+        unCru.maxDCM_depthBot(a) =  makeSmall.DCMde_bot(id);%depth of the top of the DCM for the DCM that is the max
         unCru.DCMinML(a) = makeSmall.DCMinML(id);
         clear maxDCM id
     end %end if loop testing for an empty DCM

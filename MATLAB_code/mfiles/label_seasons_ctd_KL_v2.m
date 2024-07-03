@@ -44,18 +44,22 @@ theCode = NaN; %assume no season
         elseif isnan(DCMdepthTop) || isnan(DCMdepth)
             theCode = NaN;
         end
-    elseif (mld < DCMdepthTop) && ~isnan(priorSeason) && timeStep_days < tsAllow && (M>=5 && M<=10)
+    elseif (mld < DCMdepthTop) && ~isnan(priorSeason) && timeStep_days < tsAllow && (M>=4 && M<=10)
         %make a decision partly based on what the prior time step was 
         if isequal(priorSeason,2)
             theCode = 3;
         elseif isequal(priorSeason,3)
             theCode = 3;
+        elseif isequal(priorSeason,1)
+            theCode = 2;
         end
     elseif (mld > DCMdepthTop) && ~isnan(priorSeason) && timeStep_days < tsAllow
         if isequal(priorSeason,4)
             theCode = 1;
         elseif isequal(priorSeason,1)
             theCode = 1;
+        elseif isequal(priorSeason,3)
+            theCode = 4;
         end
     elseif DCMinML==1 && ~isnan(priorSeason) && timeStep_days < tsAllow
         if isequal(priorSeason,4)

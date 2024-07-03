@@ -124,6 +124,7 @@ CTD.MLD_densGR = ZZ;
 CTD.MLD_te2 = ZZ;
 CTD.DCM = ZZ;
 CTD.DCMde_top = ZZ;
+CTD.DCMde_bot = ZZ;
 CTD.DCMinML = ZZ;
 CTD.par_est = ZZ;
 CTD.par0 = ZZ;
@@ -165,6 +166,7 @@ Xout.MLD_densGR = XX;
 Xout.MLD_te2 = XX;
 Xout.DCM = XX;
 Xout.DCMde_top = XX;
+Xout.DCMde_bot = XX;
 Xout.DCMinML = XX;
 Xout.Season = XX;
 Xout.Sunrise = XX;
@@ -371,6 +373,10 @@ end
     CTD.DCMde_top(indx) = DCM.de_top;
     Xout.DCMde_top(ii) = DCM.de_top;
 
+    XX.DCMde_bot(:) = DCM.de_bot;
+    CTD.DCMde_bot(indx) = DCM.de_bot;
+    Xout.DCMde_bot(ii) = DCM.de_bot;
+
     XX.DCMinML(:) = DCM.DCMinML;
     CTD.DCMinML(indx) = DCM.DCMinML;
     Xout.DCMinML(ii) = DCM.DCMinML;
@@ -383,6 +389,10 @@ end
         XX.DCMde_top(:) = -999;
         CTD.DCMde_top(indx) = -999;
         Xout.DCMde_top(ii) = NaN;
+
+        XX.DCMde_bot(:) = -999;
+        CTD.DCMde_bot(indx) = -999;
+        Xout.DCMde_bot(ii) = NaN;
 
         XX.DCMinML(:) = -999;
         CTD.DCMinML(indx) = -999;
