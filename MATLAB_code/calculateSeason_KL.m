@@ -13,7 +13,7 @@ load BATSdataForSeasonDefinitions.2024.07.01.mat
 NameOfFile = 'BATSdataForSeasonDefinitions_addSeasons.2024.07.01.mat'; %iterate to a new name
 load Season_dates_all.mat
 
-doPlotting = 1; %set this to zero if you do not want to see each year's plot
+doPlotting = 0; %set this to zero if you do not want to see each year's plot
 
 for a = 1:size(season_dates.mixed,1)
     dt.year(a,1) = year(datetime(datestr(season_dates.strat(a,1)))); %summer will be in year and always there
@@ -75,7 +75,7 @@ uy = unique(unCru.year);
 idx = size(seasons,1)+1;
 for a = 1:length(uy)
 % for a = 29:length(uy) %this is the set for years with glider data
-% for a = 5; %just run one year
+% for a = 13; %just run one year
 % for a = 1:5;
     k = find(unCru.year == uy(a));
     
@@ -87,6 +87,7 @@ for a = 1:length(uy)
 
     %Only do this if there is no season from Ruth's glider(s)
     if isempty(find(uy(a)==gliderYears,1,'first'))   
+        seasons.year(idx) = uy(a); 
         if ~isequal(unique(unCru.season(k)),-999)
             makeSmall = unCru(k,:);
             % the mixed season may begin at the end of a year or the beginning
@@ -124,15 +125,9 @@ for a = 1:length(uy)
             clear kd
             kd = find(makeSmall.season==3,1,'first'); %strat
             seasons.strat(idx,1) = ce(dateshift(makeSmall.datetime(kd),'start','day')-day(1),'t'); %drop h/m/s
-            try
-                seasons.year(idx) = year(makeSmall.datetime(kd)); % use year from strat
-            catch
-                %Not sure what is going with 1993, but the only season is 1
-                %Manually enter the year for now and deal with that later
-                if isequal(makeSmall.year(1),1993)
-                    seasons.year(idx) = 1993;
-                end
-            end
+
+
+
             clear kd
             kd = find(makeSmall.season==4,1,'first'); %fall
             seasons.fall(idx,1) = ce(dateshift(makeSmall.datetime(kd),'start','day')-day(1),'t'); %drop h/m/s
