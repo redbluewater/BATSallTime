@@ -13,7 +13,7 @@ load BATSdataForSeasonDefinitions.2024.07.01.mat
 NameOfFile = 'BATSdataForSeasonDefinitions_addSeasons.2024.07.01.mat'; %iterate to a new name
 load Season_dates_all.mat
 
-doPlotting = 0; %set this to zero if you do not want to see each year's plot
+doPlotting = 1; %set this to zero if you do not want to see each year's plot
 
 for a = 1:size(season_dates.mixed,1)
     dt.year(a,1) = year(datetime(datestr(season_dates.strat(a,1)))); %summer will be in year and always there
@@ -73,8 +73,8 @@ clear i
 uy = unique(unCru.year);
 
 idx = size(seasons,1)+1;
-for a = 1:length(uy)
-% for a = 29:length(uy) %this is the set for years with glider data
+% for a = 1:length(uy)
+for a = 28:length(uy) %this is the set for years with glider data
 % for a = 13; %just run one year
 % for a = 1:5;
     k = find(unCru.year == uy(a));
@@ -148,7 +148,8 @@ for a = 1:length(uy)
         seasonNames = {'1','2','3','4','-999'}; %use this to set colors across years
 
         figure(a)
-        h1 = gscatter(unCru.datetime(k),unCru.maxDCM_depthTop(k),unCru.season(k),sColor,'o',ms,'filled');
+        %h1 = gscatter(unCru.datetime(k),unCru.maxDCM_depthTop(k),unCru.season(k),sColor,'o',ms,'filled');
+        h1 = gscatter(unCru.datetime(k),unCru.maxDCM(k),unCru.season(k),sColor,'o',ms,'filled');
         for ac = 1:length(h1)
             dn = get(h1(ac),'DisplayName');
             st = strcmp(dn,seasonNames);
@@ -166,7 +167,8 @@ for a = 1:length(uy)
             set(h2(ac),'markerfacecolor',sColor(kt,:),'markeredgecolor',sColor(kt,:));
             clear dn st kt
         end
-        title(strcat(string(uy(a)),{' '}, 'circle=DCM\_depthTop ; star = MLD'),'fontweight','bold')
+        %title(strcat(string(uy(a)),{' '}, 'circle=DCM\_depthTop ; star = MLD'),'fontweight','bold')
+        title(strcat(string(uy(a)),{' '}, 'circle=DCMmax ; star = MLD'),'fontweight','bold')
         clear h2
         set(gcf,'position',[0.5623    1.2817    1.3393    0.5800]*1e3)
         hold on
