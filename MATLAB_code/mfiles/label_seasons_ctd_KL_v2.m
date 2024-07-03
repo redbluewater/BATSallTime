@@ -58,8 +58,10 @@ theCode = NaN; %assume no season
             theCode = 1;
         elseif isequal(priorSeason,1)
             theCode = 1;
-        elseif isequal(priorSeason,3)
+        elseif isequal(priorSeason,3) && (M >=9 ) %add months so we don't get fall in the middle of summer
             theCode = 4;
+        elseif isequal(priorSeason,3) && (M >= 6 && M < 9)
+            theCode = 3;
         end
     elseif DCMinML==1 && ~isnan(priorSeason) && timeStep_days < tsAllow
         if isequal(priorSeason,4)

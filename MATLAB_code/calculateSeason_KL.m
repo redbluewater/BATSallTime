@@ -2,43 +2,37 @@
 %an dthen do some plotting
 %KL 1 July 2024 - need to do some tidying up for certain
 addpath(genpath('C:\Users\klongnecker\Documents\GitHub\data_pipeline\MATLAB_code\mfiles'));    
-
+warning('off','MATLAB:table:RowsAddedExistingVars');
 
 clear all
 close all
 load BATSdataForSeasonDefinitions.2024.07.01.mat 
+NameOfFile = 'BATSdataForSeasonDefinitions_addSeasons.2024.07.01.mat'; %iterate to a new name
 load Season_dates_all.mat
 
 for a = 1:size(season_dates.mixed,1)
-    dt.year(a,1) = year(datetime(datestr(season_dates.fall(a,1))));
+    dt.year(a,1) = year(datetime(datestr(season_dates.strat(a,1)))); %summer will be in year and always there
     dt.mixed(a,1) = datetime(datestr(season_dates.mixed(a,1)));
     dt.mixed(a,2) = datetime(datestr(season_dates.mixed(a,2)));
-    
+
     dt.spring(a,1) = datetime(datestr(season_dates.spring(a,1)));
     dt.spring(a,2) = datetime(datestr(season_dates.spring(a,2)));
 
     dt.strat(a,1) = datetime(datestr(season_dates.strat(a,1)));
     dt.strat(a,2) = datetime(datestr(season_dates.strat(a,2)));
-    
+
     dt.fall(a,1) = datetime(datestr(season_dates.fall(a,1)));
     dt.fall(a,2) = datetime(datestr(season_dates.fall(a,2)));
 end
-clear a season_dates
+clear a 
+seasons = struct2table(dt);
+gliderYears = seasons.year;
+clear season_dates dt
 
 unCru.season = nan(size(unCru,1),1);
 
 %will need time steps - sort based on datetime
 unCru = sortrows(unCru,'datetime');
-
-% for a = 1:size(unCru,1)
-%     %function [theCode] = label_seasons_ctd(DCMdepthMax,DCMdepthTop,mld,month)
-%     theCode = label_seasons_ctd_KL_v1(unCru.maxDCMallTime(a),...
-%         unCru.maxDCMallTime_depthTop(a),unCru.MLDmax(a),...
-%         unCru.month(a));
-%     unCru.season(a) = theCode;
-%     clear theCode
-% end
-% clear a
 
 %will need to compare to the prior time step, so start outside the loop
 %already brings up the point that I will need a case for priorTime = NaN;
@@ -54,11 +48,6 @@ theCode = label_seasons_ctd_KL_v2(unCru.maxDCM(a),...
 unCru.season(a) = theCode;
 
 for a = 2:size(unCru,1)
-% for a = 433;
-% if a==530
-%     keyboard
-% end
-    %function [theCode] = label_seasons_ctd(DCMdepthMax,DCMdepthTop,mld,month)
     timeStep_days = days(unCru.datetime(a) - unCru.datetime(a-1)); %in hours, convert to days
     priorSeason = unCru.season(a-1);
     theCode = label_seasons_ctd_KL_v2(unCru.maxDCM(a),...
@@ -67,7 +56,7 @@ for a = 2:size(unCru,1)
         unCru.MLDmax(a),...
         priorSeason,timeStep_days,unCru.month(a));
     unCru.season(a) = theCode;
-    clear theCode
+    clear theCode timeStep_days priorSeason
 end
 clear a
 
@@ -77,64 +66,144 @@ clear i
 
 %plot each year at a time
 uy = unique(unCru.year);
-ms = 15;
-%sColor = [241 90 34; 0 168 117; 0 114 188; 239 91 161; 247 148 29;  218 111 171;  236 234 100]./255;
-sColor = cbrewer('qual','Set1',5);
-sColor = sColor([5 4 3 2 1],:); %order to red is -999
-sShape = ['s','o','>','d','^'];
 
-seasonNames = {'1','2','3','4','-999'};
 
+idx = size(seasons,1)+1;
 for a = 1:length(uy)
 % for a = 29:length(uy) %this is the set for years with glider data
-% for a = 30;
-    figure(a)
+% for a = 5; %just run one year
+% for a = 1:5;
     k = find(unCru.year == uy(a));
     
-    % gscatter(unCru.datetime(k),unCru.maxDCMallTime(k),unCru.season(k),cmap,'o',ms,'filled');
-    h1 = gscatter(unCru.datetime(k),unCru.maxDCM_depthTop(k),unCru.season(k),sColor,'o',ms,'filled');
-    for ac = 1:length(h1)
-        dn = get(h1(ac),'DisplayName');
-        st = strcmp(dn,seasonNames);
-        kt = find(st==1);
-        set(h1(ac),'markerfacecolor',sColor(kt,:),'markeredgecolor',sColor(kt,:));
-        clear dn st kt
-    end
-    hold on
-    h2 = gscatter(unCru.datetime(k),unCru.MLDmax(k),unCru.season(k),sColor,'p',ms,'filled');
-    for ac = 1:length(h2)
-        dn = get(h2(ac),'DisplayName');
-        st = strcmp(dn,seasonNames);
-        kt = find(st==1);
-        set(h2(ac),'markerfacecolor',sColor(kt,:),'markeredgecolor',sColor(kt,:));
-        clear dn st kt
-    end
-    title(strcat(string(uy(a)),{' '}, 'circle=DCM\_depthTop ; star = MLD'),'fontweight','bold')
-    set(gcf,'position',[0.5623    1.2817    1.3393    0.5800]*1e3)
-    hold on
-    XL = xlim;
-    %use these two lines so I do not get nonsense labels for the lines
-    L = legend;
-    L.AutoUpdate = 'off';
+    %IF there is no season information from the gliders, enter it based on
+    %the seasons I just calculated; subtract one day from the cruise date
+    %so this will be found in a search for a given cruise
+    %This uses 'ce' a function that KL wrote to put in NaT values as
+    %needed (if there is no match, can have years without all seasons)
+
+    %%% CAREFUL - only do this if there is no season based on the glider
+    if isempty(find(uy(a)==gliderYears,1,'first'))   
+        if ~isequal(unique(unCru.season(k)),-999)
+            makeSmall = unCru(k,:);
+            % the mixed season may begin at the end of a year or the beginning
+            kd = find(makeSmall.season==1); %mixed
+            if length(kd)==1; 
+                %only one choice so no need for hoops
+                seasons.mixed(idx,1) = ce(dateshift(makeSmall.datetime(kd),'start','day')-day(1),'t'); %drop h/m/s;
+            elseif length(kd) > 1
+                %need to decide - prefer fall (11 or 12) over months early in the year...
+                um = unique(makeSmall.month(kd));
+                if sum(um==12,1)
+                    km = find(makeSmall.month==12,1,'first');
+                    ks = find(makeSmall.season==1);
+                    kd = intersect(km,ks);
+                    seasons.mixed(idx,1) = ce(dateshift(makeSmall.datetime(kd),'start','day')-day(1),'t'); %drop h/m/s;
+                    clear km ks kd
+                elseif sum(um==11,1)
+                    km = find(makeSmall.month==11,1,'first');
+                    ks = find(makeSmall.season==1);
+                    kd = intersect(km,ks);
+                    seasons.mixed(idx,1) = ce(dateshift(makeSmall.datetime(kd),'start','day')-day(1),'t'); %drop h/m/s;
+                    clear km ks kd
+                else 
+                    kd = find(makeSmall.season==1,1,'first');
+                    seasons.mixed(idx,1) = ce(dateshift(makeSmall.datetime(kd),'start','day')-day(1),'t'); %drop h/m/s;
+                end      %end 11/12/1 date selection
+            else 
+                %any case where there no strat season?
+                keyboard
+            end%end loop for setting the date for mixed season  
+            clear kd
     
-    line(XL,[100 100],'color','k')
-    line(XL,[30 30],'color','k')
-    clear XL
-    if uy(a) >= 2015
-        ky = find(dt.year ==uy(a));
+            kd = find(makeSmall.season==2,1,'first'); %spring
+            seasons.spring(idx,1) = ce(dateshift(makeSmall.datetime(kd),'start','day')-day(1),'t'); %drop h/m/s
+            clear kd
+            kd = find(makeSmall.season==3,1,'first'); %strat
+            seasons.strat(idx,1) = ce(dateshift(makeSmall.datetime(kd),'start','day')-day(1),'t'); %drop h/m/s
+            try
+                seasons.year(idx) = year(makeSmall.datetime(kd)); % use year from strat
+            catch
+                %Not sure what is going with 1193, but the only season is
+                %1...enter for now and deal with that later
+                if isequal(makeSmall.year(1),1993)
+                    seasons.year(idx) = 1993;
+                end
+            end
+            clear kd
+            kd = find(makeSmall.season==4,1,'first'); %fall
+            seasons.fall(idx,1) = ce(dateshift(makeSmall.datetime(kd),'start','day')-day(1),'t'); %drop h/m/s
+            clear kd
+        else
+            seasons.year(idx) = uy(a);
+        end
+        %increment the counter
+        idx = idx + 1;
+    end %end If statement looking in gliderSeasons
+
+
+    if 1 %set to one to make plot(s)
+        ms = 15;
+        %sColor = cbrewer('qual','Set1',5);
+        sColor = [55 126 184; 77 175 74; 228 26 28 ; 152 78 163]./255;
+        sColor(5,:) = 0.75*ones(1,3); %set -999 to gray
+        % sColor = sColor([1 3 5 2],:); %order to red is -999
+        sShape = ['s','o','>','d','^'];
+        seasonNames = {'1','2','3','4','-999'};
+
+        figure(a)
+        h1 = gscatter(unCru.datetime(k),unCru.maxDCM_depthTop(k),unCru.season(k),sColor,'o',ms,'filled');
+        for ac = 1:length(h1)
+            dn = get(h1(ac),'DisplayName');
+            st = strcmp(dn,seasonNames);
+            kt = find(st==1);
+            set(h1(ac),'markerfacecolor',sColor(kt,:),'markeredgecolor',sColor(kt,:));
+            clear dn st kt
+        end
+        clear ac h1
+        hold on
+        h2 = gscatter(unCru.datetime(k),unCru.MLDmax(k),unCru.season(k),sColor,'p',ms,'filled');
+        for ac = 1:length(h2)
+            dn = get(h2(ac),'DisplayName');
+            st = strcmp(dn,seasonNames);
+            kt = find(st==1);
+            set(h2(ac),'markerfacecolor',sColor(kt,:),'markeredgecolor',sColor(kt,:));
+            clear dn st kt
+        end
+        title(strcat(string(uy(a)),{' '}, 'circle=DCM\_depthTop ; star = MLD'),'fontweight','bold')
+        clear h2
+        set(gcf,'position',[0.5623    1.2817    1.3393    0.5800]*1e3)
+        hold on
+        XL = xlim;
+        %use this for the legend so I do not get nonsense labels for the lines
+        L = legend;
+        L.AutoUpdate = 'off';
+        
+        line(XL,[100 100],'color','k')
+        line(XL,[30 30],'color','k')
+        clear XL
+        ky = find(seasons.year ==uy(a));
         if ~isempty(ky)
-            line([dt.mixed(ky,1) dt.mixed(ky,1)],[0 250],'color','k')
-            line([dt.mixed(ky,2) dt.mixed(ky,2)],[0 250],'color','k')
-            line([dt.spring(ky,1) dt.spring(ky,1)],[0 250],'color','k')
-            line([dt.spring(ky,2) dt.spring(ky,2)],[0 250],'color','k')
-            line([dt.strat(ky,1) dt.strat(ky,1)],[0 250],'color','k')
-            line([dt.strat(ky,2) dt.strat(ky,2)],[0 250],'color','k')
-            line([dt.fall(ky,1) dt.fall(ky,1)],[0 250],'color','k')
-            line([dt.fall(ky,2) dt.fall(ky,2)],[0 250],'color','k')
+            g = 0.75*ones(1,3);
+            line([seasons.mixed(ky,1) seasons.mixed(ky,1)],[0 250],'color',g)
+            line([seasons.mixed(ky,2) seasons.mixed(ky,2)],[0 250],'color','k')
+            line([seasons.spring(ky,1) seasons.spring(ky,1)],[0 250],'color',g)
+            line([seasons.spring(ky,2) seasons.spring(ky,2)],[0 250],'color','k')
+            line([seasons.strat(ky,1) seasons.strat(ky,1)],[0 250],'color',g)
+            line([seasons.strat(ky,2) seasons.strat(ky,2)],[0 250],'color','k')
+            line([seasons.fall(ky,1) seasons.fall(ky,1)],[0 250],'color',g)
+            line([seasons.fall(ky,2) seasons.fall(ky,2)],[0 250],'color','k')
         end
         clear ky
-    end
-    ra
-    xtickformat('MM')
-end
-clear a uy 
+        ra
+        xtickformat('MM')
+        clear k L ms 
+    end %end plotting loop
+end %end year loop
+clear a 
+clear uy ms sColor sShape seasonNames
+
+%export the result, use CSV and not XLSX to skip the HH:MM details
+seasons = sortrows(seasons,'year');
+writetable(seasons,'seasonsExported.csv')
+
+save(NameOfFile)
