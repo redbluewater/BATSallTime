@@ -1,7 +1,10 @@
+%Working in a new repository to calculate the seasons in the past
+%historical BATS data
 %use my version of label_seasons_ctd to find a season with the max values
-%an dthen do some plotting
-%KL 1 July 2024 - need to do some tidying up for certain
-addpath(genpath('C:\Users\klongnecker\Documents\GitHub\data_pipeline\MATLAB_code\mfiles'));    
+%and then do some plotting. This will get most years at least close for the
+%season, but there will be some manual editing needed
+%Krista Longnecker ; 3 July 2024
+addpath(genpath('C:\Users\klongnecker\Documents\GitHub\BATSallTime\MATLAB_code\mfiles'));    
 warning('off','MATLAB:table:RowsAddedExistingVars');
 
 clear all
@@ -9,6 +12,8 @@ close all
 load BATSdataForSeasonDefinitions.2024.07.01.mat 
 NameOfFile = 'BATSdataForSeasonDefinitions_addSeasons.2024.07.01.mat'; %iterate to a new name
 load Season_dates_all.mat
+
+doPlotting = 1; %set this to zero if you do not want to see each year's plot
 
 for a = 1:size(season_dates.mixed,1)
     dt.year(a,1) = year(datetime(datestr(season_dates.strat(a,1)))); %summer will be in year and always there
@@ -31,15 +36,14 @@ clear season_dates dt
 
 unCru.season = nan(size(unCru,1),1);
 
-%will need time steps - sort based on datetime
+%will need time steps - sort what I have based on datetime
 unCru = sortrows(unCru,'datetime');
 
-%will need to compare to the prior time step, so start outside the loop
-%already brings up the point that I will need a case for priorTime = NaN;
+%need to compare to the prior time step, so start outside the loop
 a = 1;
 priorSeason = NaN;
 timeStep_days = NaN;
-%function [theCode] = label_seasons_ctd_KL_v2(DCMdepth,DCMdepthTop,DCMinML,mld,priorSeason,timeStep_days,month)
+% KL wrote label_seasons_ctd_KL_v2 to get a first pass on dates
 theCode = label_seasons_ctd_KL_v2(unCru.maxDCM(a),...
     unCru.maxDCM_depthTop(a), ...
     unCru.DCMinML(a),...
@@ -47,6 +51,7 @@ theCode = label_seasons_ctd_KL_v2(unCru.maxDCM(a),...
     priorSeason,timeStep_days,unCru.month(a));
 unCru.season(a) = theCode;
 
+%now go through all the other cruises
 for a = 2:size(unCru,1)
     timeStep_days = days(unCru.datetime(a) - unCru.datetime(a-1)); %in hours, convert to days
     priorSeason = unCru.season(a-1);
@@ -61,12 +66,11 @@ end
 clear a
 
 i = isnan(unCru.season);
-unCru.season(i) = -999; %need this to plot with gscatter
+unCru.season(i) = -999; %need this to plot with gscatter, NaN will get skipped
 clear i 
 
 %plot each year at a time
 uy = unique(unCru.year);
-
 
 idx = size(seasons,1)+1;
 for a = 1:length(uy)
@@ -81,17 +85,17 @@ for a = 1:length(uy)
     %This uses 'ce' a function that KL wrote to put in NaT values as
     %needed (if there is no match, can have years without all seasons)
 
-    %%% CAREFUL - only do this if there is no season based on the glider
+    %Only do this if there is no season from Ruth's glider(s)
     if isempty(find(uy(a)==gliderYears,1,'first'))   
         if ~isequal(unique(unCru.season(k)),-999)
             makeSmall = unCru(k,:);
             % the mixed season may begin at the end of a year or the beginning
             kd = find(makeSmall.season==1); %mixed
             if length(kd)==1; 
-                %only one choice so no need for hoops
+                %only one choice for this year so no need for extra steps
                 seasons.mixed(idx,1) = ce(dateshift(makeSmall.datetime(kd),'start','day')-day(1),'t'); %drop h/m/s;
             elseif length(kd) > 1
-                %need to decide - prefer fall (11 or 12) over months early in the year...
+                %prefer fall (11 or 12) over months early in the year...
                 um = unique(makeSmall.month(kd));
                 if sum(um==12,1)
                     km = find(makeSmall.month==12,1,'first');
@@ -108,9 +112,9 @@ for a = 1:length(uy)
                 else 
                     kd = find(makeSmall.season==1,1,'first');
                     seasons.mixed(idx,1) = ce(dateshift(makeSmall.datetime(kd),'start','day')-day(1),'t'); %drop h/m/s;
-                end      %end 11/12/1 date selection
+                end  %end 11/12/1 date selection
             else 
-                %any case where there no strat season?
+                %put a stop in here in case there no is strat season for a year
                 keyboard
             end%end loop for setting the date for mixed season  
             clear kd
@@ -123,8 +127,8 @@ for a = 1:length(uy)
             try
                 seasons.year(idx) = year(makeSmall.datetime(kd)); % use year from strat
             catch
-                %Not sure what is going with 1193, but the only season is
-                %1...enter for now and deal with that later
+                %Not sure what is going with 1993, but the only season is 1
+                %Manually enter the year for now and deal with that later
                 if isequal(makeSmall.year(1),1993)
                     seasons.year(idx) = 1993;
                 end
@@ -140,15 +144,13 @@ for a = 1:length(uy)
         idx = idx + 1;
     end %end If statement looking in gliderSeasons
 
-
-    if 1 %set to one to make plot(s)
+    if doPlotting %set to one to make plot(s)
         ms = 15;
         %sColor = cbrewer('qual','Set1',5);
         sColor = [55 126 184; 77 175 74; 228 26 28 ; 152 78 163]./255;
         sColor(5,:) = 0.75*ones(1,3); %set -999 to gray
-        % sColor = sColor([1 3 5 2],:); %order to red is -999
         sShape = ['s','o','>','d','^'];
-        seasonNames = {'1','2','3','4','-999'};
+        seasonNames = {'1','2','3','4','-999'}; %use this to set colors across years
 
         figure(a)
         h1 = gscatter(unCru.datetime(k),unCru.maxDCM_depthTop(k),unCru.season(k),sColor,'o',ms,'filled');
