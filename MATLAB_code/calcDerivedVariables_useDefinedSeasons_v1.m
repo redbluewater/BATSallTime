@@ -10,13 +10,17 @@
 %to define the seasons, so just build on this as there will be more to do
 %for the season definitions
 %Krista Longnecker; 27 June 2024
+%Change to using a set of season boundaries pre-defined based on the code
+%in the BATSallTime GitHub repository, and edited manually by Krista,
+%import the result here and define the seasons that way
+%Krista Longnecker; 3 July 2024
 clear all 
 close all
 
 %%add options depending on computer, KL is jumping between computers
 if isequal(getenv('COMPUTERNAME'),'ESPRESSO')
     %% add ./BIOSSCOPE/CTD_BOTTLE/mfiles into matlab path
-    addpath(genpath('C:\Users\klongnecker\Documents\GitHub\data_pipeline\MATLAB_code\mfiles'));    
+    addpath(genpath('C:\Users\klongnecker\Documents\GitHub\BATSallTime\MATLAB_code\mfiles'));    
     
     %% update the folder information before getting started
     rootdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\';
@@ -25,6 +29,7 @@ if isequal(getenv('COMPUTERNAME'),'ESPRESSO')
     workdir = fullfile(rootdir,'RCcalcBATS\data_temporary\');
     % workdir = fullfile(rootdir,'RCcalcBATS\data_copySmall_testing\');
     outdir = fullfile(rootdir,'RCcalcBATS\data_holdingZone\');
+
 elseif isequal(getenv('COMPUTERNAME'),'LONGNECKER-1650')
     %% add ./BIOSSCOPE/CTD_BOTTLE/mfiles into matlab path    
     addpath(genpath('C:\Users\klongnecker\Documents\Dropbox\GitHub\data_pipeline\MATLAB_code\mfiles'));
@@ -44,9 +49,14 @@ gitdir = pwd;
 %of casts within the full set of casts)
 do_plots = 0;
    
-NameOfFile = 'BATSdataForSeasonDefinitions.2024.07.01.mat';
+NameOfFile = 'BATSdata_withManualSeasons.2024.07.03.mat';
 
 %now do the calculations
+
+%Use this function to make a MATLAB structure with transition dates
+seasonsFile = fullfile(gitdir,'seasons_wKLedits.2024.07.03.xlsx');
+%use this function to reformat the dates, set fName in calcDerivedVariables
+trans_dates = reformat_season_dates(seasonsFile) ; 
 
 %Ruth set this up for txt files, but the BATS txt files are a pain, use
 %the BATS *mat files
@@ -76,8 +86,7 @@ for ii = 1:doFiles;
    fname = dirlist(ii).name;      
    infile = fullfile(workdir,fname);
    
-   %use modified function from KL, 2/8/2024
-   CTD = calculate_BATSderivedVariables(infile,do_plots,outdir,0);
+   CTD = calculate_BATSderivedVariables_applyKnownSeasons(infile,do_plots,outdir,0,trans_dates);
    %make a table, easier to manipulate; have to write a custom script to
    %make a table given the complexity of these structures
    trim = 1; %set this to one to only keep the values that are one per cruise/cast
@@ -86,14 +95,17 @@ for ii = 1:doFiles;
    
    clear idx T trim CTD infile fname
 end
-clear ii nfiles doFiles dirlist do_plots
+clear ii nfiles doFiles dirlist do_plots seasonsFile
 
 %First make the look up table, I made an absurd mess, but this will work 
 stepTwo = cell2mat(table2array(stepOne));
 stepThree = array2table(stepTwo,'VariableNames',stepOne.Properties.VariableNames);
 
 %Now export stepTwo as a CSV file for R
-writetable(stepThree,fullfile(gitdir,'BATSderivedValues_lookupTable.2024.06.21.csv'))
+writetable(stepThree,fullfile(gitdir,'BATSderivedValues_lookupTable.2024.07.03.csv'))
+cd(gitdir)
+save(NameOfFile)
+
 
 %do some housecleaning before I move on to organize this in a way that I
 %can use to define the seasons
@@ -119,14 +131,8 @@ save(NameOfFile,'stepThree','NameOfFile')
 
 useMLD = 'MLD_densT2'; %define up top, change as needed
 
-%first parse out the five digit cruise detail 
-for a = 1:size(stepThree,1)
-    one = char(string(stepThree.BATS_id(a)));
-    one = one(1:5);
-    stepThree.cruise(a,1) = str2double(one);
-    clear one
-end
-clear a
+%first parse out the five digit cruise detail (new function)
+stepThree.cruise = id2cruise(stepThree.BATS_id);
 
 %now that I have the BATS five digit cruises I can work on one cruise at a
 %time (this is a case where R is easier than MATLAB); setup a table
@@ -137,9 +143,6 @@ unCru.month = nan(size(unCru,1),1);
 unCru.day = nan(size(unCru,1),1);
 unCru.datetime = NaT(size(unCru,1),1);
 unCru.maxDCM = nan(size(unCru,1),1); %will be a number, max DCM, any time
-unCru.maxDCM_depthTop = nan(size(unCru,1),1);
-unCru.maxDCM_depthBot = nan(size(unCru,1),1);
-unCru.DCMinML = nan(size(unCru,1),1); %new 7/2/2024, is the DCM in the ML?
 unCru.MLDmax = nan(size(unCru,1),1); %number, value
 unCru.season = nan(size(unCru,1),1); %number, value
 
@@ -155,9 +158,6 @@ for a = 1:size(unCru,1)
     if ~isempty(maxDCM) && maxDCM < 250
         %actually have a value for DCM, some cruises have nothing here
         unCru.maxDCM(a) = maxDCM;
-        unCru.maxDCM_depthTop(a) =  makeSmall.DCMde_top(id);%depth of the top of the DCM for the DCM that is the max
-        unCru.maxDCM_depthBot(a) =  makeSmall.DCMde_bot(id);%depth of the top of the DCM for the DCM that is the max
-        unCru.DCMinML(a) = makeSmall.DCMinML(id);
         clear maxDCM id
     end %end if loop testing for an empty DCM
     
@@ -175,11 +175,13 @@ for a = 1:size(unCru,1)
     unCru{a,'year'} = makeSmall.year(1);
     unCru{a,'month'} = makeSmall.month(1);
     unCru{a,'day'} = makeSmall.day(1);
+    unCru{a,'season'} = makeSmall.Season(1);
     unCru{a,'datetime'} = datetime(datestr(makeSmall.mtime(1)));
     clear makeSmall   
 end
 clear a
 
 save(NameOfFile)
+
 
 
