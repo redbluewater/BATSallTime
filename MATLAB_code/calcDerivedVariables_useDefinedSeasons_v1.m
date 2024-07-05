@@ -97,38 +97,22 @@ for ii = 1:doFiles;
 end
 clear ii nfiles doFiles dirlist do_plots seasonsFile
 
-%First make the look up table, I made an absurd mess, but this will work 
+%This is a messy way to get a look up table as I am changing types
 stepTwo = cell2mat(table2array(stepOne));
 stepThree = array2table(stepTwo,'VariableNames',stepOne.Properties.VariableNames);
+clear stepOne stepTwo
 
 %Now export stepTwo as a CSV file for R
 writetable(stepThree,fullfile(gitdir,'BATSderivedValues_lookupTable.2024.07.03.csv'))
 cd(gitdir)
 save(NameOfFile)
 
-
-%do some housecleaning before I move on to organize this in a way that I
-%can use to define the seasons
-clear stepOne stepTwo 
+%do some housecleaning 
 cd(gitdir)
 clear gitdir outdir rootdir workdir
 save(NameOfFile,'stepThree','NameOfFile')
 
 %%% now move on and get the MLD and DCM information
-
-%Ruth uses script that sends out sunrise and sunset in GMT
-%While I find no notes in the BATS files about time, my earlier code shows
-%they operate in GMT, so that is good (and in case I need it, the daylight
-%savings correction is in miscHousecleaning_4_fxn.m
-
-
-% Go through each cruise and find the following:
-% 1. Max MLD (will try different MLD parameters later)
-% 2. The max DCM for all time on the cruise (uhh...did we say max? or mean?)
-% 2b. The max DCM for nightime casts 
-% 3. Is the DCM in the mixed layer, new variable 1 (yes); 2 (no); NaN (no
-% DCM information so we cannot say)
-
 useMLD = 'MLD_densT2'; %define up top, change as needed
 
 %first parse out the five digit cruise detail (new function)
@@ -136,7 +120,6 @@ stepThree.cruise = id2cruise(stepThree.BATS_id);
 
 %now that I have the BATS five digit cruises I can work on one cruise at a
 %time (this is a case where R is easier than MATLAB); setup a table
-%% This table is getting out of hand...KL needs to correct this
 unCru = array2table(unique(stepThree.cruise),'VariableNames',{'cruise'});
 unCru.year = nan(size(unCru,1),1);
 unCru.month = nan(size(unCru,1),1);
@@ -146,23 +129,21 @@ unCru.maxDCM = nan(size(unCru,1),1); %will be a number, max DCM, any time
 unCru.MLDmax = nan(size(unCru,1),1); %number, value
 unCru.season = nan(size(unCru,1),1); %number, value
 
-
 for a = 1:size(unCru,1)
     k = find(unCru.cruise(a) == stepThree.cruise); %find one cruise
     makeSmall = stepThree(k,:); %easier to work with small dataset
     clear k
     %find the max DCM for the cruise; 
     [maxDCM id] = max(makeSmall.DCM,[],'omitnan'); %need brackets or you get garbage (skipping dimension)
-    %have three cruises with issues (10155, 50056, 50058) with DCM > 500,
-    %ignore them for now
+    %have three cruises with issues (10155, 50056, 50058) with DCM > 500
+    %issues with fluorometer
     if ~isempty(maxDCM) && maxDCM < 250
-        %actually have a value for DCM, some cruises have nothing here
+        %get the DCM value 
         unCru.maxDCM(a) = maxDCM;
         clear maxDCM id
     end %end if loop testing for an empty DCM
     
-    %now get the maximum MLD for cruise; here no MLD = -999, but could have
-    %four -999 values, so set that case to NaN
+    %now get the maximum MLD for cruise; here no MLD = -999
     m = max(makeSmall{:,useMLD});
     if m > 0
         unCru{a,'MLDmax'} = m;
@@ -175,13 +156,12 @@ for a = 1:size(unCru,1)
     unCru{a,'year'} = makeSmall.year(1);
     unCru{a,'month'} = makeSmall.month(1);
     unCru{a,'day'} = makeSmall.day(1);
-    unCru{a,'season'} = makeSmall.Season(1);
     unCru{a,'datetime'} = datetime(datestr(makeSmall.mtime(1)));
+    unCru{a,'season'} = makeSmall.Season(1);
     clear makeSmall   
+
 end
 clear a
 
 save(NameOfFile)
-
-
 

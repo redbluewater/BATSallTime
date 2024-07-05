@@ -5,24 +5,20 @@ function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir,giveNoti
 % INPUT:
 %  infile is the name of the file to read.
 %  do_plots is 1/0 depending if you do (1) or do not (0) want figures
+%  giveNotice controls how many messages you receive during the analysis
+%  trans_dates is a matrix holding the transition dates for each year (new
+%  July 2024; these are pre-determined from an Excel file)
 %  outdir is where to put the final CSV files
 %
-% notes from Krista, this calls a script to generate the seasons based on
-% pre-set date windows and does NOT rely on analysis of the water column
-% data to change the transition dates each year
-%
 % OUTPUT:
-%  Writes individual files for each cruise in csv format
 %  Xout  :  a matlab structure with fields storing info for entire
-%           cruise in row vectors and rectangular matrices (KL note this is
-%           not currently being exported)
-
+%           cruise in row vectors and rectangular matrices 
+%
 % NOTE:  Vertical zones are computed using ML_dens125
 %
-% Original script from Ruth Curry BIOS/ASU (2023); Krista Longnecker
-% editing to add more MLD definitions 24 June 2024
-% This version requires you to have pre-determined the bounds for each
-% season
+% Original script from Ruth Curry BIOS/ASU (2023); 
+% Krista Longnecker editing to add more MLD definitions 24 June 2024; 
+% Krista Longnecker changing to use pre-determined seasons
 
 
 %%  Read file into rectangular array, and store each column as a field in structure CTD
@@ -50,7 +46,6 @@ TTin = mat2cell(riMAT.(v{1}),[MAXZ],[ones(12,1)]); %12 is fixed - number of vari
 clear S Sn r kr riMAT v 
 
 %%  Assign columns 
-%KL note - no conductivity in the CTD data BATS data files, change the indexing
 icol.cast_id = 1;
 icol.dec_yr = 2;
 icol.lat = 3;
@@ -58,7 +53,6 @@ icol.lon =4;
 icol.pr = 5;
 icol.de = 6;
 icol.te = 7;
-% icol.co = 8; %no conductivity in these data KL 2/8/2024
 icol.sa = 8;
 icol.o2 = 9;
 icol.beam = 10;
@@ -87,7 +81,6 @@ CTD.Pressure = TTin{icol.pr};
 CTD.Depth  = TTin{icol.de};
 CTD.Temp = TTin{icol.te};
 CTD.Salt = TTin{icol.sa};
-% CTD.Conductivity = TTin{icol.co}; %no conductivity in these data KL 2/8/2024
 CTD.O2 = TTin{icol.o2};
 CTD.Beam = TTin{icol.beam};
 CTD.PAR = TTin{icol.par};
@@ -126,9 +119,6 @@ CTD.MLD_dens2 = ZZ;
 CTD.MLD_densGR = ZZ;
 CTD.MLD_te2 = ZZ;
 CTD.DCM = ZZ;
-% CTD.DCMde_top = ZZ;
-% CTD.DCMde_bot = ZZ;
-% CTD.DCMinML = ZZ;
 CTD.par_est = ZZ;
 CTD.par0 = ZZ;
 CTD.kpar = ZZ;
@@ -138,9 +128,8 @@ CTD.z_par_tenthpcnt = ZZ;
 clear ZZ TTin dvec mtime
 
 %%  create structure Xout to be saved as .mat file 
-%leave here because Ruth later pulls values from here that get
-%exported in the CSV file. The Xout structure was exported as *mat file in
-%earlier versions of this script.
+%The code later pulls values from here that get exported in the CSV file. 
+% The Xout structure was exported as *mat file in earlier versions of this script.
 Xout = struct();  
 
 castlist = unique(CTD.BATS_id);
@@ -168,9 +157,6 @@ Xout.MLD_dens2 = XX;
 Xout.MLD_densGR = XX;
 Xout.MLD_te2 = XX;
 Xout.DCM = XX;
-% Xout.DCMde_top = XX;
-% Xout.DCMde_bot = XX;
-% Xout.DCMinML = XX;
 Xout.Season = XX;
 Xout.Sunrise = XX;
 Xout.Sunset = XX;
@@ -187,7 +173,6 @@ XX= ones(MAXZ,ncast) .* NaN;
 Xout.pr = XX;
 Xout.de = XX;
 Xout.te = XX;
-% Xout.co = XX; %KL 2/8/2024 no conductivity data
 Xout.sa = XX;
 Xout.o2 = XX;
 Xout.bac = XX;
@@ -201,7 +186,6 @@ Xout.rho = XX;
 Xout.bvfrq = XX;
 Xout.vertZone = XX;
 clear XX
-
 
 % Copy data from CTD struct into Xout fields
 for ii = 1:ncast
@@ -243,7 +227,6 @@ for ii = 1:ncast
    Xout.pr(1:nz,ii) = CTD.Pressure(indx);
    Xout.de(1:nz,ii) = CTD.Depth(indx);
    Xout.te(1:nz,ii) = CTD.Temp(indx);
-%    Xout.co(1:nz,ii) = CTD.Conductivity(indx); %KL 2/8/2024 no conductivity data
    Xout.sa(1:nz,ii) = CTD.Salt(indx);
    Xout.o2(1:nz,ii) = CTD.O2(indx);
    Xout.bac(1:nz,ii) = CTD.Beam(indx);
@@ -331,25 +314,26 @@ for ii = 1:ncast
  %  The bias is the average difference from zero between 400-600 meters
      filt_width = 3;
      [Xfilt,bias] = smooth_fluor(XX, filt_width);
-if do_plots 
-         figure; 
-         subplot(1,2,1); hold on; axis ij; ylim([0 900]);
-         plot(XX.sig_theta,XX.Pressure,'-','Linewidth',1);
-         plot(xlim(),[MLD.densT2,MLD.densT2],'--y','Linewidth',1)
-         plot(xlim(),[MLD.dens125,MLD.dens125],'--m','Linewidth',1)
-         xlabel('Sigma-theta');
-         ylabel('Pressure')
-         subplot(1,2,2); hold on; axis ij; ylim([0 900]); xlim([-0.05 0.3]);
-         title([num2str(XX.Cruise(1)),' - ',num2str(XX.Cast(1))]);
-         plot(XX.Fluor,XX.Pressure,'-c','Linewidth',1.5);
-         plot(Xfilt,XX.Pressure,'-k','Linewidth',1.5);
-end
+    if do_plots 
+             figure; 
+             subplot(1,2,1); hold on; axis ij; ylim([0 900]);
+             plot(XX.sig_theta,XX.Pressure,'-','Linewidth',1);
+             plot(xlim(),[MLD.densT2,MLD.densT2],'--y','Linewidth',1)
+             plot(xlim(),[MLD.dens125,MLD.dens125],'--m','Linewidth',1)
+             xlabel('Sigma-theta');
+             ylabel('Pressure')
+             subplot(1,2,2); hold on; axis ij; ylim([0 900]); xlim([-0.05 0.3]);
+             title([num2str(XX.Cruise(1)),' - ',num2str(XX.Cast(1))]);
+             plot(XX.Fluor,XX.Pressure,'-c','Linewidth',1.5);
+             plot(Xfilt,XX.Pressure,'-k','Linewidth',1.5);
+    end
+
      if abs(bias) > 0.005 & giveNotice
        disp('Applying bias to fluor profile')
        Xfilt = Xfilt - bias;
-if do_plots
-    plot(Xfilt,XX.Pressure,'-r','Linewidth',1.5);
-end
+        if do_plots
+            plot(Xfilt,XX.Pressure,'-r','Linewidth',1.5);
+        end
        XX.Fluor_offset(:) = bias;
        CTD.Fluor_offset(indx) = bias;
        Xout.fluor_offset(ii) = bias;
@@ -358,7 +342,6 @@ end
     CTD.Fluor_filt(indx) = Xfilt;
     Xout.fluor_filt(1:nz,ii) = Xfilt;
 
-%  
 %  dcm layer
     percent = 0.33;
     izmax = find(XX.Depth > 400,1);
@@ -370,36 +353,11 @@ end
     XX.DCM(:) = DCM.depth;
     CTD.DCM(indx) = DCM.depth;
     Xout.DCM(ii) = DCM.depth;
-    %KL adding option to store DCM.itop and DCMinML because will need that to define
-    %season 7/1/2024
-    % XX.DCMde_top(:) = DCM.de_top;
-    % CTD.DCMde_top(indx) = DCM.de_top;
-    % Xout.DCMde_top(ii) = DCM.de_top;
-    % 
-    % XX.DCMde_bot(:) = DCM.de_bot;
-    % CTD.DCMde_bot(indx) = DCM.de_bot;
-    % Xout.DCMde_bot(ii) = DCM.de_bot;
-    % 
-    % XX.DCMinML(:) = DCM.DCMinML;
-    % CTD.DCMinML(indx) = DCM.DCMinML;
-    % Xout.DCMinML(ii) = DCM.DCMinML;
        
     if ML_ToUse < -990;   % no ML defined -- likely a surface cast
         XX.DCM(:) = -999;
         CTD.DCM(indx) = -999;
         Xout.DCM(ii) = NaN;
-    %     %KL adding these variables so they also end up not defined
-    %     XX.DCMde_top(:) = -999;
-    %     CTD.DCMde_top(indx) = -999;
-    %     Xout.DCMde_top(ii) = NaN;
-    % 
-    %     XX.DCMde_bot(:) = -999;
-    %     CTD.DCMde_bot(indx) = -999;
-    %     Xout.DCMde_bot(ii) = NaN;
-    % 
-    %     XX.DCMinML(:) = -999;
-    %     CTD.DCMinML(indx) = -999;
-    %     Xout.DCMinML(ii) = NaN;
     end
     
     if do_plots
@@ -413,29 +371,15 @@ end
     end
     
     clear filt_width  Xfilt izmax 
-%
-%  fit PAR profile, get 1% 0.5% and 0.1% light levels
-%  
+
+   %fit PAR profile, get 1% 0.5% and 0.1% light levels
    fitrange = [0 200];
    zmax = 300;
    PAR = get_BATS_par_vars(XX.PAR,XX.Depth,fitrange,zmax);
    
-%    figure; hold on; axis ij;
-%    parin = XX.PAR;
-%    parin(parin < -900) = NaN;
-%    din = XX.Depth;
-%    din(din < -900) = NaN;
-%    plot(parin,din,'-k','Linewidth',1.5)
-%    plot(PAR.par_est,din,'-r','Linewidth',1.5);
-%    ylim([0 300]);
-%    plot(1,PAR.z_par_1pcnt,'*');
-%    plot(1,PAR.z_par_halfpcnt,'*');
-%    plot(1,PAR.z_par_tenthpcnt,'*');
-%
+   clear din parin
 
-    clear din parin
-
-%  save values     
+   %  save values     
    Pfields = fieldnames(PAR);
   
    for kk=1:length(Pfields)
@@ -461,19 +405,16 @@ end
    
 % Label Vertical Zones
    XX.VertZone(:) = label_vertical_zones_ctd(XX,DCM,ML_ToUse);
-%    if any(XX.VertZone == -999)
-%        blah = label_vertical_zones_ctd(XX,DCM,ML_ToUse);
-%    end
    CTD.VertZone(indx) = XX.VertZone(:);
    Xout.vertZone(1:length(indx),ii) = XX.VertZone(:);
       ibad = find(Xout.vertZone(:,ii) < -990); %nan any missing values
    Xout.vertZone(ibad,ii) = NaN;  
    
 % Label Seasons
-   %trans_dates = get_season_dates(Xout.year); send into this function,
-   %only need to convert the Excel file once
+   %trans_dates = get_season_dates(Xout.year); 
    %trans_dates = reformat_season_dates(fName) ; 
-
+   %this version uses trans_dates, transitions dates that are pre-determined 
+   %and available in Excel, 5 July 2024
    theCode = label_seasons_ctd(XX,trans_dates);
    disp([num2str(Xout.year(ii)),' ',num2str(Xout.month(ii)),' ',num2str(Xout.day(ii)),'  Season: ', num2str(theCode)]);
    XX.Season(:) = theCode;
@@ -488,7 +429,7 @@ end
         XX.(fname) = BB;       
     end
 
-% % Output the cast %KL note: don't need individual casts 
+% % Output the cast %KL note: don't need individual casts 7/2/2024
 %KL note - these are square matrices, to whatever depth is set in MAXZ
 %    fmt = '%8d_%1d%04d_%03d_ctd.csv';
 %    outfile = sprintf(fmt,XX.yyyymmdd(1),Xout.type(ii),XX.Cruise(1),XX.Cast(1));
@@ -515,7 +456,7 @@ end % for ii
            CTD.(fname) = CC;
        end
        
-   if 0%turn on to save output - not necessary for getting BATS historical data
+   if 0 %turn on to save output - not necessary for getting BATS historical data
        TTcruise = struct2table(CTD);
        writetable(TTcruise,outfile);
    end

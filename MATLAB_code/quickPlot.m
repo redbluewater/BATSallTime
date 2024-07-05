@@ -1,5 +1,9 @@
-%m-file to plot up each year to check on the bounds for seasons
+% m-file to plot up each year to check on the bounds for seasons
+% Misc. collection of options that have been used to check results
 %Krista Longnecker; 3 July 2024
+load BATSdata_withManualSeasons.2024.07.03.mat
+
+%first change the -999 values to NaN so I get nicer figures
 k = find(stepThree.MLD_densT2==-999);
 stepThree.MLD_densT2(k) = NaN;
 clear k
@@ -72,6 +76,12 @@ for a = 1:length(uy)
     clear k L ms 
 end %end plotting loop
 
+% f = char(string(unique(CTD.decy)));
+% f = str2double(f(1:4));
+% 
+% if f==2000
+%     keyboard
+% end
 
 figure
 dt = datetime(stepThree.year,stepThree.month,stepThree.day);

@@ -6,10 +6,11 @@ t = readtable(fName);
 
 %make into the format expected by Ruth's code (datenums in a structure)
 season_dates = struct();
-season_dates.mixed = datenum(t{:,{'mixed_1','mixed_2'}});
-season_dates.spring = datenum(t{:,{'spring_1','spring_2'}});
-season_dates.strat = datenum(t{:,{'strat_1','strat_2'}});
-season_dates.fall = datenum(t{:,{'fall_1','fall_2'}});
+season_dates.mixed = datenum(t{:,{'mixed_begin','mixed_end'}});
+season_dates.spring = datenum(t{:,{'spring_begin','spring_end'}});
+season_dates.strat = datenum(t{:,{'strat_begin','strat_end'}});
+season_dates.fall = datenum(t{:,{'fall_begin','fall_end'}});
 season_dates.year = t.year;
 
-%these are datenum - that is what Ruth uses
+%these are datenum - that is what Ruth uses - convert to datetime:
+%datetime(season_dates.mixed(1),'ConvertFrom','datenum');
