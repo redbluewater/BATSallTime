@@ -26,8 +26,10 @@ if isequal(getenv('COMPUTERNAME'),'ESPRESSO')
     rootdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\';
     %Krista has put the next two folders outside the space accessible by GitHub
     %These files are too large to put into GitHub
+    
     workdir = fullfile(rootdir,'RCcalcBATS\data_temporary\');
     % workdir = fullfile(rootdir,'RCcalcBATS\data_copySmall_testing\');
+    
     outdir = fullfile(rootdir,'RCcalcBATS\data_holdingZone\');
 
 elseif isequal(getenv('COMPUTERNAME'),'LONGNECKER-1650')
@@ -38,8 +40,10 @@ elseif isequal(getenv('COMPUTERNAME'),'LONGNECKER-1650')
     rootdir = 'C:\Users\klongnecker\Documents\Dropbox\Current projects\Kuj_BIOSSCOPE\RawData\';
     %Krista has put the next two folders outside the space accessible by GitHub
     %These files are too large to put into GitHub
+    
     % workdir = fullfile(rootdir,'RCcalcBATS\data_temporary\');
     workdir = fullfile(rootdir,'RCcalcBATS\data_copySmall_testing\');
+    
     outdir = fullfile(rootdir,'RCcalcBATS\data_holdingZone\');
 end
 
@@ -49,12 +53,12 @@ gitdir = pwd;
 %of casts within the full set of casts)
 do_plots = 0;
    
-NameOfFile = 'BATSdata_withManualSeasons.2024.07.03.mat';
+NameOfFile = 'BATSdata_withManualSeasons.2024.07.05.mat';
 
 %now do the calculations
 
 %Use this function to make a MATLAB structure with transition dates
-seasonsFile = fullfile(gitdir,'seasons_wKLedits.2024.07.03.xlsx');
+seasonsFile = fullfile('../','BATS_seasons_wKLedits.2024.07.05.xlsx');
 %use this function to reformat the dates, set fName in calcDerivedVariables
 trans_dates = reformat_season_dates(seasonsFile) ; 
 
@@ -62,17 +66,9 @@ trans_dates = reformat_season_dates(seasonsFile) ;
 %the BATS *mat files
 cd(workdir)
 dirlist = dir('*.mat');
-%delete some names...not the best way to do this, but will work
-s = contains({dirlist.name},'YR');
-ks = find(s==1);
-dirlist(ks) = []; clear s ks
-s = contains({dirlist.name},'bats_ctd.mat');
-ks = find(s==1);
-dirlist(ks) = []; clear s ks
-s = contains({dirlist.name},'bval_ctd.mat');
-ks = find(s==1);
-dirlist(ks) = []; clear s ks
-s = contains({dirlist.name},'working.mat');
+%skip over some files
+toSkip = {'YR','bats_ctd.mat','bval_ctd.mat','working.mat'};
+s = contains({dirlist.name},toSkip);
 ks = find(s==1);
 dirlist(ks) = []; clear s ks
 
@@ -103,7 +99,7 @@ stepThree = array2table(stepTwo,'VariableNames',stepOne.Properties.VariableNames
 clear stepOne stepTwo
 
 %Now export stepTwo as a CSV file for R
-writetable(stepThree,fullfile(gitdir,'BATSderivedValues_lookupTable.2024.07.03.csv'))
+writetable(stepThree,fullfile(gitdir,'BATSderivedValues_lookupTable.2024.07.05.csv'))
 cd(gitdir)
 save(NameOfFile)
 

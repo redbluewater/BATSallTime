@@ -1,7 +1,7 @@
 % m-file to plot up each year to check on the bounds for seasons
 % Misc. collection of options that have been used to check results
 %Krista Longnecker; 3 July 2024
-load BATSdata_withManualSeasons.2024.07.03.mat
+load BATSdata_withManualSeasons.2024.07.05.mat
 
 %first change the -999 values to NaN so I get nicer figures
 k = find(stepThree.MLD_densT2==-999);
