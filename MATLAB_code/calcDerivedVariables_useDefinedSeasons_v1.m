@@ -95,8 +95,12 @@ clear ii nfiles doFiles dirlist do_plots seasonsFile
 
 %This is a messy way to get a look up table as I am changing types
 stepTwo = cell2mat(table2array(stepOne));
+%put in NaN for export - the -999 makes things harder in R for makeSynoptic
+k = find(stepTwo==-999);
+stepTwo(k) = NaN;
 stepThree = array2table(stepTwo,'VariableNames',stepOne.Properties.VariableNames);
 clear stepOne stepTwo
+
 
 %Now export stepTwo as a CSV file for R
 writetable(stepThree,fullfile(gitdir,'BATSderivedValues_lookupTable.2024.07.05.csv'))
