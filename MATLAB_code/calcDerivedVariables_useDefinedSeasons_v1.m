@@ -53,7 +53,7 @@ gitdir = pwd;
 %of casts within the full set of casts)
 do_plots = 0;
    
-NameOfFile = 'BATSdata_withManualSeasons.2024.07.05.mat';
+NameOfFile = 'BATSdata_withManualSeasons.2024.07.07.mat';
 
 %now do the calculations
 
@@ -103,7 +103,7 @@ clear stepOne stepTwo
 
 
 %Now export stepTwo as a CSV file for R
-writetable(stepThree,fullfile(gitdir,'BATSderivedValues_lookupTable.2024.07.05.csv'))
+writetable(stepThree,fullfile(gitdir,'BATSderivedValues_lookupTable.2024.07.07.csv'))
 cd(gitdir)
 save(NameOfFile)
 
@@ -113,7 +113,9 @@ clear gitdir outdir rootdir workdir
 save(NameOfFile,'stepThree','NameOfFile')
 
 %%% now move on and get the MLD and DCM information
-useMLD = 'MLD_densT2'; %define up top, change as needed
+% useMLD = 'MLD_densT2'; %define up top, change as needed
+%useMLD = 'MLD_dens125';
+useMLD = 'MLD_bvfrq';
 
 %first parse out the five digit cruise detail (new function)
 stepThree.cruise = id2cruise(stepThree.BATS_id);
