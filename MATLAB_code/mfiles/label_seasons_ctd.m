@@ -18,7 +18,10 @@ function [theCode] = label_seasons_ctd(CTD,trans_dates )
 % Ruth Curry, BIOS / ASU
 % Uploaded for BIOS-SCOPE project 19 October 2023
 % KL edited, now entirely relying on dates in pre-determined Excel file
+% However this m-file uses information that was calculated
+% elsewhere...e.g., script just puts the information in the right place.
 % Krista Longnecker; 3 July 2024
+% Krista Longnecker; 3 February 2024
 
 mtime = decyear2dnum(CTD.decy(1));
 
@@ -65,7 +68,6 @@ end %if (trans_dates)
 %  want to add nominal dates without stopping to think about what happened.
 % This is likely an error in the Excel file used to set the boundaries.
 keyboard
-error('There is no pre-defined date, consider what happened\n')
-
+% error('There is no pre-defined season information, consider what happened\n')
 end
 
