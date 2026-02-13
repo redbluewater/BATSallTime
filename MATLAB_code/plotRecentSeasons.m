@@ -1,4 +1,5 @@
 %plot up the seasons in recent years to see how I did
+%this plots up the first pass season decisions 
 %Krista Longnecker 12 February 2026
 clear all 
 close all
