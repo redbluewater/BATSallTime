@@ -1,15 +1,19 @@
 # BATSallTime
 Krista Longecker, most recent notes at the top
 
+### 13 February 2026
+Minor tidying up and ready to put this into the BIOS-SCOPE GitHUb site. Haven't yet dealt with BCO-DMO direct download, but that can wait. For now, the data are downloaded manually from the BATS project at BCO-DMO: https://www.bco-dmo.org/dataset/3918. Used the data file with the data from 1988 up through June 2025 (most recent available).
+
+- [ ] figure out how to use the command line in MATLAB to get the file(s) from BCO-DMO (having issues with timing out, the file is 650 MB)
+
 ### 12 February 2026
 We need to calculate the seasons using the BATS CTD data as the gliders were not in the water much in 2024 and 2025. This repository was a good one to go back to as it works with BATS data across the years.  The code has been updated to use data available at BCO-DMO as that is a consistent format to work with and they are posting the data every six months.
 
 Modified an existing file to read through the data and calculate the season based on Ruth Curry's code. Script is ```calcDerivedVariables_findSeasons_v5.m```, then the second step is ```calculateSeason_KL_v2.m```. Right now the seasons look like this: ![SeasonsAtBATS_2024to2025.jpg](MATLAB_code/SeasonsAtBATS_2024to2025.jpg)
 
 #### To do:
-- [ ] check that I have the seasons right
-- [ ] figure out how to use the command line in MATLAB to get the file(s) from BCO-DMO (having issues with timing out, the file is 650 MB)
-- [ ] move latest files to the BIOS-SCOPE GitHub site
+- [x] check that I have the seasons right
+- [x] move latest files to the BIOS-SCOPE GitHub site
 
 
 ### 3 July 2024
