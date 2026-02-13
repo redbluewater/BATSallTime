@@ -4,6 +4,9 @@
 %and then do some plotting. This will get most years at least close for the
 %season, but there will be some manual editing needed
 %Krista Longnecker ; 3 July 2024
+%Krista Longnecker; ;13 Februaury 2026 more seasons...no gliders
+%However, the logic in here does not match the overall base of Ruth's logic
+% and changes some of the seasons. I don't think this should get used.
 addpath(genpath('C:\Users\klongnecker\Documents\GitHub\BATSallTime\MATLAB_code\mfiles'));    
 warning('off','MATLAB:table:RowsAddedExistingVars');
 
@@ -34,7 +37,8 @@ seasons = struct2table(dt);
 gliderYears = seasons.year;
 clear season_dates dt
 
-unCru.season = nan(size(unCru,1),1);
+unCru.season_asCalc = unCru.season;
+unCru.season = nan(size(unCru,1),1); %why do this? it overwrites the existing season
 
 %will need time steps - sort what I have based on datetime
 unCru = sortrows(unCru,'datetime');
@@ -44,7 +48,7 @@ a = 1;
 priorSeason = NaN;
 timeStep_days = NaN;
 % KL wrote label_seasons_ctd_KL_v2 to get a first pass on dates
-theCode = label_seasons_ctd_KL_v2(unCru.maxDCM(a),...
+theCode = label_seasons_ctd_KL_withPriorInformation(unCru.maxDCM(a),...
     unCru.maxDCM_depthTop(a), ...
     unCru.DCMinML(a),...
     unCru.MLDmax(a),...
@@ -55,7 +59,7 @@ unCru.season(a) = theCode;
 for a = 2:size(unCru,1)
     timeStep_days = days(unCru.datetime(a) - unCru.datetime(a-1)); %in hours, convert to days
     priorSeason = unCru.season(a-1);
-    theCode = label_seasons_ctd_KL_v2(unCru.maxDCM(a),...
+    theCode = label_seasons_ctd_KL_withPriorInformation(unCru.maxDCM(a),...
         unCru.maxDCM_depthTop(a),...
         unCru.DCMinML(a),...
         unCru.MLDmax(a),...

@@ -45,6 +45,8 @@ end
 
 set(gca,'ydir','reverse')
 ylabel('Depth (m)')
-title(strcat('colors are season; circle = DCMmax ; star = MLD'),'fontweight','bold')
+title(strcat('colors are season; circle = depth of DCMmax ; star = depth of MLD'),'fontweight','bold')
 set(gcf,'position',[-1582 382 1558 593])
 
+set(gcf,'paperpositionmode','auto')
+saveas(gcf,['SeasonsAtBATS_2024to2025.jpg'],'jpg')
