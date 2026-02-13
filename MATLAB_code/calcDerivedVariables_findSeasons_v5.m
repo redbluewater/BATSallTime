@@ -10,8 +10,10 @@
 %to define the seasons, so just build on this as there will be more to do
 %for the season definitions
 %Krista Longnecker; 27 June 2024
-%Krista Longnecker; 2 February 2026 %different format of data being made
-%available...adjust accordingly
+%
+%change to using data from BCO-DMO
+%Krista Longnecker; 10 February 2026 
+
 clear all 
 close all
 
@@ -27,17 +29,21 @@ if isequal(getenv('COMPUTERNAME'),'ESPRESSO')
     workdir = fullfile(rootdir,'RCcalcBATS\data_temporary\');
     % workdir = fullfile(rootdir,'RCcalcBATS\data_copySmall_testing\');
     outdir = fullfile(rootdir,'RCcalcBATS\data_holdingZone\');
+
 elseif isequal(getenv('COMPUTERNAME'),'DESKTOP-QB9J1SQ')
     %% add ./BIOSSCOPE/CTD_BOTTLE/mfiles into matlab path    
     addpath(genpath('mfiles')); %use generic, will be easy to find from this script
 
     %% update the folder information before getting started
-    rootdir = 'D:\Dropbox\GitHub_niskin\BATSallTime\RawData\';
+    rootdir = 'D:\Dropbox\GitHub_niskin\BATSallTime\MATLAB_Code\RawData\';
     %Krista has put the next two folders outside the space accessible by GitHub
     %These files are too large to put into GitHub
-    workdir = fullfile(rootdir,'CTDrelease_20250314\');
+    %workdir = fullfile(rootdir,'CTDrelease_20250314\');
     outdir = fullfile(rootdir,'processedCTDfiles\');
 end
+
+%make sure outdir is empty before starting...
+delete(fullfile(outdir,'*.*'))
 
 gitdir = pwd;
 %set this to one if you want to see a plot for each cast (that will clearly
@@ -45,47 +51,35 @@ gitdir = pwd;
 %of casts within the full set of casts)
 do_plots = 0;
    
-NameOfFile = 'BATSdataForSeasonDefinitions.2026.02.02.mat';
+NameOfFile = 'BATSdataForSeasonDefinitions.2026.02.12.mat';
 
 %now do the calculations
+%data from BCO-DMO are available as one CSV file
+fName = '3918_v11_bats_ctd.csv'; %for now just download manually from BCO-DMO, 2/10/2026
+T = readtable([rootdir fName]);
 
-%Ruth set this up for txt files, but the BATS txt files are a pain, use
-%the BATS *mat files
-cd(workdir)
-dirlist = dir('*.mat');
-%delete some names...not the best way to do this, but will work
-s = contains({dirlist.name},'YR');
-ks = find(s==1);
-dirlist(ks) = []; clear s ks
-s = contains({dirlist.name},'bats_ctd.mat');
-ks = find(s==1);
-dirlist(ks) = []; clear s ks
-s = contains({dirlist.name},'bval_ctd.mat');
-ks = find(s==1);
-dirlist(ks) = []; clear s ks
-s = contains({dirlist.name},'working.mat');
-ks = find(s==1);
-dirlist(ks) = []; clear s ks
+uc = unique(T.Cruise_num);
+nfiles = length(uc);
 
-nfiles = length(dirlist);
 stepOne = table();
 
 % doFiles = 1; %use for testing, smaller number of files
 % doFiles = ; %use for testing, more files in case you need to test the loop
 doFiles = nfiles; %do everything
 for ii = 1:doFiles;
-   fname = dirlist(ii).name;      
-   infile = fullfile(workdir,fname);
-   
+   %use data from BCO-DMO, but one cruise at a time
+   infile = T(T.Cruise_num==uc(ii),:);
+
    %use modified function from KL, 2/8/2024
-   CTD = calculate_BATSderivedVariables_pullDetailsForSeasons(infile,do_plots,outdir,0);
+   CTD = calculate_BATSderivedVariables_useBCODMOdata(infile,do_plots,outdir,0);
+
    %make a table, easier to manipulate; have to write a custom script to
    %make a table given the complexity of these structures
    trim = 1; %set this to one to only keep the values that are one per cruise/cast
-   T = convert_RCstructure2table(CTD,trim); %this is a new KL function 6/21/2024
-   stepOne = [stepOne;T];
+   Tc = convert_RCstructure2table(CTD,trim); %this is a new KL function 6/21/2024
+   stepOne = [stepOne;Tc];
    
-   clear idx T trim CTD infile fname
+   clear idx Tc trim CTD infile fname
 end
 clear ii nfiles doFiles dirlist do_plots
 
@@ -94,7 +88,7 @@ stepTwo = cell2mat(table2array(stepOne));
 stepThree = array2table(stepTwo,'VariableNames',stepOne.Properties.VariableNames);
 
 %Now export stepTwo as a CSV file for R
-writetable(stepThree,fullfile(gitdir,'BATSderivedValues_lookupTable.2026.02.02.csv'))
+writetable(stepThree,fullfile(gitdir,'BATSderivedValues_lookupTable.2026.02.12.csv'))
 
 %do some housecleaning before I move on to organize this in a way that I
 %can use to define the seasons
@@ -109,7 +103,6 @@ save(NameOfFile,'stepThree','NameOfFile')
 %While I find no notes in the BATS files about time, my earlier code shows
 %they operate in GMT, so that is good (and in case I need it, the daylight
 %savings correction is in miscHousecleaning_4_fxn.m
-
 
 % Go through each cruise and find the following:
 % 1. Max MLD (will try different MLD parameters later)
@@ -177,9 +170,15 @@ for a = 1:size(unCru,1)
     unCru{a,'month'} = makeSmall.month(1);
     unCru{a,'day'} = makeSmall.day(1);
     unCru{a,'datetime'} = datetime(datestr(makeSmall.mtime(1)));
+    unCru{a,'season'} = makeSmall.Season(1);
+
     clear makeSmall   
 end
 clear a
+
+%remove the original BCO-DMO data file from the work space as it is very
+%large and will cause issues when saving. 
+clear T
 
 save(NameOfFile)
 

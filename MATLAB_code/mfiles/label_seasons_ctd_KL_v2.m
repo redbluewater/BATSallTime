@@ -19,6 +19,8 @@ function [theCode] = label_seasons_ctd_KL_v2(DCMdepth,DCMdepthTop,DCMinML,mld,pr
 % allow one month for spring spring and one month for fall transition.
 % There is certainly a more elegant way to do this, but let's use this hack
 % for now
+%KL 12 February 2026 - this file is used for checking the seasons AFTER
+%they have been calculated. Relies on knowledge of prior season.
 
 M = month;
 %essentially have three options, so setup three if statements:

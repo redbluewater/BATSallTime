@@ -1,7 +1,8 @@
 % m-file to plot up each year to check on the bounds for seasons
 % Misc. collection of options that have been used to check results
 %Krista Longnecker; 3 July 2024
-load BATSdata_withManualSeasons.2024.07.05.mat
+% load BATSdata_withManualSeasons.2024.07.05.mat
+load BATSdataForSeasonDefinitions.2026.02.10.mat
 
 %first change the -999 values to NaN so I get nicer figures
 k = find(stepThree.MLD_densT2==-999);
@@ -10,6 +11,10 @@ clear k
 close all
 
 uy = unique(stepThree.year);
+k = find(uy > 2016);
+uy = uy(k);
+clear k
+
 
 for a = 1:length(uy)
 % for a = 10;
@@ -44,7 +49,7 @@ for a = 1:length(uy)
     %title(strcat(string(uy(a)),{' '}, 'circle=DCM\_depthTop ; star = MLD'),'fontweight','bold')
     title(strcat(string(uy(a)),{' '}, 'circle=DCMmax ; star = MLD'),'fontweight','bold')
     clear h2
-    set(gcf,'position',[0.5623    1.2817    1.3393    0.5800]*1e3)
+    % set(gcf,'position',[0.5623    1.2817    1.3393    0.5800]*1e3)
     hold on
     XL = xlim;
     %use this for the legend so I do not get nonsense labels for the lines

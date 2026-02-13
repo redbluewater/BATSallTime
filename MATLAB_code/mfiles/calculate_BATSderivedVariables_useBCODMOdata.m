@@ -1,15 +1,19 @@
-function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir,giveNotice)
-% function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir,giveNotice)
-% Reads a *mat file (from BATS group), creates a structure with added 
-% fields, and writes a .csv file for each individual cruise. 
+function Xout = calculate_BATSderivedVariables(TTin, do_plots, outdir, giveNotice)
+% function Xout = calculate_BATSderivedVariables(TTin, do_plots, outdir,giveNotice)
+% This version uses the data downloaded from BCO-DMO, which has been parsed
+% out for a single cruise in calcDerivedVariables. The code will create
+% a structure with added fields, and write a .csv file for each individual cruise. 
 % INPUT:
-%  infile is the name of the file to read.
+%  TTin holds the data from one cruise as a square matrix
 %  do_plots is 1/0 depending if you do (1) or do not (0) want figures
 %  outdir is where to put the final CSV files
+%  giveNotice is 0/1 depending on how much feedback you want to see in the
+%  command window
 %
-% notes from Krista, this calls a script to generate the seasons based on
-% pre-set date windows and does NOT rely on analysis of the water column
-% data to change the transition dates each year
+% Notes from Krista, this script can be used to generate the seasons for all
+% BATS data...which can fail. Moving forward this will be how we think about
+% seasons in the absence of glider data. Data up through May 2024 have been 
+% curated by Krista Longnecker or Ruth Curry.
 %
 % OUTPUT:
 %  Writes individual files for each cruise in csv format
@@ -21,51 +25,36 @@ function Xout = calculate_BATSderivedVariables(infile, do_plots, outdir,giveNoti
 %
 % Original script from Ruth Curry BIOS/ASU (2023); Krista Longnecker
 % editing to add more MLD definitions 24 June 2024
-
-
-%%  Read file into rectangular array, and store each column as a field in structure CTD
-%KL version, read in the MATLAB file and then convert to match the legacy format
-%first, get the name of the variables in the file
-S = whos('-file',infile); 
-Sn = {S.name}; 
-%then pull the data from the structure, will be gf#####_data (where ##### is
-%the BATS cruise id)
-r = contains(Sn,'_data');
-kr = find(r==1); %which part of the structure has the data?
-riMAT = load(infile,Sn{kr});
-%ugly MATLAB hack to pull out the data into a matrix and put into Ruth's
-%format; TTin is a 1 x 12 cell, one variable per cell
-v = fieldnames(riMAT);
-TTin = riMAT.(v{1}); %this will read in matrix, only do this to get the number of rows
-% # of rows is the same variable that Ruth was calling MAXZ
-% MAXZ is the deepest water sample in this cruise (Ruth was setting this to
-% 2500 m, but KL changed this to dynamically determine for each cast)
-MAXZ = size(TTin,1);
-%now use the number of rows to make an array matching Ruth's format
-TTin = mat2cell(riMAT.(v{1}),[MAXZ],[ones(12,1)]); %12 is fixed - number of variables
-%tidy up this mess
-clear S Sn r kr riMAT v 
+% Krista Longnecker, 21 February 2026 to use data from BCO-DMO
 
 %%  Assign columns 
-%KL note - no conductivity in the CTD data BATS data files, change the indexing
-icol.cast_id = 1;
-icol.dec_yr = 2;
-icol.lat = 3;
-icol.lon =4;
-icol.pr = 5;
-icol.de = 6;
-icol.te = 7;
-% icol.co = 8; %no conductivity in these data KL 2/8/2024
-icol.sa = 8;
-icol.o2 = 9;
-icol.beam = 10;
-icol.fluor = 11;
-icol.par = 12;
+%data from BCO-DMO have headers, so use them to find the right column
+%information...better than fixing the label
+labels = TTin.Properties.VariableNames';
+icol.cast_id = find(strcmp(labels,'ID')==1);
+icol.dec_yr = find(strcmp(labels,'Decimal_Year_deployed')==1);
+icol.lat = find(strcmp(labels,'Latitude_deployed')==1);
+icol.lon =find(strcmp(labels,'Longitude_deployed')==1);
+icol.pr = find(strcmp(labels,'Pressure')==1);
+icol.de = find(strcmp(labels,'Depth')==1);
+icol.te = find(strcmp(labels,'Temperature')==1);
+icol.sa = find(strcmp(labels,'Salinity')==1);
+icol.o2 = find(strcmp(labels,'Oxygen')==1);
+icol.beam = find(strcmp(labels,'BAC')==1);
+icol.fluor = find(strcmp(labels,'Flu')==1);
+icol.par = find(strcmp(labels,'PAR')==1);
+
+% MAXZ is the deepest water sample in this cruise (Ruth was setting this to
+% 2500 m, but KL changed this to dynamically determine for each cast);
+%does this work better if I take max pressure? Have a case where using MAXZ
+%does not allow enough padding to make a square matrix.
+% MAXZ = round(max(TTin{:,icol.de}));
+MAXZ = round(max(TTin{:,icol.pr}));
 
 % create structure to store all the casts     
 CTD = struct();   % for conversion to csv files
 
-CTD.BATS_id = TTin{icol.cast_id};
+CTD.BATS_id = TTin{:,icol.cast_id};
     yy = floor(CTD.BATS_id .* 1e-7);
     xx =  CTD.BATS_id - yy .* 1e7;
 CTD.Cruise = floor(xx .* 1e-3);
@@ -74,21 +63,20 @@ CTD.Cast = xx - CTD.Cruise .* 1e3;
 
 ZZ = ones(size(CTD.Cruise)) .* -999; %blank array
 
-CTD.decy = TTin{icol.dec_yr};
+CTD.decy = TTin{:,icol.dec_yr};
     dvec = datevec(decyear2dnum(CTD.decy));
 CTD.yyyymmdd = dvec(:,1).* 1e4 + dvec(:,2) .* 1e2 + dvec(:,3);
 CTD.hhmm = dvec(:,4).*1e2 + dvec(:,5);
-CTD.latN = TTin{icol.lat};
-CTD.lonW = TTin{icol.lon};
-CTD.Pressure = TTin{icol.pr};
-CTD.Depth  = TTin{icol.de};
-CTD.Temp = TTin{icol.te};
-CTD.Salt = TTin{icol.sa};
-% CTD.Conductivity = TTin{icol.co}; %no conductivity in these data KL 2/8/2024
-CTD.O2 = TTin{icol.o2};
-CTD.Beam = TTin{icol.beam};
-CTD.PAR = TTin{icol.par};
-CTD.Fluor = TTin{icol.fluor};
+CTD.latN = TTin{:,icol.lat};
+CTD.lonW = TTin{:,icol.lon};
+CTD.Pressure = TTin{:,icol.pr};
+CTD.Depth  = TTin{:,icol.de};
+CTD.Temp = TTin{:,icol.te};
+CTD.Salt = TTin{:,icol.sa};
+CTD.O2 = TTin{:,icol.o2};
+CTD.Beam = TTin{:,icol.beam};
+CTD.PAR = TTin{:,icol.par};
+CTD.Fluor = TTin{:,icol.fluor};
 
 % Check for missing salts, o2 
 indx = find(CTD.Salt < 0);
@@ -140,7 +128,7 @@ clear ZZ TTin dvec mtime
 %earlier versions of this script.
 Xout = struct();  
 
-castlist = unique(CTD.BATS_id); %KL note: this is 5-digit cruise and 3-digit cast
+castlist = unique(CTD.BATS_id); %KL note: this is 5-digit cruise and 3-digit cast (8 digits total)
 ncast = length(castlist);
 % row vectors
 XX = ones(1,ncast) .* NaN;   
@@ -202,7 +190,7 @@ clear XX
 
 % Copy data from CTD struct into Xout fields
 for ii = 1:ncast
-   theCast = castlist(ii);
+   theCast = castlist(ii); %KL note: this is 5-digit cruise and 3-digit cast
    AA = theCast;
    BB = mod(AA, 1e7);
    CC = mod(BB, 1e3);
@@ -219,8 +207,11 @@ for ii = 1:ncast
    if nz > MAXZ
        %KL updated error 1/21/2024 - this issue also occurs if you are
        %running the script on data that has already been processed
-       error('foo:bar',['Note from Krista: You may have tried to run this script on data that has already been processed, \n', ...
-           'or data arrays not long enough. In the later case, increase MAXZ to at least ',num2str(nz)])
+       %KL 2/12/2026: set scripts to clear the outdir before starting, so 
+       % that gets rid of one cause for this error. However, do not delete
+       % the check as will need to know if I cannot make a square matrixc
+       %keyboard
+       error('foo:bar',['Data arrays not long enough. In the later case, increase MAXZ to at least ',num2str(nz)])
    end
    Xout.mtime(ii) = decyear2dnum(CTD.decy(itop));
       dvec = datevec(Xout.mtime(ii));
@@ -277,7 +268,7 @@ end %for ii
 flist = fieldnames(CTD);
 nfields = length(flist);
 for ii = 1:ncast
-    theCast = castlist(ii);
+    theCast = castlist(ii); %KL note: this is 5-digit cruise and 3-digit cast
     indx = find(CTD.BATS_id == theCast);
     nz = length(indx);
  %    
@@ -471,7 +462,15 @@ clear din parin
 %be used here
    trans_dates = get_season_dates(Xout.year); %new function from KL
 
-   theCode = label_seasons_ctd(XX,DCM,ML_ToUse,trans_dates);
+   %theCode = label_seasons_ctd_Ruth_v0(XX,DCM,ML_ToUse,trans_dates); 
+   try
+       %can have cases with more than one month for cruises that cross
+       %months, use the first one in Xout
+        theCode = label_seasons_ctd_KL_v1(DCM.depth,DCM.de_top,ML_ToUse,Xout.month(1)); 
+   catch
+       keyboard
+   end
+
    disp([num2str(Xout.year(ii)),' ',num2str(Xout.month(ii)),' ',num2str(Xout.day(ii)),'  Season: ', num2str(theCode)]);
    XX.Season(:) = theCode;
    CTD.Season(indx) = theCode;
